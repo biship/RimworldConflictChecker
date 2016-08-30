@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace RimworldConflictResolver
+namespace RimworldConflictChecker
 {
     internal class Osio
     {

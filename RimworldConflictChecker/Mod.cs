@@ -4,7 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Xml.Linq;
 
-namespace RimworldConflictResolver
+namespace RimworldConflictChecker
 {
     public class Mod
     {
@@ -33,8 +33,8 @@ namespace RimworldConflictResolver
         }
 
         //the mod object, contains these elements:
-        public string FullDirName { get; set; } //actuall full dir name
-        public string DirName { get; set; } //actuall sub dir name
+        public string FullDirName { get; set; } //actual full dir name
+        public string DirName { get; set; } //actual sub dir name
         public ModDetails ModXmlDetails { get; set; } //mod name from about.xml
         public List<XmlFile> XmlFiles { get; set; } //list of all files under dir
         public List<Mod> ConflictedMods { get; set; } //list of other conflicting XML's
@@ -115,23 +115,26 @@ namespace RimworldConflictResolver
                         {
                             foreach (var element in xmlFile.XmlDocument.Root.Elements())
                             {
-                                if (element.Name.ToString().ToUpper() == "NAME")
+                                if (element.Value != null)
                                 {
-                                    aboutXDoc.ModName = element.Value;
-                                    continue;
+                                    if (element.Name.ToString().ToUpper() == "NAME")
+                                    {
+                                        aboutXDoc.ModName = element.Value;
+                                        continue;
+                                    }
+                                    //crashes if this is null
+                                    if (element.Name.ToString().ToUpper() == "TARGETVERSION")
+                                    {
+                                        aboutXDoc.ModTargetVersion = Version.Parse(element.Value);
+                                        //aboutXDoc.ModTargetVersion = element.Value;
+                                        continue;
+                                    }
+                                    if (element.Name.ToString().ToUpper() == "DESCRIPTION")
+                                    {
+                                        aboutXDoc.ModDescription = element.Value;
+                                    }
                                 }
-                                //crashes if this is null
-                                if ((element.Name.ToString().ToUpper() == "TARGETVERSION") && (element.Value != null))
-                                {
-                                    aboutXDoc.ModTargetVersion = Version.Parse(element.Value);
-                                    //aboutXDoc.ModTargetVersion = element.Value;
-                                    continue;
-                                }
-                                if (element.Name.ToString().ToUpper() == "DESCRIPTION")
-                                {
-                                    aboutXDoc.ModDescription = element.Value;
-                                }
-                            }
+                           }
                         }
                         catch (ArgumentException e)
                         {
@@ -279,7 +282,7 @@ namespace RimworldConflictResolver
             return totalConflicts;
         }
 
-        private List<XmlFile> GetXmlFiles(DirectoryInfo directory)
+        public List<XmlFile> GetXmlFiles(DirectoryInfo directory)
         {
             var files = new List<XmlFile>();
             FileInfo currentFile = null;
@@ -371,7 +374,7 @@ namespace RimworldConflictResolver
             var totalConflicts = 0;
             foreach (var xmlFile in XmlFiles)
             {
-                if ((xmlFile.XmlFileInfo.Name.Contains(".dll")) && (!xmlFile.XmlFileInfo.Directory.Name.Equals("Assemblies")))
+                if (xmlFile.XmlFileInfo.Directory != null && ((xmlFile.XmlFileInfo.Name.Contains(".dll")) && (!xmlFile.XmlFileInfo.Directory.Name.Equals("Assemblies"))))
                 {
                     Logger.Instance.Log("DLL not in an Assemblies folder: " + xmlFile.XmlFileInfo.FullName);
                     totalConflicts++;

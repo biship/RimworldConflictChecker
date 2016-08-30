@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RimworldConflictResolver
+namespace RimworldConflictChecker
 {
     public class ModDetails
     {

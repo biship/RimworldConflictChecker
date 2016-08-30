@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace RimworldConflictResolver {
+namespace RimworldConflictChecker {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -26,48 +26,36 @@ namespace RimworldConflictResolver {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string RimworldFolder {
+        public string RimWorldFolder {
             get {
-                return ((string)(this["RimworldFolder"]));
+                return ((string)(this["RimWorldFolder"]));
             }
             set {
-                this["RimworldFolder"] = value;
+                this["RimWorldFolder"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Mods1 {
+        public string ModFolder1 {
             get {
-                return ((string)(this["Mods1"]));
+                return ((string)(this["ModFolder1"]));
             }
             set {
-                this["Mods1"] = value;
+                this["ModFolder1"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Mods2 {
+        public string ModFolder2 {
             get {
-                return ((string)(this["Mods2"]));
+                return ((string)(this["ModFolder2"]));
             }
             set {
-                this["Mods2"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Mods3 {
-            get {
-                return ((string)(this["Mods3"]));
-            }
-            set {
-                this["Mods3"] = value;
+                this["ModFolder2"] = value;
             }
         }
     }

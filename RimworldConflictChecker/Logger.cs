@@ -2,11 +2,11 @@
 using System.IO;
 using System.Text;
 
-namespace RimworldConflictResolver
-{
+namespace RimworldConflictChecker
+    {
     public class Logger
     {
-        public static readonly string Outputfilename = "RimworldConflictResolver.txt";
+        public static readonly string Outputfilename = "RCC.txt";
 
         private static Logger _instance;
 
@@ -31,7 +31,7 @@ namespace RimworldConflictResolver
 
         public void Log(string message)
         {
-            var now = string.Format("{0:hh:mm:ss} ", DateTime.Now);
+            var now = string.Format("{0:HH:mm:ss} ", DateTime.Now);
             //buffer.Append(now + message + "\n");
             //buffer.AppendFormat(now + message + "{0}", Environment.NewLine);
 #if DEBUG
@@ -43,10 +43,8 @@ namespace RimworldConflictResolver
 
         public void NewSection(string message)
         {
-            var now = string.Format("{0:MM-dd-yyyy hh:mm:ss} ", DateTime.Now);
-            _buffer.Append(
-                "===============================================================================================================================" +
-                "\n" + now + "\n" + message + "\n");
+            var now = string.Format("{0:MM-dd-yyyy HH:mm:ss} ", DateTime.Now);
+            Log("===============================================================================================================================" + "\n" + now + "\n" + message + "\n");
         }
 
         public void DumpModHeader(string modname, string folder)

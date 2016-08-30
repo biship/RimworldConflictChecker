@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Xml.Linq;
 
-namespace RimworldConflictResolver
+namespace RimworldConflictChecker
 {
     public class XmlFile
     {
