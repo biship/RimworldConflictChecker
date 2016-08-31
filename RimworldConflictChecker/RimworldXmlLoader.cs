@@ -37,7 +37,8 @@ namespace RimworldConflictChecker
                 "\tThe same DLL in 2 or more mods",
                 "\tCore nameDefs overwriten by a mod",
                 "\tDLL's not in the Assemblies folder",
-                "\tChecks versions of mod against RimWorld version"
+                "\tChecks versions of mod against RimWorld version",
+                "\tIdentifies possibly corrupt mods (partially implemented)"
             };
             string[] futurechecks =
             {
@@ -58,8 +59,8 @@ namespace RimworldConflictChecker
             //welcome
             Logger.Instance.NewSection("Rimworld Conflict Checker Started!");
             Logger.Instance.Log("Code: https://github.com/biship/RimworldConflictChecker");
-            Logger.Instance.Log("Details: http://ludeon.com/forums/index.php?topic=");
-            Logger.Instance.Log("Please report any bugs there!");
+            Logger.Instance.Log("Details: https://ludeon.com/forums/index.php?topic=25305");
+            Logger.Instance.Log("Please report any bugs either on GitHub, or the Ludeon forum thread.");
             Logger.Instance.Log("");
 #if DEBUG
             Logger.Instance.Log("Build: DEBUG " + strCompTime);
@@ -213,9 +214,11 @@ namespace RimworldConflictChecker
                 {
                     Mods.Add(new Mod(info));
                 }
-
+                
                 Activemods = LoadModsConfigXml(); //contains dirname, not modname.
                 Logger.Instance.NewSection("Mods Found:");
+
+                //throw new ArgumentException("ha-ha");
 
                 //set load position
                 //set if enabled
@@ -373,7 +376,7 @@ namespace RimworldConflictChecker
                 Logger.Instance.NewSection("Checking for duplicate DLL's...");
 
                 totalConflicts = 0;
-
+                
                 //TODO: add core DLLs (done???)
                 //creates dup entries for the same mod (if in diff dir)
                 //are DLL's loaded if out of Assemblies??

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RimworldConflictChecker
@@ -14,6 +15,23 @@ namespace RimworldConflictChecker
             string rimworldfolder = "";
             string modfolder1 = "";
             string modfolder2 = "";
+
+            // Uncomment the following after testing to see that NBug is working as configured
+            NBug.Settings.ReleaseMode = true;
+            //NBug.Exceptions.Dispatch();
+
+            // Sample NBug configuration for console applications 
+            AppDomain.CurrentDomain.UnhandledException += NBug.Handler.UnhandledException;
+            TaskScheduler.UnobservedTaskException += NBug.Handler.UnobservedTaskException;
+
+            // Add the event handler for handling UI thread exceptions to the event.
+            Application.ThreadException += NBug.Handler.ThreadException;
+
+            // Sample NBug configuration for WinForms applications
+            // all set above
+            //AppDomain.CurrentDomain.UnhandledException += NBug.Handler.UnhandledException;
+            //Application.ThreadException += NBug.Handler.ThreadException;
+            //TaskScheduler.UnobservedTaskException += NBug.Handler.UnobservedTaskException;
 
             if (args.Length == 1)
             {
@@ -61,36 +79,9 @@ namespace RimworldConflictChecker
             }
             Console.WriteLine("Rimworld Conflict Checker Running checks...");
 
-            // Uncomment the following after testing to see that NBug is working as configured
-            // NBug.Settings.ReleaseMode = true;
-
-            //NBug.Settings.ReleaseMode = true; 
-            // Add the event handler for handling non-UI thread exceptions to the event. 
-            //AppDomain.CurrentDomain.UnhandledException += NBug.Handler.UnhandledException;
-            //Application.Current.DispatcherUnhandledException += NBug.Handler.DispatcherUnhandledException;
-
-            //System.Windows.Application.Current.DispatcherUnhandledException += NBug.Handler.DispatcherUnhandledException;
-
-            // Add the event handler for handling UI thread exceptions to the event.
-            //Application.ThreadException += NBug.Handler.ThreadException;
-
-            // Set the unhandled exception mode to force all Windows Forms errors
-            // to go through our handler.
-            //Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-            //Application.SetUnhandledExceptionMode(NBug.Handler.UnhandledException);
-
+            //testing throwing exception
             //throw new ArgumentException("ha-ha");
 
-            //if (args.Length == 0)
-            //{
-            //Console.WriteLine("Please enter any number of mod folders.");
-            //Console.WriteLine(
-            //"Usage: RCC <modFolderPath1> <modFolderPath2> <modFolderPath3> ...");
-            //return 1;
-            //}
-
-            //new RimworldXmlLoader("D:\\SteamLibrary\\steamapps\\common\\RimWorld","D:\\SteamLibrary\\steamapps\\workshop\\content\\294100");
-            //new RimworldXmlLoader(rimworldfolder, modfolder1, modfolder2);
             new RimworldXmlLoader(rimworldfolder, modfolder1, modfolder2);
             Logger.Instance.WriteToFile();
             return 0;

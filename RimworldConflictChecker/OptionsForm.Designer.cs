@@ -110,9 +110,9 @@
             this.lbl_RimWorldExeFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_RimWorldExeFolder.Location = new System.Drawing.Point(3, 6);
             this.lbl_RimWorldExeFolder.Name = "lbl_RimWorldExeFolder";
-            this.lbl_RimWorldExeFolder.Size = new System.Drawing.Size(280, 13);
+            this.lbl_RimWorldExeFolder.Size = new System.Drawing.Size(283, 13);
             this.lbl_RimWorldExeFolder.TabIndex = 2;
-            this.lbl_RimWorldExeFolder.Text = "Rimworld Executable Folder (RimWorldWin.exe):";
+            this.lbl_RimWorldExeFolder.Text = "RimWorld Executable Folder (RimWorldWin.exe):";
             // 
             // btn_RimworldFolder
             // 
@@ -131,9 +131,9 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(3, 81);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(140, 13);
+            this.label1.Size = new System.Drawing.Size(143, 13);
             this.label1.TabIndex = 4;
-            this.label1.Text = "Rimworld Mod Folder 1:";
+            this.label1.Text = "RimWorld Mod Folder 1:";
             // 
             // txtb_ModFolder1
             // 
@@ -183,9 +183,9 @@
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(3, 181);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(140, 13);
+            this.label3.Size = new System.Drawing.Size(287, 13);
             this.label3.TabIndex = 7;
-            this.label3.Text = "Rimworld Mod Folder 2:";
+            this.label3.Text = "RimWorld Mod Folder 2: (needed for steam users)";
             // 
             // btn_quit
             // 
@@ -262,7 +262,7 @@
             this.Location = new System.Drawing.Point(200, 200);
             this.MaximizeBox = false;
             this.Name = "OptionsForm";
-            this.Text = "Rimworld Paths";
+            this.Text = "RimWorld Paths";
             this.TopMost = true;
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
