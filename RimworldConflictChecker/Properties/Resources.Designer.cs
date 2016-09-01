@@ -61,12 +61,39 @@ namespace RimworldConflictChecker.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tue 08/30/2016 15:11:39.28 
+        ///   Looks up a localized string similar to Thu 09/01/2016 16:57:03.97 
         ///.
         /// </summary>
         public static string BuildDate {
             get {
                 return ResourceManager.GetString("BuildDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not Valid.
+        /// </summary>
+        public static string InvalidFolder {
+            get {
+                return ResourceManager.GetString("InvalidFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing.
+        /// </summary>
+        public static string MissingFolder {
+            get {
+                return ResourceManager.GetString("MissingFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string OK {
+            get {
+                return ResourceManager.GetString("OK", resourceCulture);
             }
         }
     }

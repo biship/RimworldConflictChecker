@@ -67,6 +67,12 @@ namespace RimworldConflictChecker
                     formrc = 0;
                     break;
                 default:
+                    if (Settings.Default.UpgradeRequired)
+                    {
+                        Settings.Default.Upgrade();
+                        Settings.Default.UpgradeRequired = false;
+                        Settings.Default.Save();
+                    }
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
                     Application.Run(new OptionsForm());
@@ -75,6 +81,7 @@ namespace RimworldConflictChecker
                     modfolder1 = (string)Settings.Default["ModFolder1"];
                     modfolder2 = (string)Settings.Default["ModFolder2"];
                     formrc = OptionsForm.ReturnValue1;
+                    //Settings.Default.Upgrade();
                     break;
             }
             Console.WriteLine("Rimworld Conflict Checker Running checks...");

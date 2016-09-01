@@ -121,4 +121,13 @@
   <data name="BuildDate" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\BuildDate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="InvalidFolder" xml:space="preserve">
+    <value>Not Valid</value>
+  </data>
+  <data name="MissingFolder" xml:space="preserve">
+    <value>Missing</value>
+  </data>
 </root>

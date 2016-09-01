@@ -45,6 +45,10 @@
             this.btn_ModFolder2 = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.txtb_RimworldFolder_status = new System.Windows.Forms.Label();
+            this.txtb_ModFolder1_status = new System.Windows.Forms.Label();
+            this.txtb_ModFolder2_status = new System.Windows.Forms.Label();
+            this.btn_reset = new System.Windows.Forms.Button();
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -73,6 +77,10 @@
             tableLayoutPanel1.Controls.Add(this.btn_ModFolder2, 1, 9);
             tableLayoutPanel1.Controls.Add(this.label5, 0, 11);
             tableLayoutPanel1.Controls.Add(this.label6, 0, 12);
+            tableLayoutPanel1.Controls.Add(this.txtb_RimworldFolder_status, 0, 2);
+            tableLayoutPanel1.Controls.Add(this.txtb_ModFolder1_status, 0, 6);
+            tableLayoutPanel1.Controls.Add(this.txtb_ModFolder2_status, 0, 10);
+            tableLayoutPanel1.Controls.Add(this.btn_reset, 1, 12);
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 14;
@@ -116,6 +124,7 @@
             // 
             // btn_RimworldFolder
             // 
+            this.btn_RimworldFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.btn_RimworldFolder.Location = new System.Drawing.Point(477, 28);
             this.btn_RimworldFolder.Name = "btn_RimworldFolder";
             this.btn_RimworldFolder.Size = new System.Drawing.Size(45, 19);
@@ -143,6 +152,7 @@
             this.txtb_ModFolder1.Size = new System.Drawing.Size(465, 20);
             this.txtb_ModFolder1.TabIndex = 5;
             this.txtb_ModFolder1.TabStop = false;
+            this.txtb_ModFolder1.TextChanged += new System.EventHandler(this.txtb_ModFolder1_TextChanged);
             // 
             // label2
             // 
@@ -151,9 +161,9 @@
             this.label2.Location = new System.Drawing.Point(13, 106);
             this.label2.Margin = new System.Windows.Forms.Padding(13, 0, 3, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(267, 13);
+            this.label2.Size = new System.Drawing.Size(272, 13);
             this.label2.TabIndex = 3;
-            this.label2.Text = "The Mod subfolder off where RimWorldWin.exe resides";
+            this.label2.Text = "The Mods subfolder off where RimWorldWin.exe resides";
             // 
             // btn_ModFolder1
             // 
@@ -183,9 +193,9 @@
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(3, 181);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(287, 13);
+            this.label3.Size = new System.Drawing.Size(314, 13);
             this.label3.TabIndex = 7;
-            this.label3.Text = "RimWorld Mod Folder 2: (needed for steam users)";
+            this.label3.Text = "RimWorld Mod Folder 2: (only needed for steam users)";
             // 
             // btn_quit
             // 
@@ -194,7 +204,7 @@
             this.btn_quit.Location = new System.Drawing.Point(3, 533);
             this.btn_quit.Name = "btn_quit";
             this.btn_quit.Size = new System.Drawing.Size(75, 23);
-            this.btn_quit.TabIndex = 4;
+            this.btn_quit.TabIndex = 5;
             this.btn_quit.Text = "Quit";
             this.btn_quit.UseVisualStyleBackColor = true;
             this.btn_quit.Click += new System.EventHandler(this.btn_quit_Click);
@@ -205,7 +215,7 @@
             this.btn_Ok.Location = new System.Drawing.Point(478, 533);
             this.btn_Ok.Name = "btn_Ok";
             this.btn_Ok.Size = new System.Drawing.Size(75, 23);
-            this.btn_Ok.TabIndex = 5;
+            this.btn_Ok.TabIndex = 6;
             this.btn_Ok.Text = "Ok";
             this.btn_Ok.UseVisualStyleBackColor = true;
             this.btn_Ok.Click += new System.EventHandler(this.btn_Ok_Click);
@@ -218,6 +228,7 @@
             this.txtb_ModFolder2.Size = new System.Drawing.Size(465, 20);
             this.txtb_ModFolder2.TabIndex = 9;
             this.txtb_ModFolder2.TabStop = false;
+            this.txtb_ModFolder2.TextChanged += new System.EventHandler(this.txtb_ModFolder2_TextChanged_1);
             // 
             // btn_ModFolder2
             // 
@@ -246,9 +257,46 @@
             this.label6.Location = new System.Drawing.Point(3, 303);
             this.label6.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(467, 195);
+            this.label6.Size = new System.Drawing.Size(457, 221);
             this.label6.TabIndex = 14;
             this.label6.Text = resources.GetString("label6.Text");
+            // 
+            // txtb_RimworldFolder_status
+            // 
+            this.txtb_RimworldFolder_status.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtb_RimworldFolder_status.AutoSize = true;
+            this.txtb_RimworldFolder_status.Location = new System.Drawing.Point(471, 50);
+            this.txtb_RimworldFolder_status.Name = "txtb_RimworldFolder_status";
+            this.txtb_RimworldFolder_status.Size = new System.Drawing.Size(0, 13);
+            this.txtb_RimworldFolder_status.TabIndex = 15;
+            // 
+            // txtb_ModFolder1_status
+            // 
+            this.txtb_ModFolder1_status.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtb_ModFolder1_status.AutoSize = true;
+            this.txtb_ModFolder1_status.Location = new System.Drawing.Point(471, 150);
+            this.txtb_ModFolder1_status.Name = "txtb_ModFolder1_status";
+            this.txtb_ModFolder1_status.Size = new System.Drawing.Size(0, 13);
+            this.txtb_ModFolder1_status.TabIndex = 16;
+            // 
+            // txtb_ModFolder2_status
+            // 
+            this.txtb_ModFolder2_status.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtb_ModFolder2_status.AutoSize = true;
+            this.txtb_ModFolder2_status.Location = new System.Drawing.Point(471, 250);
+            this.txtb_ModFolder2_status.Name = "txtb_ModFolder2_status";
+            this.txtb_ModFolder2_status.Size = new System.Drawing.Size(0, 13);
+            this.txtb_ModFolder2_status.TabIndex = 17;
+            // 
+            // btn_reset
+            // 
+            this.btn_reset.Location = new System.Drawing.Point(477, 303);
+            this.btn_reset.Name = "btn_reset";
+            this.btn_reset.Size = new System.Drawing.Size(75, 23);
+            this.btn_reset.TabIndex = 4;
+            this.btn_reset.Text = "Reset";
+            this.btn_reset.UseVisualStyleBackColor = true;
+            this.btn_reset.Click += new System.EventHandler(this.btn_reset_Click);
             // 
             // OptionsForm
             // 
@@ -288,5 +336,9 @@
         private System.Windows.Forms.Button btn_quit;
         private System.Windows.Forms.Button btn_Ok;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label txtb_RimworldFolder_status;
+        private System.Windows.Forms.Label txtb_ModFolder1_status;
+        private System.Windows.Forms.Label txtb_ModFolder2_status;
+        private System.Windows.Forms.Button btn_reset;
     }
 }

@@ -29,7 +29,8 @@ namespace RimworldConflictChecker
             //TODO: check if CCL is compat with RimWorld. CCL: About.xml     <description>v0.14.3 <CRLF> Compatible with RimWorld builds: <CRLF> 1220, 1230, 1232, 1234, 1238, 1241, 1249
             //TODO: check XML inheritance: http://ludeon.com/forums/index.php?topic=19499.0
             //TODO: set core to rimWorldVersion
-            //TODO: fix console output for release version
+            //TODO: --verbose to split out the xml list?
+            //TODO: report issues when using UI
 
             string[] checksimplemented =
             {
@@ -95,6 +96,7 @@ namespace RimworldConflictChecker
                 Logger.Instance.Log("Folder 1 : Not able to find RimWorldWin.exe in : " + folders[0]);
                 Console.WriteLine("Not able to find RimWorldWin.exe in : " + folders[0]);
                 Logger.Instance.Log("Quitting.");
+                Console.WriteLine("Quitting.");
                 return;
             }
 
@@ -107,6 +109,7 @@ namespace RimworldConflictChecker
                 Logger.Instance.Log("Folder 2 : Not able to find subfolder Core in : " + folders[1]);
                 Console.WriteLine("Not able to find subfolder Core in : " + folders[1]);
                 Logger.Instance.Log("Quitting.");
+                Console.WriteLine("Quitting.");
                 return;
             }
 
@@ -121,13 +124,14 @@ namespace RimworldConflictChecker
                     Logger.Instance.Log("Folder 3 : Not able to find mod folder : " + folders[2]);
                     Console.WriteLine("Not able to find mod folder: " + folders[2]);
                     Logger.Instance.Log("Quitting.");
+                    Console.WriteLine("Quitting.");
                     return;
                 }
             }
 
             //need to create modfolders, a list of only the mod folders
             var modfolders = new string[folders.Length - 1]; //nice, variable length
-            modfolders[0] = folders[1]; //then i only use 2 elements
+            modfolders[0] = folders[1]; //then I only use 2 elements
             modfolders[1] = folders[2]; //fantastic programming
             //Array.Copy(folders, 1, modfolders, 2, folders.Length - 1);
 
@@ -143,7 +147,7 @@ namespace RimworldConflictChecker
             //folders = modfolders;
             //modfolders = folders.Skip(1).ToArray();
             //modfolders is now just the mod folders
-            int i = 1;
+            //int i = 1;
             Logger.Instance.Log("");
             Logger.Instance.Log("Adding subfolders of each Mod folder to the list of folders to search");
             foreach (var folder in modfolders)
@@ -170,7 +174,7 @@ namespace RimworldConflictChecker
                         }
                     }
                 }
-                i++;
+                //i++;
             }
             //dirs is now a DirectoryInfo list of all folders
 
@@ -427,7 +431,7 @@ namespace RimworldConflictChecker
                 Logger.Instance.Log($"{totalConflicts} misplaced DLLs found.");
                 
                 Logger.Instance.NewSection("Rimworld Conflict Checker Finished");
-                Logger.Instance.Log("Results of the checks are written to file RCC.txt in this folder.");
+                //Logger.Instance.Log("Results of the checks are written to file RCC.txt in this folder.");
                 Console.WriteLine("Results of the checks are written to file RCC.txt in this folder.");
                 Console.WriteLine("Rimworld Conflict Checker Complete");
             }
@@ -440,7 +444,6 @@ namespace RimworldConflictChecker
                 Logger.Instance.Log(pathEx.Message);
             }
         }
-
 
 
         public string[] LoadModsConfigXml()
@@ -467,7 +470,7 @@ namespace RimworldConflictChecker
             }
             else
             {
-                Logger.Instance.Log("ModsConfig.xm NOT Found");
+                Logger.Instance.Log("ModsConfig.xml NOT Found");
             }
             return Activemods;
         }
