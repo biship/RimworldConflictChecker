@@ -18,16 +18,18 @@ namespace RimworldConflictChecker
             //_buffer = new StringBuilder();
             try
             {
-                _buffer = new StreamWriter(File.Open(Outputfilename, FileMode.Create, FileAccess.Write, FileShare.None));
+                //_buffer = new StreamWriter(File.Open(Outputfilename, FileMode.Create, FileAccess.Write, FileShare.None));
+                _buffer = new StreamWriter(File.Open(Outputfilename, FileMode.Create, FileAccess.Write, FileShare.Read));
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Unable to create log file " + Outputfilename);
+                Console.WriteLine("Unable to create log file " + Outputfilename + " - " + ex.Message);
             }
         }
 
         public static Logger Instance
-        {
+        {   
+            //called on every logger.instance
             get
             {
                 if (_instance == null)
@@ -52,7 +54,7 @@ namespace RimworldConflictChecker
                 // do the actual work
                 _buffer.WriteLine(message);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // very simplified exception logic... Might want to expand this
                 if (_buffer != null)

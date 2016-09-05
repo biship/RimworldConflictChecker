@@ -43,16 +43,16 @@ namespace RimworldConflictChecker
             //DialogResult result = chooseDialog.ShowDialog();
             //last_txtb_RimworldFolder = chooseDialog.SelectedPath; //move down?
 
-            OpenFileDialog chooseDialog = new OpenFileDialog();
+            var chooseDialog = new OpenFileDialog();
             //chooseDialog.FileName = "RimWorldWin.exe";
             chooseDialog.Filter = "RimWorld|RimWorldWin.exe";
             chooseDialog.CheckFileExists = true;
             chooseDialog.CheckPathExists = true;
-            chooseDialog.InitialDirectory = last_txtb_RimworldFolder;
-            chooseDialog.CustomPlaces.Add(last_txtb_RimworldFolder); //adds to the dropdown
-            chooseDialog.CustomPlaces.Add(txtb_RimworldFolder.Text); //adds to the dropdown
+            chooseDialog.InitialDirectory = last_txtb_RimworldFolder ?? "C:\\";
+            chooseDialog.CustomPlaces.Add(last_txtb_RimworldFolder ?? "C:\\"); //adds to the dropdown
+            chooseDialog.CustomPlaces.Add(txtb_RimworldFolder.Text ?? "C:\\"); //adds to the dropdown
             chooseDialog.Title = "Please select RimWorldWin.exe";
-            DialogResult result = chooseDialog.ShowDialog();
+            var result = chooseDialog.ShowDialog();
             //OK = Filename = full path & RimWorldWin.exe
             //Cancel = Filename = RimWorldWin.exe
 
@@ -90,12 +90,15 @@ namespace RimworldConflictChecker
 
         private void btn_ModFolder1_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog chooseDialog = new FolderBrowserDialog();
+            var chooseDialog = new FolderBrowserDialog();
             chooseDialog.RootFolder = Environment.SpecialFolder.MyComputer; //start browsing here
             chooseDialog.SelectedPath = last_txtb_ModFolder1;
             chooseDialog.Description = "Please select the folder that contains the RimWorld Core Mods folder";
-            DialogResult result = chooseDialog.ShowDialog();
-            last_txtb_ModFolder1 = chooseDialog.SelectedPath; //move down?
+            var result = chooseDialog.ShowDialog();
+            if (chooseDialog.SelectedPath != null)
+            {
+                last_txtb_ModFolder1 = chooseDialog.SelectedPath; //move down?
+            }
 
             if (result == DialogResult.OK)
             {
@@ -113,12 +116,15 @@ namespace RimworldConflictChecker
 
         private void btn_ModFolder2_Click(object sender, EventArgs e)
         {
-            FolderBrowserDialog chooseDialog = new FolderBrowserDialog();
+            var chooseDialog = new FolderBrowserDialog();
             chooseDialog.RootFolder = Environment.SpecialFolder.MyComputer;
             chooseDialog.SelectedPath = last_txtb_ModFolder2;
             chooseDialog.Description = "Please select the folder that contains the RimWorld steam workshop mod folder\n";
-            DialogResult result = chooseDialog.ShowDialog();
-            last_txtb_ModFolder2 = chooseDialog.SelectedPath; //move down?
+            var result = chooseDialog.ShowDialog();
+            if (chooseDialog.SelectedPath != null)
+            {
+                last_txtb_ModFolder2 = chooseDialog.SelectedPath; //move down?
+            }
 
             if (result == DialogResult.OK)
             {
@@ -253,7 +259,7 @@ namespace RimworldConflictChecker
             }
             if (!string.IsNullOrEmpty(txtb_ModFolder1.Text))
             {
-                if ((Osio.FileOrDirectoryExists(txtb_ModFolder1.Text)) && (txtb_ModFolder1.Text.EndsWith("\\Mods")))
+                if ((Osio.FileOrDirectoryExists(txtb_ModFolder1.Text)) && (txtb_ModFolder1.Text.EndsWith("\\Mods", StringComparison.OrdinalIgnoreCase)))
                 {
                     txtb_ModFolder1_status.Text = Resources.OK;
                     txtb_ModFolder1_status.ForeColor = Color.Green;
@@ -271,7 +277,7 @@ namespace RimworldConflictChecker
             }
             if (!string.IsNullOrEmpty(txtb_ModFolder2.Text))
             {
-                if ((Osio.FileOrDirectoryExists(txtb_ModFolder2.Text)) && (txtb_ModFolder2.Text.EndsWith("\\294100")))
+                if ((Osio.FileOrDirectoryExists(txtb_ModFolder2.Text)) && (txtb_ModFolder2.Text.EndsWith("\\294100",StringComparison.OrdinalIgnoreCase)))
                 {
                     txtb_ModFolder2_status.Text = Resources.OK;
                     txtb_ModFolder2_status.ForeColor = Color.Green;

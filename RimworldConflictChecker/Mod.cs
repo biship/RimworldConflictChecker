@@ -337,7 +337,7 @@ namespace RimworldConflictChecker
 
             var totalConflicts = 0;
             //for the same mod, it checks all files against all files.
-            foreach (var xmlFile in XmlFiles)
+            foreach (var xmlFile in mod.XmlFiles) //changed from XmlFiles to mod.XmlFiles
             {
                 foreach (var otherXmlFile in otherMod.XmlFiles)
                 {
@@ -372,7 +372,7 @@ namespace RimworldConflictChecker
         public int CheckForMisplacedDlls(Mod mod)
         {
             var totalConflicts = 0;
-            foreach (var xmlFile in XmlFiles)
+            foreach (var xmlFile in mod.XmlFiles) //changed from XmlFiles to mod.XmlFiles
             {
                 if (xmlFile.XmlFileInfo.Directory != null && ((xmlFile.XmlFileInfo.Name.Contains(".dll")) && (!xmlFile.XmlFileInfo.Directory.Name.Equals("Assemblies"))))
                 {

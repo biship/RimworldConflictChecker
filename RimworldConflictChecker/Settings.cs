@@ -11,9 +11,9 @@
         public Settings() {
             // // To add event handlers for saving and changing settings, uncomment the lines below:
             //
-            //this.SettingChanging += this.SettingChangingEventHandler;
+            SettingChanging += this.SettingChangingEventHandler;
             //
-            //this.SettingsSaving += this.SettingsSavingEventHandler;
+            SettingsSaving += this.SettingsSavingEventHandler;
             //
         }
         

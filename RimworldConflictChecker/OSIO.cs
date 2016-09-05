@@ -2,7 +2,7 @@
 
 namespace RimworldConflictChecker
 {
-    internal class Osio
+    internal static class Osio
     {
         internal static bool FileOrDirectoryExists(string name)
         {

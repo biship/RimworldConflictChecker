@@ -9,7 +9,7 @@ namespace RimworldConflictChecker
     public class RimworldXmlLoader
     {
         public static string[] Activemods;
-        public List<Mod> Mods { get; set; }
+        public static List<Mod> Mods { get; set; }
 
         //public List<DirectoryInfo> dirs { get; set; }
 
@@ -71,9 +71,11 @@ namespace RimworldConflictChecker
             Logger.Instance.Log("Results of the checks are written to file RCC.txt in this folder.");
             Logger.Instance.Log("");
             Logger.Instance.Log("Currently implemented checks:");
-            checksimplemented.ToList().ForEach(j => Logger.Instance.Log(j));
+            //checksimplemented.ToList().ForEach(j => Logger.Instance.Log(j));
+            checksimplemented.ToList().ForEach(Logger.Instance.Log);
             Logger.Instance.Log("Checks to be possibly added in the future:");
-            futurechecks.ToList().ForEach(j => Logger.Instance.Log(j));
+            //futurechecks.ToList().ForEach(j => Logger.Instance.Log(j));
+            futurechecks.ToList().ForEach(Logger.Instance.Log);
 
             if (Program.formrc != 0)
             {
@@ -86,6 +88,9 @@ namespace RimworldConflictChecker
 
             //parse folders
             Logger.Instance.NewSection("Folders to process:");
+
+            //testing throwing exception
+            //throw new ArgumentException("ha-ha");
 
             if (Osio.FileOrDirectoryExists(folders[0] + "\\RimWorldWin.exe"))
             {
@@ -180,11 +185,11 @@ namespace RimworldConflictChecker
 
             //get game version
             Logger.Instance.NewSection("Getting RimWorld game version");
-            Version rimWorldVersion = Version.Parse("0.0.0");
+            var rimWorldVersion = Version.Parse("0.0.0");
             if (Osio.FileOrDirectoryExists(folders[0] + "\\Version.txt"))
             {
                 string line;
-                StreamReader file = new StreamReader(folders[0] + "\\Version.txt");
+                var file = new StreamReader(folders[0] + "\\Version.txt");
                 while ((line = file.ReadLine()) != null)
                 {
                     var firstline = line.Split(' ');
@@ -218,7 +223,7 @@ namespace RimworldConflictChecker
                 {
                     Mods.Add(new Mod(info));
                 }
-                
+
                 Activemods = LoadModsConfigXml(); //contains dirname, not modname.
                 Logger.Instance.NewSection("Mods Found:");
 
@@ -252,7 +257,6 @@ namespace RimworldConflictChecker
                 }
                 Logger.Instance.Log($"{dirs.Count} mods found (including RimWorlds Core folder)");
 
-                //
                 Logger.Instance.NewSection("Checking Mod versions against RimWorld Game Version.");
                 foreach (var mod in sortedModsConfig)
                 {
@@ -429,11 +433,20 @@ namespace RimworldConflictChecker
                     totalConflicts += mod.CheckForMisplacedDlls(mod);
                 }
                 Logger.Instance.Log($"{totalConflicts} misplaced DLLs found.");
-                
+
+                Logger.Instance.NewSection("Rimworld Conflict Checker creating forms with results.");
+                Console.WriteLine("Rimworld Conflict Checker creating forms with results.");
+
+                runWPF();
+
+                //testing throwing exception
+                //throw new ArgumentException("ha-ha");
+
                 Logger.Instance.NewSection("Rimworld Conflict Checker Finished");
                 //Logger.Instance.Log("Results of the checks are written to file RCC.txt in this folder.");
                 Console.WriteLine("Results of the checks are written to file RCC.txt in this folder.");
                 Console.WriteLine("Rimworld Conflict Checker Complete");
+
             }
             catch (UnauthorizedAccessException uaEx)
             {
@@ -475,6 +488,18 @@ namespace RimworldConflictChecker
             return Activemods;
         }
 
+        // All WPF applications should execute on a single-threaded apartment (STA) thread
+        [STAThread]
+        public void runWPF()
+        {
 
+            //Windows forms:
+            //Application.Run(new ResultsForm());
+            //System.Windows.Forms.Application.Run(new ResultsForm());
+
+            //WPF
+            var form2 = new System.Windows.Application();
+            form2.Run(new ResultsWPF());
+        }
     }
 }

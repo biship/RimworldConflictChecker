@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -18,6 +19,11 @@ namespace RimworldConflictChecker
 
             // Uncomment the following after testing to see that NBug is working as configured
             NBug.Settings.ReleaseMode = true;
+
+            var list = new List<NBug.Core.Util.Storage.FileMask>();
+            list.Add("RCC.txt");
+            NBug.Settings.AdditionalReportFiles = list;
+
             //NBug.Exceptions.Dispatch();
 
             // Sample NBug configuration for console applications 
@@ -89,7 +95,7 @@ namespace RimworldConflictChecker
             //testing throwing exception
             //throw new ArgumentException("ha-ha");
 
-            new RimworldXmlLoader(rimworldfolder, modfolder1, modfolder2);
+            var _nothing = new RimworldXmlLoader(rimworldfolder, modfolder1, modfolder2);
             Logger.Instance.WriteToFile();
             return 0;
         }
