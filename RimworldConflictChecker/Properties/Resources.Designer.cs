@@ -61,7 +61,7 @@ namespace RimworldConflictChecker.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Thu 09/01/2016 16:57:03.97 
+        ///   Looks up a localized string similar to Fri 09/09/2016  9:50:53.82 
         ///.
         /// </summary>
         public static string BuildDate {

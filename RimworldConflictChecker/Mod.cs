@@ -25,6 +25,9 @@ namespace RimworldConflictChecker
             //ModName
             //ModTargetVersion
             //ModDescription
+            Checked = false;
+            CoreChecked = false;
+            DllChecked = false;
             ModEnabled = false;
             ModRank = 0;
             CoreOverrights = 0;
@@ -41,7 +44,7 @@ namespace RimworldConflictChecker
         public List<Mod> ConflictedDlls { get; set; } //list of other conflicting DLLs's
         public bool Checked { get; set; } //set once its XML's have been completly compared
         public bool CoreChecked { get; set; } //nameDefs checked vs Core?
-        public int CoreOverrights { get; set; } 
+        public int CoreOverrights { get; set; }
         public bool DllChecked { get; set; } //set once its DLL's have been completly compared
         public bool ModEnabled { get; set; } //is the mod in ModsConfig.xml
         public int ModRank { get; set; } //mods position in MosdConfig.xml
@@ -98,7 +101,7 @@ namespace RimworldConflictChecker
             return totalConflicts;
         }
 
-        public ModDetails GetAboutDetails(List<XmlFile> xmlFiles)
+        public static ModDetails GetAboutDetails(List<XmlFile> xmlFiles)
         {
             var aboutXDoc = new ModDetails("", Version.Parse("0.0.0"), "");
             //var aboutXDoc = new ModDetails();
@@ -138,7 +141,7 @@ namespace RimworldConflictChecker
                         }
                         catch (ArgumentException e)
                         {
-                            Logger.Instance.LogError("Parsing About.xml", e.GetType().Name, e.Message, e.StackTrace);
+                            Logger.Instance.LogError("Parsing About.xml", e);
                         }
                     }
                 }
@@ -146,7 +149,7 @@ namespace RimworldConflictChecker
             return aboutXDoc;
         }
 
-        private int CheckForFileConflicts(XmlFile xmlFile, XmlFile otherXmlFile, Mod mod, Mod otherMod)
+        private static int CheckForFileConflicts(XmlFile xmlFile, XmlFile otherXmlFile, Mod mod, Mod otherMod)
         {
             var totalConflicts = 0;
 
@@ -213,64 +216,67 @@ namespace RimworldConflictChecker
                                         {
                                             othermodenabled = "(Not Enabled)";
                                         }
-                                        var file = new StreamReader(xmlFile.XmlFileInfo.FullName);
-                                        var thisculture = CultureInfo.CurrentCulture;
-                                        while ((line = file.ReadLine()) != null)
+                                        using (var file = new StreamReader(xmlFile.XmlFileInfo.FullName))
                                         {
-                                            if (
-                                                thisculture.CompareInfo.IndexOf(line,
-                                                    "<defName>" + defNameValue + "</defName>",
-                                                    CompareOptions.IgnoreCase) >= 0)
+                                            var thisculture = CultureInfo.CurrentCulture;
+                                            while ((line = file.ReadLine()) != null)
                                             {
-                                                break;
+                                                if (
+                                                    thisculture.CompareInfo.IndexOf(line,
+                                                        "<defName>" + defNameValue + "</defName>",
+                                                        CompareOptions.IgnoreCase) >= 0)
+                                                {
+                                                    break;
+                                                }
+                                                linenum++;
                                             }
-                                            linenum++;
-                                        }
-                                        file.Close();
-                                        var otherfile =
-                                            new StreamReader(otherXmlFile.XmlFileInfo.FullName);
-                                        while ((otherline = otherfile.ReadLine()) != null)
-                                        {
-                                            if (
-                                                thisculture.CompareInfo.IndexOf(otherline,
-                                                    "<defName>" + defNameValue + "</defName>", CompareOptions.IgnoreCase) >=
-                                                0)
+                                            file.Close();
+                                            using (var otherfile = new StreamReader(otherXmlFile.XmlFileInfo.FullName))
                                             {
-                                                break;
+                                                while ((otherline = otherfile.ReadLine()) != null)
+                                                {
+                                                    if (
+                                                        thisculture.CompareInfo.IndexOf(otherline,
+                                                            "<defName>" + defNameValue + "</defName>", CompareOptions.IgnoreCase) >=
+                                                        0)
+                                                    {
+                                                        break;
+                                                    }
+                                                    otherlinenum++;
+                                                }
+                                                otherfile.Close();
+                                                //foreach (var match in File.ReadLines(@xmlFile.XmlFileInfo.FullName)
+                                                //    .Select((text, index) => new { text, lineNumber = index + 1 })
+                                                //    .Where(x => x.text.Contains(defNameValue)))
+                                                //{
+                                                //    Console.WriteLine("{0}: {1}", match.lineNumber, match.text);
+                                                //}
+                                                //var match = File.ReadLines(@xmlFile.XmlFileInfo.FullName).Select((text, index) => new { text, lineNumber = index + 1 }).Where(x => x.text.Contains(defNameValue));
+                                                //SimpleLogger.Instance.DumpConflict(modposition, xmlsize, 0, rootValue, thingDefNameValue, defNameValue, xmlFile.XmlFileInfo.FullName);
+                                                //SimpleLogger.Instance.DumpConflict(othermodposition, otherXmlsize, 0, otherRootValue, otherThingDefNameValue, defNameValue, otherXmlFile.XmlFileInfo.FullName);
+                                                if (modposition < othermodposition)
+                                                {
+                                                    //TODO:fix dirname
+                                                    //Logger.Instance.Log("Conflicting Mods: " + DirName + " " + modenabled + " &  " + otherMod.DirName + " " + othermodenabled);
+                                                    Logger.Instance.Log("Conflicting Mods: " + mod.ModXmlDetails.ModName + " " + modenabled + " &  " + otherMod.ModXmlDetails.ModName + " " + othermodenabled);
+                                                    Logger.Instance.Log(xmlFile.XmlFileInfo.FullName);
+                                                    Logger.Instance.Log(otherXmlFile.XmlFileInfo.FullName);
+                                                    Logger.Instance.DumpConflict(mod.ModXmlDetails.ModName, modposition, xmlsize, linenum, rootValue, thingDefNameValue, defNameValue);
+                                                    Logger.Instance.DumpConflict(otherMod.ModXmlDetails.ModName, othermodposition, otherXmlsize, otherlinenum, otherRootValue, otherThingDefNameValue, defNameValue);
+                                                    Logger.Instance.Log("");
+                                                }
+                                                else
+                                                {
+                                                    Logger.Instance.Log("Conflicting Mods: " + otherMod.ModXmlDetails.ModName + " " + othermodenabled + "  &  " + mod.ModXmlDetails.ModName + " " + modenabled);
+                                                    Logger.Instance.Log(otherXmlFile.XmlFileInfo.FullName);
+                                                    Logger.Instance.Log(xmlFile.XmlFileInfo.FullName);
+                                                    Logger.Instance.DumpConflict(otherMod.ModXmlDetails.ModName, othermodposition, otherXmlsize, otherlinenum, otherRootValue, otherThingDefNameValue, defNameValue);
+                                                    Logger.Instance.DumpConflict(mod.ModXmlDetails.ModName, modposition, xmlsize, linenum, rootValue, thingDefNameValue, defNameValue);
+                                                    Logger.Instance.Log("");
+                                                }
+                                                totalConflicts++;
                                             }
-                                            otherlinenum++;
                                         }
-                                        otherfile.Close();
-                                        //foreach (var match in File.ReadLines(@xmlFile.XmlFileInfo.FullName)
-                                        //    .Select((text, index) => new { text, lineNumber = index + 1 })
-                                        //    .Where(x => x.text.Contains(defNameValue)))
-                                        //{
-                                        //    Console.WriteLine("{0}: {1}", match.lineNumber, match.text);
-                                        //}
-                                        //var match = File.ReadLines(@xmlFile.XmlFileInfo.FullName).Select((text, index) => new { text, lineNumber = index + 1 }).Where(x => x.text.Contains(defNameValue));
-                                        //SimpleLogger.Instance.DumpConflict(modposition, xmlsize, 0, rootValue, thingDefNameValue, defNameValue, xmlFile.XmlFileInfo.FullName);
-                                        //SimpleLogger.Instance.DumpConflict(othermodposition, otherXmlsize, 0, otherRootValue, otherThingDefNameValue, defNameValue, otherXmlFile.XmlFileInfo.FullName);
-                                        if (modposition < othermodposition)
-                                        {
-                                            //TODO:fix dirname
-                                            //Logger.Instance.Log("Conflicting Mods: " + DirName + " " + modenabled + " &  " + otherMod.DirName + " " + othermodenabled);
-                                            Logger.Instance.Log("Conflicting Mods: " + mod.ModXmlDetails.ModName + " " + modenabled + " &  " + otherMod.ModXmlDetails.ModName + " " + othermodenabled);
-                                            Logger.Instance.Log(xmlFile.XmlFileInfo.FullName);
-                                            Logger.Instance.Log(otherXmlFile.XmlFileInfo.FullName);
-                                            Logger.Instance.DumpConflict(mod.ModXmlDetails.ModName, modposition, xmlsize, linenum, rootValue, thingDefNameValue, defNameValue);
-                                            Logger.Instance.DumpConflict(otherMod.ModXmlDetails.ModName, othermodposition, otherXmlsize, otherlinenum, otherRootValue, otherThingDefNameValue, defNameValue);
-                                            Logger.Instance.Log("");
-                                        }
-                                        else
-                                        {
-                                            Logger.Instance.Log("Conflicting Mods: " + otherMod.ModXmlDetails.ModName + " " + othermodenabled + "  &  " + mod.ModXmlDetails.ModName + " " + modenabled);
-                                            Logger.Instance.Log(otherXmlFile.XmlFileInfo.FullName);
-                                            Logger.Instance.Log(xmlFile.XmlFileInfo.FullName);
-                                            Logger.Instance.DumpConflict(otherMod.ModXmlDetails.ModName, othermodposition, otherXmlsize, otherlinenum, otherRootValue, otherThingDefNameValue, defNameValue);
-                                            Logger.Instance.DumpConflict(mod.ModXmlDetails.ModName, modposition, xmlsize, linenum, rootValue, thingDefNameValue, defNameValue);
-                                            Logger.Instance.Log("");
-                                        }
-                                        totalConflicts++;
                                     }
                                 }
                             }
@@ -354,12 +360,12 @@ namespace RimworldConflictChecker
             return totalConflicts;
         }
 
-        private int CheckForDupDllFiles(XmlFile xmlFile, XmlFile otherXmlFile)
+        private static int CheckForDupDllFiles(XmlFile xmlFile, XmlFile otherXmlFile)
         {
             var totalConflicts = 0;
 
             //if ((xmlFile.XmlFileInfo.Name == otherXmlFile.XmlFileInfo.Name) && (xmlFile.XmlFileInfo.Extension == ".dll")) //slow
-            if (((xmlFile.XmlFileInfo.Name == otherXmlFile.XmlFileInfo.Name) && xmlFile.XmlFileInfo.Name.Contains(".dll")) && (xmlFile.XmlFileInfo.FullName != otherXmlFile.XmlFileInfo.FullName) 
+            if (((xmlFile.XmlFileInfo.Name == otherXmlFile.XmlFileInfo.Name) && xmlFile.XmlFileInfo.Name.Contains(".dll")) && (xmlFile.XmlFileInfo.FullName != otherXmlFile.XmlFileInfo.FullName)
                 && ((xmlFile.XmlFileInfo.FullName.Contains("\\Assemblies\\")) && (otherXmlFile.XmlFileInfo.FullName.Contains("\\Assemblies\\"))))
             {
                 Logger.Instance.Log(xmlFile.XmlFileInfo.FullName);
@@ -369,7 +375,7 @@ namespace RimworldConflictChecker
             return totalConflicts;
         }
 
-        public int CheckForMisplacedDlls(Mod mod)
+        public static int CheckForMisplacedDlls(Mod mod)
         {
             var totalConflicts = 0;
             foreach (var xmlFile in mod.XmlFiles) //changed from XmlFiles to mod.XmlFiles

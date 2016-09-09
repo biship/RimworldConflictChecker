@@ -28,14 +28,13 @@ namespace RimworldConflictChecker
         }
 
         public static Logger Instance
-        {   
+        {
             //called on every logger.instance
             get
             {
                 if (_instance == null)
                 {
                     _instance = new Logger();
-                    
                 }
                 return _instance;
             }
@@ -43,7 +42,7 @@ namespace RimworldConflictChecker
 
         public void Log(string message)
         {
-            var now = string.Format("{0:HH:mm:ss} ", DateTime.Now);
+            var now = $"{DateTime.Now:HH:mm:ss} ";
 #if DEBUG
             //when do i ever need this?
             Console.WriteLine(now + message);
@@ -70,24 +69,24 @@ namespace RimworldConflictChecker
             {   //force a write
                 _buffer.Flush();
             }
-            var now = string.Format("{0:MM-dd-yyyy HH:mm:ss} ", DateTime.Now);
+            var now = $"{DateTime.Now:MM-dd-yyyy HH:mm:ss} ";
             Log("===============================================================================================================================" + "\n" + now + "\n" + message + "\n");
         }
 
         public void DumpModHeader(string modname, string folder)
         {
-            Log(string.Format("Mod name: {0,-50} Mod Folder: {1,-120}", modname, folder));
+            Log($"Mod name: {modname,-50} Mod Folder: {folder,-120}");
         }
 
         public void DumpModFiles(string filename)
         {
-            Log(string.Format("\t{0,-50}", filename));
+            Log($"\t{filename,-50}");
         }
 
         public void DumpConflict(string modname, int loadPosition, long size, int line, string tag1, string tag2,
             string tag3)
         {
-            Log(string.Format("{0,-50} Load Position: {1,-3} FileSize: {2,-6} Line: {3,-5} RootElement: {4,-23} Element: {5,-45} defName: {6,-42}", modname, loadPosition, size, line, tag1, tag2, tag3));
+            Log($"{modname,-50} Load Position: {loadPosition,-3} FileSize: {size,-6} Line: {line,-5} RootElement: {tag1,-23} Element: {tag2,-45} defName: {tag3,-42}");
         }
 
         public void DumpMods(bool enabled, int loadPosition, string dirname, Version version, string modname)
@@ -97,16 +96,17 @@ namespace RimworldConflictChecker
             {
                 isenabled = "Enabled";
             }
-            Log(string.Format("{0,-12} Load Position: {1,-4} Version: {2,-10} Directory: {3,-50}  Name: {4,-50}", isenabled, loadPosition, version, dirname, modname));
+            Log($"{isenabled,-12} Load Position: {loadPosition,-4} Version: {version,-10} Directory: {dirname,-50}  Name: {modname,-50}");
         }
 
-        public void LogError(string what, string error, string errormsg, string stacktrace)
+        public void LogError(string what, Exception e)
         {
             Log("***************** ERROR START ***************");
-            Log("Occurred during: " + what);
-            Log("Error: " + error);
-            Log("Error Message: " + errormsg);
-            Log("Stacktrace: " + stacktrace);
+            Log("Occurred during: " + e.Source);
+            Log("Comments: " + what);
+            Log("Error: " + e.GetType().Name);
+            Log("Error Message: " + e.Message);
+            Log("Stacktrace: " + e.StackTrace);
             Log("***************** ERROR FIN *****************");
         }
 

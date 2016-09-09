@@ -13,9 +13,9 @@ namespace RimworldConflictChecker
         [STAThread]
         private static int Main(string[] args)
         {
-            string rimworldfolder = "";
-            string modfolder1 = "";
-            string modfolder2 = "";
+            var rimworldfolder = "";
+            var modfolder1 = "";
+            var modfolder2 = "";
 
             // Uncomment the following after testing to see that NBug is working as configured
             NBug.Settings.ReleaseMode = true;
@@ -26,7 +26,7 @@ namespace RimworldConflictChecker
 
             //NBug.Exceptions.Dispatch();
 
-            // Sample NBug configuration for console applications 
+            // Sample NBug configuration for console applications
             AppDomain.CurrentDomain.UnhandledException += NBug.Handler.UnhandledException;
             TaskScheduler.UnobservedTaskException += NBug.Handler.UnobservedTaskException;
 
@@ -81,7 +81,10 @@ namespace RimworldConflictChecker
                     }
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
-                    Application.Run(new OptionsForm());
+                    using (var optionsForm = new OptionsForm())
+                    {
+                        Application.Run(optionsForm);
+                    }
                     //set folder locations based on settings
                     rimworldfolder = (string)Settings.Default["RimWorldFolder"];
                     modfolder1 = (string)Settings.Default["ModFolder1"];
@@ -90,16 +93,34 @@ namespace RimworldConflictChecker
                     //Settings.Default.Upgrade();
                     break;
             }
-            Console.WriteLine("Rimworld Conflict Checker Running checks...");
+            //testing throwing exception
+            //throw new ArgumentException("ha-ha");
+
+            var mainprogram = new RimworldXmlLoader(rimworldfolder, modfolder1, modfolder2);
+            Logger.Instance.WriteToFile();
+            if (mainprogram.rc == 0)
+            {
+                runWPF();
+            }
 
             //testing throwing exception
             //throw new ArgumentException("ha-ha");
 
-            var _nothing = new RimworldXmlLoader(rimworldfolder, modfolder1, modfolder2);
-            Logger.Instance.WriteToFile();
-            return 0;
+            return mainprogram.rc;
         }
 
-        
+        // All WPF applications should execute on a single-threaded apartment (STA) thread
+        [STAThread]
+        public static void runWPF()
+        {
+
+            //Windows forms:
+            //Application.Run(new ResultsForm());
+            //System.Windows.Forms.Application.Run(new ResultsForm());
+
+            //WPF
+            var form = new System.Windows.Application();
+            form.Run(new ResultsWPF());
+        }
     }
 }

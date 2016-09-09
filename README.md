@@ -1,10 +1,14 @@
-Rimworld Conflict Checker
+RimWorld Conflict Checker
 
-Code: https://github.com/biship/RimworldConflictChecker
+	Code: https://github.com/biship/RimworldConflictChecker
 
-Details: https://ludeon.com/forums/index.php?topic=25305
+	Details: https://ludeon.com/forums/index.php?topic=25305
+	
+	Latest Version: https://github.com/biship/RimworldConflictChecker/releases
 
 Please report any bugs either on GitHub, or the Ludeon forum thread.
+
+	GitHub Issues: https://github.com/biship/RimworldConflictChecker/issues
 
 Usage:
 
@@ -14,20 +18,29 @@ Example:
 
 	RCC.exe "D:\SteamLibrary\steamapps\common\RimWorld" \"D:\SteamLibrary\steamapps\workshop\content\294100"
 
-or just run RCC.exe to get a folder picker & config saver.
-					
+	
+Alternatively, just run RCC.exe to get a folder picker & config saver.
+	
+	
 Results of the checks are written to file RCC.txt in the executable folder.
 
-RCC uses an opensource library Nbug to submit crashes to a Mantis tracker so I can fix any issues.
+RCC uses NBug, an Open ssource library, to submit crashes to a Mantis tracker so I can fix any issues.
 
-https://github.com/soygul/NBug
+	https://github.com/soygul/NBug
 
-Feel free to block it if you do not want the reports sent.
+	Feel free to block it if you do not want the reports sent.
 
-Rimworld Conflict Checker is an expanded and updated version of: https://ludeon.com/forums/index.php?topic=20211
+RCC will connect to GitHub to check for the latest version.
 
-Licensed under GNU GLP 3.0
+	https://github.com/biship/RimworldConflictChecker/releases
 
-http://choosealicense.com/licenses/gpl-3.0
+	Feel free to block that if you do not want to know about updates.
 
-Please include credit.
+RimWorld Conflict Checker is an expanded and updated version of: https://ludeon.com/forums/index.php?topic=20211
+
+	Licensed under GNU GPL 3.0
+
+	http://choosealicense.com/licenses/gpl-3.0
+
+	Please include credit.
+	Please do not distribute or post without my permission.

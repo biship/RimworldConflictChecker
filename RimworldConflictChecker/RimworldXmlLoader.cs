@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using System.Threading.Tasks;
+using Octokit;
 
 namespace RimworldConflictChecker
 {
@@ -11,7 +13,12 @@ namespace RimworldConflictChecker
         public static string[] Activemods;
         public static List<Mod> Mods { get; set; }
 
+        public int rc { get; set; }
         //public List<DirectoryInfo> dirs { get; set; }
+
+        //static GitHubClient client = new GitHubClient(new ProductHeaderValue("RimworldConflictChecker"));
+
+        public static Version latestver { get; set; }
 
         public RimworldXmlLoader(params string[] folders)
         {
@@ -29,8 +36,9 @@ namespace RimworldConflictChecker
             //TODO: check if CCL is compat with RimWorld. CCL: About.xml     <description>v0.14.3 <CRLF> Compatible with RimWorld builds: <CRLF> 1220, 1230, 1232, 1234, 1238, 1241, 1249
             //TODO: check XML inheritance: http://ludeon.com/forums/index.php?topic=19499.0
             //TODO: set core to rimWorldVersion
-            //TODO: --verbose to split out the xml list?
             //TODO: report issues when using UI
+
+            rc = 1; //assume this is gonna crash
 
             string[] checksimplemented =
             {
@@ -55,10 +63,11 @@ namespace RimworldConflictChecker
             //List<DirectoryInfo> dirs = new List<DirectoryInfo>(new DirectoryInfo(folders[0]).EnumerateDirectories());
             var dirs = new List<DirectoryInfo>();
             var baddirs = new List<DirectoryInfo>();
-            string strCompTime = Properties.Resources.BuildDate;
+            var strCompTime = Properties.Resources.BuildDate;
 
             //welcome
             Logger.Instance.NewSection("Rimworld Conflict Checker Started!");
+
             Logger.Instance.Log("Code: https://github.com/biship/RimworldConflictChecker");
             Logger.Instance.Log("Details: https://ludeon.com/forums/index.php?topic=25305");
             Logger.Instance.Log("Please report any bugs either on GitHub, or the Ludeon forum thread.");
@@ -77,22 +86,69 @@ namespace RimworldConflictChecker
             //futurechecks.ToList().ForEach(j => Logger.Instance.Log(j));
             futurechecks.ToList().ForEach(Logger.Instance.Log);
 
+            Logger.Instance.NewSection("Checking GitHub for updates. This will timeout after 10s");
+            Console.WriteLine("Checking GitHub for updates. This will timeout after 10s");
+            latestver = Version.Parse("0.0.0.3"); //well i know i've released a 0.0.0.3
+#if !DEBUG
+            Task.Run(async () => { await GetRepoAsync(); }).Wait(10000);
+#endif
+            var thisversion = System.Reflection.Assembly.GetEntryAssembly().GetName().Version;
+            Logger.Instance.Log("You are running version : " + thisversion);
+            Logger.Instance.Log("Latest version on GitHub: " + latestver);
+
+            if (latestver > thisversion)
+            {
+                Logger.Instance.Log("There is a newer version on GitHub. You can get it here: https://github.com/biship/RimworldConflictChecker/releases");
+                Console.WriteLine("There is a newer version on GitHub. You can get it here: https://github.com/biship/RimworldConflictChecker/releases");
+            }
+
             if (Program.formrc != 0)
             {
                 //esc, X or quit pressed on form. so quit
                 Logger.Instance.Log("");
                 Logger.Instance.Log("Esc, X or close pressed on form, Quitting");
                 Console.WriteLine("Esc, X or close pressed on form, Quitting");
+                rc = 1;
                 return;
             }
 
             //parse folders
-            Logger.Instance.NewSection("Folders to process:");
+            Logger.Instance.NewSection("Parameters and folders:");
 
             //testing throwing exception
             //throw new ArgumentException("ha-ha");
 
-            if (Osio.FileOrDirectoryExists(folders[0] + "\\RimWorldWin.exe"))
+            Logger.Instance.Log("Parameters:");
+            folders.Each((item, n) =>
+            {
+                if (!String.IsNullOrEmpty(item))
+                {
+                    Logger.Instance.Log($"{n+1} : {item}");
+                }
+            });
+
+            Logger.Instance.Log("");
+            Logger.Instance.Log("Folders:");
+
+            folders.Each((item, n) =>
+            {
+                if (!String.IsNullOrEmpty(item))
+                {
+                    if (!Utils.IsFullPath(item))
+                    {
+                        //relative path. Try to fix.
+                        var tempdir = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), item); //relative to fullpath
+                        if (Utils.IsFullPath(tempdir))
+                        {
+                            folders[n] = tempdir;
+                            Logger.Instance.Log($"Changing relative folder {item} to full path {tempdir}");
+                        }
+                    }
+                }
+            });
+            Logger.Instance.Log("");
+
+            if (Utils.FileOrDirectoryExists(folders[0] + "\\RimWorldWin.exe"))
             {
                 Logger.Instance.Log("Folder 1 : Found RimWorldWin.exe in : " + folders[0]);
             }
@@ -102,10 +158,11 @@ namespace RimworldConflictChecker
                 Console.WriteLine("Not able to find RimWorldWin.exe in : " + folders[0]);
                 Logger.Instance.Log("Quitting.");
                 Console.WriteLine("Quitting.");
+                rc = 1;
                 return;
             }
 
-            if (Osio.FileOrDirectoryExists(folders[1] + "\\Core"))
+            if (Utils.FileOrDirectoryExists(folders[1] + "\\Core"))
             {
                 Logger.Instance.Log("Folder 2 : Found Mod folder : " + folders[1]);
             }
@@ -115,12 +172,13 @@ namespace RimworldConflictChecker
                 Console.WriteLine("Not able to find subfolder Core in : " + folders[1]);
                 Logger.Instance.Log("Quitting.");
                 Console.WriteLine("Quitting.");
+                rc = 1;
                 return;
             }
 
             if (!string.IsNullOrEmpty(folders[2]))
             {
-                if (Osio.FileOrDirectoryExists(folders[2]))
+                if (Utils.FileOrDirectoryExists(folders[2]))
                 {
                     Logger.Instance.Log("Folder 3 : Found Mod folder : " + folders[2]);
                 }
@@ -130,9 +188,12 @@ namespace RimworldConflictChecker
                     Console.WriteLine("Not able to find mod folder: " + folders[2]);
                     Logger.Instance.Log("Quitting.");
                     Console.WriteLine("Quitting.");
+                    rc = 1;
                     return;
                 }
             }
+
+            Console.WriteLine("Running checks...");
 
             //need to create modfolders, a list of only the mod folders
             var modfolders = new string[folders.Length - 1]; //nice, variable length
@@ -152,7 +213,6 @@ namespace RimworldConflictChecker
             //folders = modfolders;
             //modfolders = folders.Skip(1).ToArray();
             //modfolders is now just the mod folders
-            //int i = 1;
             Logger.Instance.Log("");
             Logger.Instance.Log("Adding subfolders of each Mod folder to the list of folders to search");
             foreach (var folder in modfolders)
@@ -160,7 +220,7 @@ namespace RimworldConflictChecker
             {
                 if (folder.Length != 0)
                 {
-                    //if (Osio.FileOrDirectoryExists(folder))
+                    //if (Utils.FileOrDirectoryExists(folder)) //checked above...
                     //{
                     //create dirs2 to hold all the subfolders of each mod folder
                     var dirs2 = new List<DirectoryInfo>(new DirectoryInfo(folder).EnumerateDirectories());
@@ -179,14 +239,13 @@ namespace RimworldConflictChecker
                         }
                     }
                 }
-                //i++;
             }
             //dirs is now a DirectoryInfo list of all folders
 
             //get game version
             Logger.Instance.NewSection("Getting RimWorld game version");
             var rimWorldVersion = Version.Parse("0.0.0");
-            if (Osio.FileOrDirectoryExists(folders[0] + "\\Version.txt"))
+            if (Utils.FileOrDirectoryExists(folders[0] + "\\Version.txt"))
             {
                 string line;
                 var file = new StreamReader(folders[0] + "\\Version.txt");
@@ -224,28 +283,36 @@ namespace RimworldConflictChecker
                     Mods.Add(new Mod(info));
                 }
 
+                if (Mods.IsNullOrEmpty())
+                {
+                    Logger.Instance.Log(@"Unable to find any mods! Please check your paths, or report this on GitHub/Ludeon (see RCC.txt)");
+                    Console.WriteLine(@"Unable to find any mods! Please check your paths, or report this on GitHub/Ludeon (see RCC.txt)");
+                    Logger.Instance.Log("Quitting.");
+                    Console.WriteLine("Quitting.");
+                    rc = 1;
+                    return;
+                }
+
                 Activemods = LoadModsConfigXml(); //contains dirname, not modname.
                 Logger.Instance.NewSection("Mods Found:");
-
-                //throw new ArgumentException("ha-ha");
 
                 //set load position
                 //set if enabled
                 //for all mods found in directories
                 foreach (var moddirs in Mods)
                 {
-                    //for all mods found in ModsConfig.xml
-                    foreach (var listedmod in Activemods)
-                    {
-                        if (moddirs.DirName == listedmod)
+                    //if (!Utils.IsNullOrEmpty(Activemods))
+                    if (!Activemods.IsNullOrEmpty())
                         {
-                            moddirs.ModEnabled = true;
-                            var modposition = moddirs.ModRank = Array.IndexOf(Activemods, listedmod) + 1;
-                            if (modposition == 0)
+                        //for all mods found in ModsConfig.xml
+                        foreach (var listedmod in Activemods)
+                        {
+                            if (moddirs.DirName == listedmod)
                             {
-                                modposition = 0; //should never happen
+                                moddirs.ModEnabled = true;
+                                var modposition = moddirs.ModRank = Array.IndexOf(Activemods, listedmod) + 1;
+                                moddirs.ModRank = modposition;
                             }
-                            moddirs.ModRank = modposition;
                         }
                     }
                 }
@@ -384,8 +451,7 @@ namespace RimworldConflictChecker
                 Logger.Instance.NewSection("Checking for duplicate DLL's...");
 
                 totalConflicts = 0;
-                
-                //TODO: add core DLLs (done???)
+
                 //creates dup entries for the same mod (if in diff dir)
                 //are DLL's loaded if out of Assemblies??
                 foreach (var mod in Mods)
@@ -430,14 +496,12 @@ namespace RimworldConflictChecker
 
                 foreach (var mod in Mods)
                 {
-                    totalConflicts += mod.CheckForMisplacedDlls(mod);
+                    totalConflicts += Mod.CheckForMisplacedDlls(mod);
                 }
                 Logger.Instance.Log($"{totalConflicts} misplaced DLLs found.");
 
-                Logger.Instance.NewSection("Rimworld Conflict Checker creating forms with results.");
-                Console.WriteLine("Rimworld Conflict Checker creating forms with results.");
-
-                runWPF();
+                //Logger.Instance.NewSection("Rimworld Conflict Checker creating forms with results.");
+                //Console.WriteLine("Rimworld Conflict Checker creating forms with results.");
 
                 //testing throwing exception
                 //throw new ArgumentException("ha-ha");
@@ -446,7 +510,7 @@ namespace RimworldConflictChecker
                 //Logger.Instance.Log("Results of the checks are written to file RCC.txt in this folder.");
                 Console.WriteLine("Results of the checks are written to file RCC.txt in this folder.");
                 Console.WriteLine("Rimworld Conflict Checker Complete");
-
+                rc = 0; //we got this far!
             }
             catch (UnauthorizedAccessException uaEx)
             {
@@ -459,14 +523,13 @@ namespace RimworldConflictChecker
         }
 
 
-        public string[] LoadModsConfigXml()
+        public static string[] LoadModsConfigXml()
         {
-            var modsconfig = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
-                             @"Low\Ludeon Studios\RimWorld\Config\ModsConfig.xml";
+            var modsconfig = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"Low\Ludeon Studios\RimWorld\Config\ModsConfig.xml";
 
             Logger.Instance.NewSection("ModsConfig.xml: " + modsconfig);
 
-            if (Osio.FileOrDirectoryExists(modsconfig))
+            if (Utils.FileOrDirectoryExists(modsconfig))
             {
                 Logger.Instance.Log("ModsConfig.xml found");
                 var modsconfigxml = XDocument.Load(modsconfig);
@@ -484,22 +547,78 @@ namespace RimworldConflictChecker
             else
             {
                 Logger.Instance.Log("ModsConfig.xml NOT Found");
+                Logger.Instance.Log("Sorry, I'm going to assume no mods are active");
+                Logger.Instance.Log("One day there will be a folder picker for ModsConfig.xml");
+                //TODO: Add a picker for ModsConfig.xml
             }
             return Activemods;
         }
 
-        // All WPF applications should execute on a single-threaded apartment (STA) thread
-        [STAThread]
-        public void runWPF()
+
+
+        static async Task GetRepoAsync()
         {
+            try
+            {
+                //string clientId = "4cd857fbb4403f81c83b";
+                //string clientSecret = "1114a5310ca5e4932ea949d3adab8b3317b49b6a";
+                var client = new GitHubClient(new ProductHeaderValue(nameof(RimworldConflictChecker)));
 
-            //Windows forms:
-            //Application.Run(new ResultsForm());
-            //System.Windows.Forms.Application.Run(new ResultsForm());
+                // NOTE: this is not required, but highly recommended!
+                // ask the ASP.NET Membership provider to generate a random value
+                // and store it in the current user's session
+                //string csrf = new System.Web.Security.Membership.GeneratePassword(24, 3);
+                //var csrf = System.Web.Security.Membership.GeneratePassword(24, 3);
 
-            //WPF
-            var form2 = new System.Windows.Application();
-            form2.Run(new ResultsWPF());
+                //Session["CSRF:State"] = csrf;
+
+                //var request = new OauthLoginRequest(clientId)
+                //{
+                //Scopes = { "user", "notifications" },
+                //State = csrf
+                //};
+
+                // NOTE: user must be navigated to this URL
+                //var oauthLoginUrl = client.Oauth.GetGitHubLoginUrl(request);
+
+                //var tokenAuth = new Credentials("token"); // NOTE: not real token
+                //client.Credentials = tokenAuth;
+
+                //var user = await client.User.Get("biship");
+                //var repo = await client.Repository.Get("biship", "RimworldConflictChecker");
+                //var repo2 = await client.Repository.Release.GetLatest("biship", "RimworldConflictChecker"); //fails...
+
+                var repo = await client.Repository.Release.GetAll("biship", nameof(RimworldConflictChecker));
+                if (repo.Count > 0)
+                {
+                    Logger.Instance.Log("Successfully got version data from GitHub");
+                }
+                else
+                {
+                    Logger.Instance.Log("Not able to get version data from GitHub");
+                }
+                //var highestver = new latestver();
+                //int index = -1; //the release that has the highest version
+                foreach (var release in repo)
+                {
+                    //Console.WriteLine("Found {0} : {1}", release.TagName, release.Name);
+                    var thisNum = Version.Parse(release.TagName); //ver is in tagname of release
+                    if (thisNum != null)
+                    {
+                        if (thisNum > latestver)
+                        {
+                            latestver = thisNum;
+                            //index++;
+                        }
+                    }
+                }
+                //Console.WriteLine("{0} in {1}", highestrelease, index);
+            }
+
+            catch (Exception e)
+            {
+                Logger.Instance.LogError("Failed to get repo info from GitHub", e);
+            }
         }
     }
 }

@@ -2,11 +2,34 @@
    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  
    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
    xmlns:local="clr-namespace:RimworldConflictChecker" x:Name="Window1" x:Class="RimworldConflictChecker.ResultsWPF"  
-   Title="RImWorld Conflict Checker - Results        (In Progress. Not much here yet. After closing this window, check RCC.txt for all the detailed results)" Loaded="Window_Loaded" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Width="{DynamicResource {x:Static SystemParameters.MaximizedPrimaryScreenWidthKey}}" Height="{DynamicResource {x:Static SystemParameters.MaximizedPrimaryScreenHeightKey}}" ShowInTaskbar="False" WindowState="Maximized">
+   Title="RimWorld Conflict Checker - Results        (In Progress. Not much here yet. After closing this window, check RCC.txt for all the detailed results)" Loaded="Window_Loaded" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Width="{DynamicResource {x:Static SystemParameters.MaximizedPrimaryScreenWidthKey}}" Height="{DynamicResource {x:Static SystemParameters.MaximizedPrimaryScreenHeightKey}}" ShowInTaskbar="False" WindowState="Maximized">
     <TabControl x:Name="tabControl1" Margin="10,10,10,10" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
         <TabItem x:Name="Tab1" Header="Tab1">
             <Grid x:Name="tab1grid1" Background="#FFE5E5E5">
-                <DataGrid x:Name="tab1dataGrid1" Margin="10,10,10,10" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" IsReadOnly="True"/>
+                <DataGrid x:Name="tab1dataGrid1" Margin="10,10,10,10" AutoGenerateColumns="false" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" IsReadOnly="True" AlternatingRowBackground="Gainsboro" GridLinesVisibility="Vertical" Style="{DynamicResource DGHeaderStyle}" FrozenColumnCount="3">
+                     <DataGrid.Columns>  
+                        <DataGridTextColumn Binding="{Binding loadposition}" Header="Position" IsReadOnly="True" Width="Auto"/>  
+                        <DataGridCheckBoxColumn Binding="{Binding enabled}" Header="Enabled" IsReadOnly="True" Width="Auto"/>  
+                        <DataGridTextColumn Binding="{Binding version}" Header="Version" IsReadOnly="True" Width="Auto"/>  
+                        <DataGridTextColumn Binding="{Binding modname}" Header="Mod Name" IsReadOnly="True" Width="Auto"/>  
+                        <DataGridTextColumn Binding="{Binding nummodconflicts}" Header="Mod Conflicts" IsReadOnly="True" Width="Auto"/>  
+                        <DataGridTextColumn Binding="{Binding modconflicts}" Header="List of Mod Conflicts" IsReadOnly="True" Width="Auto" Visibility="Hidden"/>  
+                        <DataGridTextColumn Binding="{Binding numdllconflicts}" Header="DLL Conflicts" IsReadOnly="True" Width="Auto"/>  
+                        <DataGridTextColumn Binding="{Binding numcoreconflicts}" Header="Core Conflicts" IsReadOnly="True" Width="Auto"/>  
+                        <DataGridTextColumn Binding="{Binding numxmlfiles}" Header="XML Files" IsReadOnly="True" Width="Auto"/>  
+                        <DataGridTextColumn Binding="{Binding moddir}" Header="Folder" IsReadOnly="True" Width="Auto"/>  
+                        <DataGridTextColumn Binding="{Binding fullmoddir}" Header="Full Path" IsReadOnly="True" Width="Auto"/>   
+                    </DataGrid.Columns>
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                </DataGrid>
             </Grid>
         </TabItem>
         <TabItem x:Name="Tab2" Header="Tab2">
@@ -15,4 +38,25 @@
             </Grid>
         </TabItem>
     </TabControl>
+    <Window.Resources>  
+    <Style x:Key="DGHeaderStyle" TargetType="{x:Type DataGrid}">  
+        <Setter Property="ColumnHeaderStyle" Value="{DynamicResource DGCHeaderStyle}"/>  
+    </Style>  
+    <Style x:Key="DGCHeaderStyle" TargetType="DataGridColumnHeader">  
+        <Setter Property="Height" Value="30"/>  
+        <Setter Property="Background" Value="LightGray"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Margin" Value="1"/>
+            <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="ToolTip" Value="Click to sort"/>
+            </Trigger>
+             <Trigger Property="IsPressed" Value="True">
+               <Setter Property="FontWeight" Value="Bold"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>  
+</Window.Resources>
 </Window>  
+    
+    
