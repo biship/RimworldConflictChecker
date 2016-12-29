@@ -13,12 +13,12 @@ namespace RimworldConflictChecker
         public static string[] Activemods;
         public static List<Mod> Mods { get; set; }
 
-        public int rc { get; set; }
+        public int Rc { get; set; }
         //public List<DirectoryInfo> dirs { get; set; }
 
         //static GitHubClient client = new GitHubClient(new ProductHeaderValue("RimworldConflictChecker"));
 
-        public static Version latestver { get; set; }
+        public static Version Latestver { get; set; }
 
         public RimworldXmlLoader(params string[] folders)
         {
@@ -38,7 +38,7 @@ namespace RimworldConflictChecker
             //TODO: set core to rimWorldVersion
             //TODO: report issues when using UI
 
-            rc = 1; //assume this is gonna crash
+            Rc = 1; //assume this is gonna crash
 
             string[] checksimplemented =
             {
@@ -88,15 +88,15 @@ namespace RimworldConflictChecker
 
             Logger.Instance.NewSection("Checking GitHub for updates. This will timeout after 10s");
             Console.WriteLine("Checking GitHub for updates. This will timeout after 10s");
-            latestver = Version.Parse("0.0.0.3"); //well i know i've released a 0.0.0.3
+            Latestver = Version.Parse("0.0.0.5"); //well i know i've released a 0.0.0.5
 #if !DEBUG
             Task.Run(async () => { await GetRepoAsync(); }).Wait(10000);
 #endif
             var thisversion = System.Reflection.Assembly.GetEntryAssembly().GetName().Version;
             Logger.Instance.Log("You are running version : " + thisversion);
-            Logger.Instance.Log("Latest version on GitHub: " + latestver);
+            Logger.Instance.Log("Latest version on GitHub: " + Latestver);
 
-            if (latestver > thisversion)
+            if (Latestver > thisversion)
             {
                 Logger.Instance.Log("There is a newer version on GitHub. You can get it here: https://github.com/biship/RimworldConflictChecker/releases");
                 Console.WriteLine("There is a newer version on GitHub. You can get it here: https://github.com/biship/RimworldConflictChecker/releases");
@@ -108,7 +108,7 @@ namespace RimworldConflictChecker
                 Logger.Instance.Log("");
                 Logger.Instance.Log("Esc, X or close pressed on form, Quitting");
                 Console.WriteLine("Esc, X or close pressed on form, Quitting");
-                rc = 1;
+                Rc = 1;
                 return;
             }
 
@@ -158,7 +158,7 @@ namespace RimworldConflictChecker
                 Console.WriteLine("Not able to find RimWorldWin.exe in : " + folders[0]);
                 Logger.Instance.Log("Quitting.");
                 Console.WriteLine("Quitting.");
-                rc = 1;
+                Rc = 1;
                 return;
             }
 
@@ -172,7 +172,7 @@ namespace RimworldConflictChecker
                 Console.WriteLine("Not able to find subfolder Core in : " + folders[1]);
                 Logger.Instance.Log("Quitting.");
                 Console.WriteLine("Quitting.");
-                rc = 1;
+                Rc = 1;
                 return;
             }
 
@@ -188,35 +188,17 @@ namespace RimworldConflictChecker
                     Console.WriteLine("Not able to find mod folder: " + folders[2]);
                     Logger.Instance.Log("Quitting.");
                     Console.WriteLine("Quitting.");
-                    rc = 1;
+                    Rc = 1;
                     return;
                 }
             }
 
             Console.WriteLine("Running checks...");
 
-            //need to create modfolders, a list of only the mod folders
-            var modfolders = new string[folders.Length - 1]; //nice, variable length
-            modfolders[0] = folders[1]; //then I only use 2 elements
-            modfolders[1] = folders[2]; //fantastic programming
-            //Array.Copy(folders, 1, modfolders, 2, folders.Length - 1);
-
-            //set folders to
-            //0 rimworld.exe folder
-            //1 mods folder
-            //2 steam folder
-
-            //set modfolders to
-            //0 mods folder
-            //1 steam folder
-
-            //folders = modfolders;
-            //modfolders = folders.Skip(1).ToArray();
-            //modfolders is now just the mod folders
             Logger.Instance.Log("");
             Logger.Instance.Log("Adding subfolders of each Mod folder to the list of folders to search");
-            foreach (var folder in modfolders)
-            //foreach (var folder in folders)
+
+            foreach (var folder in folders.Skip(1))
             {
                 if (folder.Length != 0)
                 {
@@ -244,7 +226,8 @@ namespace RimworldConflictChecker
 
             //get game version
             Logger.Instance.NewSection("Getting RimWorld game version");
-            var rimWorldVersion = Version.Parse("0.0.0");
+            //var rimWorldVersion = Version.Parse("0.0.0");
+            var RimWorld = new RimWorld(folders[0]);
             if (Utils.FileOrDirectoryExists(folders[0] + "\\Version.txt"))
             {
                 string line;
@@ -252,11 +235,11 @@ namespace RimworldConflictChecker
                 while ((line = file.ReadLine()) != null)
                 {
                     var firstline = line.Split(' ');
-                    rimWorldVersion = Version.Parse(firstline[0]);
+                    RimWorld.Version = Version.Parse(firstline[0]);
                 }
                 file.Close();
             }
-            Logger.Instance.Log("RimWorld game version: " + rimWorldVersion);
+            Logger.Instance.Log("RimWorld game version: " + RimWorld.Version);
 
             //this works
             //List<DirectoryInfo> dirs = new List<DirectoryInfo>(new DirectoryInfo(folder).EnumerateDirectories());
@@ -289,11 +272,11 @@ namespace RimworldConflictChecker
                     Console.WriteLine(@"Unable to find any mods! Please check your paths, or report this on GitHub/Ludeon (see RCC.txt)");
                     Logger.Instance.Log("Quitting.");
                     Console.WriteLine("Quitting.");
-                    rc = 1;
+                    Rc = 1;
                     return;
                 }
 
-                Activemods = LoadModsConfigXml(); //contains dirname, not modname.
+                Activemods = LoadModsConfigXml(RimWorld.Version); //contains dirname, not modname.
                 Logger.Instance.NewSection("Mods Found:");
 
                 //set load position
@@ -335,19 +318,19 @@ namespace RimworldConflictChecker
                             Logger.Instance.Log("Version missing for mod " + mod.ModXmlDetails.ModName + " is above RimWorld Game version. It will not load.");
                             continue;
                         }
-                        if (mod.ModXmlDetails.ModTargetVersion > rimWorldVersion)
+                        if (mod.ModXmlDetails.ModTargetVersion > RimWorld.Version)
                         {
                             Logger.Instance.Log(string.Format("Mod version {0,-9} of mod " + mod.ModXmlDetails.ModName + " is above RimWorld Game version. It will not load.",
                                 mod.ModXmlDetails.ModTargetVersion));
                             continue;
                         }
-                        if (mod.ModXmlDetails.ModTargetVersion.Minor < rimWorldVersion.Minor)
+                        if (mod.ModXmlDetails.ModTargetVersion.Minor < RimWorld.Version.Minor)
                         {
                             Logger.Instance.Log(string.Format("Mod version {0,-9} of mod " + mod.ModXmlDetails.ModName + " is too far below RimWorld Game version. It will not load.", mod.ModXmlDetails.ModTargetVersion));
                         }
                     }
                 }
-                //
+                //TODO: set core ver
 
                 Logger.Instance.NewSection("Listing mods and their DLL's & XML's...");
                 sortedModsConfig = Mods.OrderBy(x => x.ModXmlDetails.ModName).ToList();
@@ -356,10 +339,10 @@ namespace RimworldConflictChecker
                     Logger.Instance.DumpModHeader(mod.ModXmlDetails.ModName, mod.FullDirName);
                     foreach (var modXmlFile in mod.XmlFiles)
                     {
-                        if ((modXmlFile.XmlFileInfo.Name.Contains(".xml") || (modXmlFile.XmlFileInfo.Name.Contains(".dll"))))
-                        {
+                        //if ((modXmlFile.XmlFileInfo.Name.Contains(".xml") || (modXmlFile.XmlFileInfo.Name.Contains(".dll"))))
+                        //{
                             Logger.Instance.DumpModFiles(modXmlFile.XmlFileInfo.Name);
-                        }
+                        //}
                     }
                 }
 
@@ -448,12 +431,13 @@ namespace RimworldConflictChecker
                     }
                 }
 
-                Logger.Instance.NewSection("Checking for duplicate DLL's...");
+                Logger.Instance.NewSection("Checking for duplicate DLL's - only for ENABLED mods...");
+                Logger.Instance.Log("DLL's listed here exist more than once, in more than one mod.");
 
                 totalConflicts = 0;
 
                 //creates dup entries for the same mod (if in diff dir)
-                //are DLL's loaded if out of Assemblies??
+                //are DLL's loaded if out of Assemblies - no
                 foreach (var mod in Mods)
                 {
                     foreach (var otherMod in Mods)
@@ -510,22 +494,30 @@ namespace RimworldConflictChecker
                 //Logger.Instance.Log("Results of the checks are written to file RCC.txt in this folder.");
                 Console.WriteLine("Results of the checks are written to file RCC.txt in this folder.");
                 Console.WriteLine("Rimworld Conflict Checker Complete");
-                rc = 0; //we got this far!
+                Rc = 0; //we got this far!
             }
-            catch (UnauthorizedAccessException uaEx)
+            catch (UnauthorizedAccessException ex)
             {
-                Logger.Instance.Log(uaEx.Message);
+                Logger.Instance.Log(ex.Message);
             }
-            catch (PathTooLongException pathEx)
+            catch (PathTooLongException ex)
             {
-                Logger.Instance.Log(pathEx.Message);
+                Logger.Instance.Log(ex.Message);
             }
         }
 
 
-        public static string[] LoadModsConfigXml()
+        public static string[] LoadModsConfigXml(Version rimworldversion)
         {
-            var modsconfig = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"Low\Ludeon Studios\RimWorld\Config\ModsConfig.xml";
+            string modsconfig = null;
+            if (rimworldversion.Minor >= 16)
+            {
+                modsconfig = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"Low\Ludeon Studios\RimWorld by Ludeon Studios\Config\ModsConfig.xml";
+            }
+            else
+            {
+                modsconfig = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"Low\Ludeon Studios\RimWorld\Config\ModsConfig.xml";
+            }
 
             Logger.Instance.NewSection("ModsConfig.xml: " + modsconfig);
 
@@ -589,7 +581,8 @@ namespace RimworldConflictChecker
                 //var repo2 = await client.Repository.Release.GetLatest("biship", "RimworldConflictChecker"); //fails...
 
                 var repo = await client.Repository.Release.GetAll("biship", nameof(RimworldConflictChecker));
-                if (repo.Count > 0)
+                //if (repo.Count > 0)
+                if (repo.Any())
                 {
                     Logger.Instance.Log("Successfully got version data from GitHub");
                 }
@@ -597,7 +590,7 @@ namespace RimworldConflictChecker
                 {
                     Logger.Instance.Log("Not able to get version data from GitHub");
                 }
-                //var highestver = new latestver();
+                //var highestver = new Latestver();
                 //int index = -1; //the release that has the highest version
                 foreach (var release in repo)
                 {
@@ -605,9 +598,9 @@ namespace RimworldConflictChecker
                     var thisNum = Version.Parse(release.TagName); //ver is in tagname of release
                     if (thisNum != null)
                     {
-                        if (thisNum > latestver)
+                        if (thisNum > Latestver)
                         {
-                            latestver = thisNum;
+                            Latestver = thisNum;
                             //index++;
                         }
                     }
@@ -615,9 +608,9 @@ namespace RimworldConflictChecker
                 //Console.WriteLine("{0} in {1}", highestrelease, index);
             }
 
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Logger.Instance.LogError("Failed to get repo info from GitHub", e);
+                Logger.Instance.LogError("Failed to get repo info from GitHub", ex);
             }
         }
     }

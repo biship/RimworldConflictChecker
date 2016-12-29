@@ -350,8 +350,6 @@ namespace RimworldConflictChecker
                         txtb_ModFolder2_status.Text = "";
                     }
                     break;
-                default:
-                    break;
             }
         }
 

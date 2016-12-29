@@ -54,6 +54,7 @@
     <LangVersion>6</LangVersion>
     <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
     <Prefer32Bit>true</Prefer32Bit>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>RimworldConflictChecker.Program</StartupObject>
@@ -71,8 +72,7 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NBug, Version=1.2.0.0, Culture=neutral, PublicKeyToken=a4292a325f69b123, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="NBug">
       <HintPath>..\..\..\Other\NBug-master\NBug\bin\Release\NBug.dll</HintPath>
     </Reference>
     <Reference Include="Octokit, Version=0.22.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -93,6 +93,8 @@
   <ItemGroup>
     <Compile Include="BadMod.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="FileFilters.cs" />
+    <Compile Include="RimWorld.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="WPFViews.cs" />
     <Compile Include="ModDetails.cs" />
@@ -187,6 +189,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

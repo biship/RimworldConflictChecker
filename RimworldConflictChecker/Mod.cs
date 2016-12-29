@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Xml;
+using System.Diagnostics;
 using System.Xml.Linq;
 
 namespace RimworldConflictChecker
@@ -38,7 +41,7 @@ namespace RimworldConflictChecker
         //the mod object, contains these elements:
         public string FullDirName { get; set; } //actual full dir name
         public string DirName { get; set; } //actual sub dir name
-        public ModDetails ModXmlDetails { get; set; } //mod name from about.xml
+        public ModDetails ModXmlDetails { get; set; } //mod details from about.xml
         public List<XmlFile> XmlFiles { get; set; } //list of all files under dir
         public List<Mod> ConflictedMods { get; set; } //list of other conflicting XML's
         public List<Mod> ConflictedDlls { get; set; } //list of other conflicting DLLs's
@@ -67,7 +70,7 @@ namespace RimworldConflictChecker
 
             if (totalConflicts != 0)
             {
-                ConflictedMods.Add(otherMod);
+                ConflictedMods.Add(otherMod); //this will add all files from conflict
                 otherMod.ConflictedMods.Add(this);
             }
 
@@ -137,11 +140,13 @@ namespace RimworldConflictChecker
                                         aboutXDoc.ModDescription = element.Value;
                                     }
                                 }
-                           }
+                            }
                         }
-                        catch (ArgumentException e)
+                        //catch (ArgumentException ex)
+                        catch (Exception ex)
                         {
-                            Logger.Instance.LogError("Parsing About.xml", e);
+                            //Logger.Instance.LogError("Parsing About.xml", ex);
+                            Utils.LogException("Parsing About.xml", ex);
                         }
                     }
                 }
@@ -153,7 +158,7 @@ namespace RimworldConflictChecker
         {
             var totalConflicts = 0;
 
-            if ((xmlFile.XmlDocument != null) && (otherXmlFile.XmlDocument != null) && xmlFile.XmlFileInfo.Name.Contains(".xml") && otherXmlFile.XmlFileInfo.Name.Contains(".xml"))
+            if (((mod.ModEnabled == true) && (otherMod.ModEnabled == true)) && ((xmlFile.XmlDocument != null) && (otherXmlFile.XmlDocument != null) && xmlFile.XmlFileInfo.Name.Contains(".xml") && otherXmlFile.XmlFileInfo.Name.Contains(".xml")))
             {
                 if (xmlFile.XmlDocument.Root != null)
                 {
@@ -230,7 +235,7 @@ namespace RimworldConflictChecker
                                                 }
                                                 linenum++;
                                             }
-                                            file.Close();
+                                            //file.Close();
                                             using (var otherfile = new StreamReader(otherXmlFile.XmlFileInfo.FullName))
                                             {
                                                 while ((otherline = otherfile.ReadLine()) != null)
@@ -244,7 +249,7 @@ namespace RimworldConflictChecker
                                                     }
                                                     otherlinenum++;
                                                 }
-                                                otherfile.Close();
+                                                //otherfile.Close();
                                                 //foreach (var match in File.ReadLines(@xmlFile.XmlFileInfo.FullName)
                                                 //    .Select((text, index) => new { text, lineNumber = index + 1 })
                                                 //    .Where(x => x.text.Contains(defNameValue)))
@@ -256,8 +261,6 @@ namespace RimworldConflictChecker
                                                 //SimpleLogger.Instance.DumpConflict(othermodposition, otherXmlsize, 0, otherRootValue, otherThingDefNameValue, defNameValue, otherXmlFile.XmlFileInfo.FullName);
                                                 if (modposition < othermodposition)
                                                 {
-                                                    //TODO:fix dirname
-                                                    //Logger.Instance.Log("Conflicting Mods: " + DirName + " " + modenabled + " &  " + otherMod.DirName + " " + othermodenabled);
                                                     Logger.Instance.Log("Conflicting Mods: " + mod.ModXmlDetails.ModName + " " + modenabled + " &  " + otherMod.ModXmlDetails.ModName + " " + othermodenabled);
                                                     Logger.Instance.Log(xmlFile.XmlFileInfo.FullName);
                                                     Logger.Instance.Log(otherXmlFile.XmlFileInfo.FullName);
@@ -292,6 +295,8 @@ namespace RimworldConflictChecker
         {
             var files = new List<XmlFile>();
             FileInfo currentFile = null;
+            var xmlReaderSettings = new XmlReaderSettings { CheckCharacters = false };
+            var filesarray = new Files();
             try
             {
                 //foreach (FileInfo xmlFile in directory.GetFiles().Where(x => string.Equals(x.Extension, ".xml")))
@@ -299,36 +304,63 @@ namespace RimworldConflictChecker
                 {
                     currentFile = xmlFile;
                     //if (!xmlFile.Name.Contains("About") && !xmlFile.Name.Contains("Changelog") && !xmlFile.Name.Contains("Credits") && !xmlFile.FullName.Contains("Languages"))
-                    if (!xmlFile.Name.Contains("Changelog") && !xmlFile.Name.Contains("Credits") && !xmlFile.FullName.Contains("\\Languages\\"))
+                    //using lisst: http://stackoverflow.com/questions/4874371/how-to-check-if-any-word-in-my-liststring-contains-in-text
+                    //if (!xmlFile.Name.Contains("Changelog") && !xmlFile.Name.Contains("Credits") && !xmlFile.FullName.Contains("\\Languages\\"))
+                    //if ((ignorefiles.Names.Any(w => xmlFile.Name.Contains(w))) || (ignorefiles.Extensions.Any(w => xmlFile.Extension.Equals(w))) || (ignorefiles.Folders.Any(w => xmlFile.FullName.Contains(w))))
+                    //{
+                    //
+                    //}
+                    //if ((xmlFile.Extension.Equals(".XML", StringComparison.OrdinalIgnoreCase) || xmlFile.Extension.Equals(".DLL", StringComparison.OrdinalIgnoreCase)) && !xmlFile.FullName.Contains("\\Languages\\"))
+                    //if (filesarray.IncludeExtensions.Any(w => xmlFile.Extension.Equals(w, StringComparison.OrdinalIgnoreCase)) && !filesarray.IgnoreFolders.Any(xmlFile.FullName.Contains)) //this means the dll check will miss loads of folders.
+                    if ((filesarray.IncludeExtensions.Any(w => xmlFile.Extension.Equals(w, StringComparison.OrdinalIgnoreCase)) &&  //only approved extensions
+                        (!filesarray.IgnoreNames.Any(w => xmlFile.Name.Equals(w, StringComparison.OrdinalIgnoreCase)))) &&          //not filenames to ignore
+                        !xmlFile.FullName.Contains("\\Languages\\"))                                                                //not files in Languages folder
                     {
-                        //TODO: fix. this will crash when a xml contains non-ascii chars
-                        //if (xmlFile.Extension == ".xml")
-                        if (xmlFile.FullName.Contains(".xml")) //faster?
+                        //if (xmlFile.FullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase))
+                        if (xmlFile.Extension.Equals(".XML", StringComparison.OrdinalIgnoreCase))
                         {
                             //add the file as an XML file for later browsing
-                            files.Add(new XmlFile(xmlFile, XDocument.Load(xmlFile.FullName)));
+                            //files.Add(new XmlFile(xmlFile, XDocument.Load(xmlFile.FullName))); //this will crash when a xml contains non-ascii chars
+                            try
+                            {
+                                using (XmlReader xmlReader = XmlReader.Create(xmlFile.FullName, xmlReaderSettings))
+                                {
+                                    xmlReader.MoveToContent();
+                                    files.Add(new XmlFile(xmlFile, XDocument.Load(xmlReader)));
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.Instance.Log("XmlReader Error: " + ex.Message + "\t" + xmlFile.FullName);
+                                //Utils.LogException("XmlReader Error", ex);
+                            }
+
                         }
                         else
                         {
-                            //add all other files, setting xml to null
+                            //add all other files, but don't read their contents - setting xml to null
                             files.Add(new XmlFile(xmlFile, null));
                         }
                         //only log xml & dll files
                         //if ((xmlFile.Extension == ".xml") || (xmlFile.Extension == ".dll"))
                         //{
-                            //Logger.Instance.Log("\t" + xmlFile.Name);
+                        //Logger.Instance.Log("\t" + xmlFile.Name);
                         //}
                     }
                 }
                 foreach (var subDirectory in directory.GetDirectories())
                 {
-                    //keep looping through all subfolders
-                    files.AddRange(GetXmlFiles(subDirectory));
+                    //keep looping through all subfolders, skipping language folders.
+                    if (!subDirectory.FullName.Contains("\\Languages\\"))
+                    { 
+                        files.AddRange(GetXmlFiles(subDirectory));
+                    }
+                    
                 }
             }
-            catch (Exception excpt)
+            catch (Exception ex)
             {
-                Logger.Instance.Log(currentFile == null ? "" : currentFile.Name + " " + excpt.Message);
+                Logger.Instance.Log(currentFile == null ? "" : currentFile.Name + " " + ex.Message);
             }
 
             return files;
@@ -336,18 +368,18 @@ namespace RimworldConflictChecker
 
         public int CheckForDllConflicts(Mod mod, Mod otherMod)
         {
-            // if (ReferenceEquals(this, otherMod) || (DirName == otherMod.DirName) || (otherMod.DirName == DirName))
-            //{
-            //return 0;
-            //}
+            if (ReferenceEquals(this, otherMod) || mod.ModEnabled == false || otherMod.ModEnabled == false) // || (DirName == otherMod.DirName) || (otherMod.DirName == DirName))
+            {
+                return 0;
+            }
 
             var totalConflicts = 0;
-            //for the same mod, it checks all files against all files.
+
             foreach (var xmlFile in mod.XmlFiles) //changed from XmlFiles to mod.XmlFiles
             {
                 foreach (var otherXmlFile in otherMod.XmlFiles)
                 {
-                    totalConflicts += CheckForDupDllFiles(xmlFile, otherXmlFile);
+                    totalConflicts += CheckForDupDllFiles(mod, otherMod, xmlFile, otherXmlFile);
                 }
             }
 
@@ -360,17 +392,42 @@ namespace RimworldConflictChecker
             return totalConflicts;
         }
 
-        private static int CheckForDupDllFiles(XmlFile xmlFile, XmlFile otherXmlFile)
+        private static int CheckForDupDllFiles(Mod mod, Mod otherMod, XmlFile xmlFile, XmlFile otherXmlFile)
         {
             var totalConflicts = 0;
-
-            //if ((xmlFile.XmlFileInfo.Name == otherXmlFile.XmlFileInfo.Name) && (xmlFile.XmlFileInfo.Extension == ".dll")) //slow
-            if (((xmlFile.XmlFileInfo.Name == otherXmlFile.XmlFileInfo.Name) && xmlFile.XmlFileInfo.Name.Contains(".dll")) && (xmlFile.XmlFileInfo.FullName != otherXmlFile.XmlFileInfo.FullName)
-                && ((xmlFile.XmlFileInfo.FullName.Contains("\\Assemblies\\")) && (otherXmlFile.XmlFileInfo.FullName.Contains("\\Assemblies\\"))))
+            if ((xmlFile.XmlFileInfo != null) && (otherXmlFile.XmlFileInfo != null))
             {
-                Logger.Instance.Log(xmlFile.XmlFileInfo.FullName);
-                Logger.Instance.Log(otherXmlFile.XmlFileInfo.FullName);
-                totalConflicts++;
+                if (xmlFile.XmlFileInfo.FullName.ContainsAll("\\Assemblies\\", ".dll")) //rare. 1/mod at most. Only care if its a DLL in the assemblies folder.
+                {
+                    //Logger.Instance.Log(xmlFile.XmlFileInfo.FullName + " vs " + otherXmlFile.XmlFileInfo.FullName);
+                    if (otherXmlFile.XmlFileInfo.FullName.ContainsAll("\\Assemblies\\", ".dll")) //rare. 1/mod at most. Only care if its a DLL in the assemblies folder.
+                    {
+                        if (xmlFile.XmlFileInfo.Name == otherXmlFile.XmlFileInfo.Name) //semi rare. 1+ per mod
+                        {
+                            //if (xmlFile.XmlFileInfo.FullName != otherXmlFile.XmlFileInfo.FullName) //happens when a mod compares against itself.
+                            //{
+                            var xmlsize = new FileInfo(xmlFile.XmlFileInfo.FullName).Length;
+                            var xmldate = new FileInfo(xmlFile.XmlFileInfo.FullName).LastWriteTime;
+                            var otherXmlsize = new FileInfo(otherXmlFile.XmlFileInfo.FullName).Length;
+                            var otherXmldate = new FileInfo(otherXmlFile.XmlFileInfo.FullName).LastWriteTime;
+                            // Get the file version for the notepad.
+                            FileVersionInfo xmlversion = FileVersionInfo.GetVersionInfo(xmlFile.XmlFileInfo.FullName);
+                            FileVersionInfo otherXmlversion = FileVersionInfo.GetVersionInfo(otherXmlFile.XmlFileInfo.FullName);
+                            if (mod.ModRank > otherMod.ModRank)
+                            {
+                                Logger.Instance.LogDLL(otherXmlFile.XmlFileInfo.FullName, otherMod.ModRank, otherXmlsize, xmlversion.FileVersion, otherXmldate);
+                                Logger.Instance.LogDLL(xmlFile.XmlFileInfo.FullName, mod.ModRank, xmlsize, otherXmlversion.FileVersion, xmldate);
+                            }
+                            else
+                            {
+                                Logger.Instance.LogDLL(xmlFile.XmlFileInfo.FullName, mod.ModRank, xmlsize, xmlversion.FileVersion, xmldate);
+                                Logger.Instance.LogDLL(otherXmlFile.XmlFileInfo.FullName, otherMod.ModRank, otherXmlsize, otherXmlversion.FileVersion, otherXmldate);
+                            }
+                            totalConflicts++;
+                            //}
+                        }
+                    }
+                }
             }
             return totalConflicts;
         }
@@ -378,7 +435,7 @@ namespace RimworldConflictChecker
         public static int CheckForMisplacedDlls(Mod mod)
         {
             var totalConflicts = 0;
-            foreach (var xmlFile in mod.XmlFiles) //changed from XmlFiles to mod.XmlFiles
+            foreach (var xmlFile in mod.XmlFiles)
             {
                 if (xmlFile.XmlFileInfo.Directory != null && ((xmlFile.XmlFileInfo.Name.Contains(".dll")) && (!xmlFile.XmlFileInfo.Directory.Name.Equals("Assemblies"))))
                 {

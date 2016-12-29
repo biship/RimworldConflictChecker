@@ -98,7 +98,7 @@ namespace RimworldConflictChecker
 
             var mainprogram = new RimworldXmlLoader(rimworldfolder, modfolder1, modfolder2);
             Logger.Instance.WriteToFile();
-            if (mainprogram.rc == 0)
+            if (mainprogram.Rc == 0)
             {
                 runWPF();
             }
@@ -106,7 +106,7 @@ namespace RimworldConflictChecker
             //testing throwing exception
             //throw new ArgumentException("ha-ha");
 
-            return mainprogram.rc;
+            return mainprogram.Rc;
         }
 
         // All WPF applications should execute on a single-threaded apartment (STA) thread

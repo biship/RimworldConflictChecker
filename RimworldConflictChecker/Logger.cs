@@ -3,7 +3,7 @@ using System.IO;
 
 namespace RimworldConflictChecker
     {
-    public class Logger
+    public class Logger : IDisposable
     {
 
         private static Logger _instance;
@@ -40,12 +40,28 @@ namespace RimworldConflictChecker
             }
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // dispose managed resources
+                _buffer.Close();
+            }
+            // free native resources
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         public void Log(string message)
         {
             var now = $"{DateTime.Now:HH:mm:ss} ";
 #if DEBUG
             //when do i ever need this?
-            Console.WriteLine(now + message);
+            //Console.WriteLine(now + message);
 #endif
             //_buffer.AppendLine(message);
             try
@@ -86,7 +102,12 @@ namespace RimworldConflictChecker
         public void DumpConflict(string modname, int loadPosition, long size, int line, string tag1, string tag2,
             string tag3)
         {
-            Log($"{modname,-50} Load Position: {loadPosition,-3} FileSize: {size,-6} Line: {line,-5} RootElement: {tag1,-23} Element: {tag2,-45} defName: {tag3,-42}");
+            Log($"{modname,-46} Load Position: {loadPosition,-3} FileSize: {size,-6} Line: {line,-5} RootElement: {tag1,-23} Element: {tag2,-39} defName: {tag3,-36}");
+        }
+
+        public void LogDLL(string modname, int loadPosition, long size, string fileversion, DateTime date)
+        {
+            Log($"{modname,-95} Load Position: {loadPosition,-3} FileSize: {size,-8} Version: {fileversion, -10} Date: {date,-10}");
         }
 
         public void DumpMods(bool enabled, int loadPosition, string dirname, Version version, string modname)
@@ -96,7 +117,7 @@ namespace RimworldConflictChecker
             {
                 isenabled = "Enabled";
             }
-            Log($"{isenabled,-12} Load Position: {loadPosition,-4} Version: {version,-10} Directory: {dirname,-50}  Name: {modname,-50}");
+            Log($"{isenabled,-12} Load Position: {loadPosition,-4} Version: {version,-10} Directory: {dirname,-48}  Name: {modname,-48}");
         }
 
         public void LogError(string what, Exception e)

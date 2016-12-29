@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 
 namespace RimworldConflictChecker
 {
@@ -25,17 +26,30 @@ namespace RimworldConflictChecker
             }
         }
 
-        /// <summary>Indicates whether the specified array is null or has a length of zero.</summary>
-        /// <param name="array">The array to test.</param>
-        /// <returns>true if the array parameter is null or has a length of zero; otherwise, false.</returns>
-        public static bool IsNullOrEmpty(this Array array)
-        {
-            return (array == null || array.Length == 0);
-        }
+        //conflicts with IEnumerable
+        //// <summary>Indicates whether the specified array is null or has a length of zero.</summary>
+        //// <typeparam name="collection"></typeparam>
+        //// <param name="array">The array to test.</param>
+        //// <returns>true if the array parameter is null or has a length of zero; otherwise, false.</returns>
+        //public static bool IsNullOrEmpty(this Array array)
+        //{
+        //return (array == null || array.Length == 0); //true if null or empty
+        //}
 
         public static bool IsNullOrEmpty<T>(this List<T> list)
         {
-            return (list == null || list.Count == 0);
+            return (list == null || list.Count == 0); //true if null or count = 0
+        }
+
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> ienumerable)
+        {
+            return (ienumerable == null || !ienumerable.Any()); //true if null or not any
+        }
+
+        public static bool ContainsAll(this string source, params string[] values)
+        {
+            //return values.All(x => source.Contains(x));
+            return values.All(source.Contains);
         }
 
         public static bool IsFullPath(string path)
@@ -63,7 +77,21 @@ namespace RimworldConflictChecker
                 : max.HasValue && @this.CompareTo(max.Value) > 0 ? max.Value
                 : @this;
         }
+
+        public static Exception LogException(string what, Exception ex)
+        {
+            //File.AppendAllText("CaughtExceptions" + DateTime.Now.ToString("yyyy-MM-dd") + ".log", DateTime.Now.ToString("HH:mm:ss") + ": " + ex.Message + "\n" + ex.ToString() + "\n");
+            Logger.Instance.LogError(what, ex);
+            return ex;
+        }
+
+        public static Exception DisplayException(Exception ex, string msg = null, MessageBoxImage img = MessageBoxImage.Error)
+        {
+            MessageBox.Show(msg ?? ex.Message, "", MessageBoxButton.OK, img);
+            return ex;
+        }
     }
+
 
     public static class Throw<TException> where TException : Exception
     {
