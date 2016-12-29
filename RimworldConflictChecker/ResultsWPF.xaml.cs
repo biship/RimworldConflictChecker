@@ -8,6 +8,7 @@ namespace RimworldConflictChecker
     /// <summary>
     /// Interaction logic for ResultsWPF.xaml
     /// </summary>
+    
     public partial class ResultsWPF
     {
         //public List<ModView> modsView { get; set; }

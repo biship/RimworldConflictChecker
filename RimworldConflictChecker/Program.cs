@@ -39,9 +39,10 @@ namespace RimworldConflictChecker
             //Application.ThreadException += NBug.Handler.ThreadException;
             //TaskScheduler.UnobservedTaskException += NBug.Handler.UnobservedTaskException;
 
+
             if (args.Length == 1)
             {
-                if (args[0] == "--help" || args[0] == "-help" || args[0] == "-h" || args[0] == "/?")
+                if (args[0] == "--help" || args[0] == "-help" || args[0] == "-h" || args[0] == "--h" || args[0] == "/?")
                 {
                     Console.WriteLine("Rimworld Conflict Checker");
                     Console.WriteLine();

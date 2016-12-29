@@ -128,11 +128,17 @@ namespace RimworldConflictChecker
                                         aboutXDoc.ModName = element.Value;
                                         continue;
                                     }
-                                    //crashes if this is null
                                     if (element.Name.ToString().ToUpper() == "TARGETVERSION")
                                     {
-                                        aboutXDoc.ModTargetVersion = Version.Parse(element.Value);
-                                        //aboutXDoc.ModTargetVersion = element.Value;
+                                        if (!element.Value.IsNullOrEmpty())
+                                        {
+                                            aboutXDoc.ModTargetVersion = Version.Parse(element.Value);
+                                            //aboutXDoc.ModTargetVersion = element.Value;
+                                        }
+                                        else
+                                        {
+                                            aboutXDoc.ModTargetVersion = Version.Parse("0.0.0");
+                                        }
                                         continue;
                                     }
                                     if (element.Name.ToString().ToUpper() == "DESCRIPTION")

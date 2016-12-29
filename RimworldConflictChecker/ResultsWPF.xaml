@@ -6,7 +6,7 @@
     <TabControl x:Name="tabControl1" Margin="10,10,10,10" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
         <TabItem x:Name="Tab1" Header="Tab1">
             <Grid x:Name="tab1grid1" Background="#FFE5E5E5">
-                <DataGrid x:Name="tab1dataGrid1" Margin="10,10,10,10" AutoGenerateColumns="false" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" IsReadOnly="True" AlternatingRowBackground="Gainsboro" GridLinesVisibility="Vertical" Style="{DynamicResource DGHeaderStyle}" FrozenColumnCount="3">
+                <DataGrid x:Name="tab1dataGrid1" Margin="10,10,10,10" AutoGenerateColumns="false" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" IsReadOnly="True" AlternatingRowBackground="Gainsboro" GridLinesVisibility="Vertical" Style="{DynamicResource DGHeaderStyle}" FrozenColumnCount="3" ClipboardCopyMode="IncludeHeader">
                      <DataGrid.Columns>  
                         <DataGridTextColumn Binding="{Binding loadposition}" Header="Position" IsReadOnly="True" Width="Auto"/>  
                         <DataGridCheckBoxColumn Binding="{Binding enabled}" Header="Enabled" IsReadOnly="True" Width="Auto"/>  

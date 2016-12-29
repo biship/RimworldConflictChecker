@@ -88,7 +88,7 @@ namespace RimworldConflictChecker
 
             Logger.Instance.NewSection("Checking GitHub for updates. This will timeout after 10s");
             Console.WriteLine("Checking GitHub for updates. This will timeout after 10s");
-            Latestver = Version.Parse("0.0.0.5"); //well i know i've released a 0.0.0.5
+            Latestver = Version.Parse("0.0.0.6"); //well i know i've released a 0.0.0.6
 #if !DEBUG
             Task.Run(async () => { await GetRepoAsync(); }).Wait(10000);
 #endif
@@ -193,37 +193,6 @@ namespace RimworldConflictChecker
                 }
             }
 
-            Console.WriteLine("Running checks...");
-
-            Logger.Instance.Log("");
-            Logger.Instance.Log("Adding subfolders of each Mod folder to the list of folders to search");
-
-            foreach (var folder in folders.Skip(1))
-            {
-                if (folder.Length != 0)
-                {
-                    //if (Utils.FileOrDirectoryExists(folder)) //checked above...
-                    //{
-                    //create dirs2 to hold all the subfolders of each mod folder
-                    var dirs2 = new List<DirectoryInfo>(new DirectoryInfo(folder).EnumerateDirectories());
-                    Logger.Instance.Log("Mod Folder added to search list : " + folder);
-                    foreach (var folderx in dirs2)
-                    {
-                        //add every subfolder
-                        if (folderx.GetDirectories("About").Length > 0)
-                        {
-                            dirs.Add(folderx);
-                        }
-                        else
-                        {
-                            baddirs.Add(folderx); //TODO: check and display
-                            Logger.Instance.Log("Folder does not contains an 'About' subfolder, NOT added to search list : " + folderx.FullName);
-                        }
-                    }
-                }
-            }
-            //dirs is now a DirectoryInfo list of all folders
-
             //get game version
             Logger.Instance.NewSection("Getting RimWorld game version");
             //var rimWorldVersion = Version.Parse("0.0.0");
@@ -240,6 +209,45 @@ namespace RimworldConflictChecker
                 file.Close();
             }
             Logger.Instance.Log("RimWorld game version: " + RimWorld.Version);
+
+            Console.WriteLine("Running checks...");
+
+            Logger.Instance.NewSection("Adding subfolders of each Mod folder to the list of folders to search");
+
+            foreach (var folder in folders.Skip(1))
+            {
+                if (folder.Length != 0)
+                {
+                    //create dirs2 to hold all the subfolders of each mod folder
+                    var dirs2 = new List<DirectoryInfo>(new DirectoryInfo(folder).EnumerateDirectories());
+                    Logger.Instance.Log("Searching " + dirs2.Count + " sub-folders of : " + folder);
+                    foreach (var folderx in dirs2)
+                    {
+                        //add every subfolder
+                        if (folderx.GetDirectories("About").Length > 0)
+                        {
+                            dirs.Add(folderx);
+                        }
+                        else
+                        {
+                            baddirs.Add(folderx); //TODO: check and display
+                            Logger.Instance.Log("Folder does not contains an 'About' subfolder, NOT added to search list : " + folderx.FullName);
+                        }
+                    }
+                }
+            }
+            //dirs is now a DirectoryInfo list of all folders
+            if (dirs.IsNullOrEmpty())
+            {
+                Logger.Instance.Log(@"Unable to find any mods! Please check your paths, or report this on GitHub/Ludeon (see RCC.txt)");
+                Console.WriteLine(@"Unable to find any mods! Please check your paths, or report this on GitHub/Ludeon (see RCC.txt)");
+                Logger.Instance.Log("Quitting.");
+                Console.WriteLine("Quitting.");
+                Rc = 1;
+                return;
+            }
+
+            //get game-ver was here
 
             //this works
             //List<DirectoryInfo> dirs = new List<DirectoryInfo>(new DirectoryInfo(folder).EnumerateDirectories());
