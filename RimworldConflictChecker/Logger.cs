@@ -8,7 +8,7 @@ namespace RimworldConflictChecker
 
         private static Logger _instance;
 
-        private static readonly string Outputfilename = "RCC.txt";
+        private const string Outputfilename = "RCC.txt";
 
         //private readonly StringBuilder _buffer;
         private StreamWriter _buffer;
@@ -58,7 +58,7 @@ namespace RimworldConflictChecker
 
         public void Log(string message)
         {
-            var now = $"{DateTime.Now:HH:mm:ss} ";
+            //var now = $"{DateTime.Now:HH:mm:ss} ";
 #if DEBUG
             //when do i ever need this?
             //Console.WriteLine(now + message);

@@ -48,6 +48,7 @@
             this.txtb_RimworldFolder_status = new System.Windows.Forms.Label();
             this.txtb_ModFolder1_status = new System.Windows.Forms.Label();
             this.txtb_ModFolder2_status = new System.Windows.Forms.Label();
+            this.txtb_ModsConfigFolder_status = new System.Windows.Forms.Label();
             this.btn_reset = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -85,7 +86,8 @@
             tableLayoutPanel1.Controls.Add(this.label6, 0, 19);
             tableLayoutPanel1.Controls.Add(this.txtb_RimworldFolder_status, 0, 2);
             tableLayoutPanel1.Controls.Add(this.txtb_ModFolder1_status, 0, 6);
-            tableLayoutPanel1.Controls.Add(this.txtb_ModFolder2_status, 0, 17);
+            tableLayoutPanel1.Controls.Add(this.txtb_ModFolder2_status, 0, 10);
+            tableLayoutPanel1.Controls.Add(this.txtb_ModsConfigFolder_status, 0, 14);
             tableLayoutPanel1.Controls.Add(this.btn_reset, 1, 19);
             tableLayoutPanel1.Controls.Add(this.label7, 0, 11);
             tableLayoutPanel1.Controls.Add(this.label8, 0, 12);
@@ -304,10 +306,19 @@
             // 
             this.txtb_ModFolder2_status.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtb_ModFolder2_status.AutoSize = true;
-            this.txtb_ModFolder2_status.Location = new System.Drawing.Point(471, 363);
+            this.txtb_ModFolder2_status.Location = new System.Drawing.Point(471, 220);
             this.txtb_ModFolder2_status.Name = "txtb_ModFolder2_status";
             this.txtb_ModFolder2_status.Size = new System.Drawing.Size(0, 13);
             this.txtb_ModFolder2_status.TabIndex = 17;
+            // 
+            // txtb_ModsConfigFolder_status
+            // 
+            this.txtb_ModsConfigFolder_status.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtb_ModsConfigFolder_status.AutoSize = true;
+            this.txtb_ModsConfigFolder_status.Location = new System.Drawing.Point(471, 306);
+            this.txtb_ModsConfigFolder_status.Name = "txtb_ModsConfigFolder_status";
+            this.txtb_ModsConfigFolder_status.Size = new System.Drawing.Size(0, 13);
+            this.txtb_ModsConfigFolder_status.TabIndex = 18;
             // 
             // btn_reset
             // 
@@ -425,6 +436,7 @@
         private System.Windows.Forms.Label txtb_RimworldFolder_status;
         private System.Windows.Forms.Label txtb_ModFolder1_status;
         private System.Windows.Forms.Label txtb_ModFolder2_status;
+        private System.Windows.Forms.Label txtb_ModsConfigFolder_status;
         private System.Windows.Forms.Button btn_reset;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;

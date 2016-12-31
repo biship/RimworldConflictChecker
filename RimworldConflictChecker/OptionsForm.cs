@@ -338,7 +338,6 @@ namespace RimworldConflictChecker
 
         private void UpdateFoldersDisplay(TextBox sender)
         {
-
             switch (sender.Name)
             {
                 case nameof(txtb_RimworldFolder):
@@ -405,18 +404,18 @@ namespace RimworldConflictChecker
                     {
                         if (Utils.FileOrDirectoryExists(sender.Text + "\\ModsConfig.xml")) 
                         {
-                            txtb_ModFolder2_status.Text = Resources.OK;
-                            txtb_ModFolder2_status.ForeColor = Color.Green;
+                            txtb_ModsConfigFolder_status.Text = Resources.OK;
+                            txtb_ModsConfigFolder_status.ForeColor = Color.Green;
                         }
                         else
                         {
-                            txtb_ModFolder2_status.Text = Resources.InvalidFolder;
-                            txtb_ModFolder2_status.ForeColor = Color.Red;
+                            txtb_ModsConfigFolder_status.Text = Resources.InvalidFolder;
+                            txtb_ModsConfigFolder_status.ForeColor = Color.Red;
                         }
                     }
                     else
                     {
-                        txtb_ModFolder2_status.Text = "";
+                        txtb_ModsConfigFolder_status.Text = "";
                     }
                     break;
             }

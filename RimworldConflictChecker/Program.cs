@@ -7,14 +7,14 @@ namespace RimworldConflictChecker
 {
     public class Program
     {
-        public static int formrc { get; set; }
-        public static string[] allargs { get; set; }
+        public static int Formrc { get; set; }
+        public static string[] Allargs { get; set; }
         public static bool incDisabled = false;
         // Satisfies rule: MarkWindowsFormsEntryPointsWithStaThread.
         [STAThread]
         private static int Main(string[] args)
         {
-            allargs = args;
+            Allargs = args;
             var rimworldfolder = "";
             //string[] modfolders = { };
             var modfolder1 = "";
@@ -25,8 +25,10 @@ namespace RimworldConflictChecker
             // Uncomment the following after testing to see that NBug is working as configured
             NBug.Settings.ReleaseMode = true;
 
-            var list = new List<NBug.Core.Util.Storage.FileMask>();
-            list.Add("RCC.txt");
+            var list = new List<NBug.Core.Util.Storage.FileMask>
+            {
+                "RCC.txt"
+            };
             NBug.Settings.AdditionalReportFiles = list;
 
             //NBug.Exceptions.Dispatch();
@@ -68,7 +70,7 @@ namespace RimworldConflictChecker
                 }
             }
             Console.WriteLine("Rimworld Conflict Checker Starting");
-            formrc = 2;
+            Formrc = 2;
 
             if (args.Length != 0)
             {
@@ -77,19 +79,19 @@ namespace RimworldConflictChecker
                     if (Utils.FileOrDirectoryExists(arg + "\\RimWorldWin.exe"))
                     {
                         rimworldfolder = arg;
-                        formrc = 0;
+                        Formrc = 0;
                         continue;
                     }
                     if (Utils.FileOrDirectoryExists(arg + "\\Core"))
                     {
                         modfolder1 = arg + "\\Mods";
-                        formrc = 0;
+                        Formrc = 0;
                         continue;
                     }
                     if (Utils.FileOrDirectoryExists(arg + "\\ModsConfig.xml"))
                     {
                         modsconfigfolder = arg;
-                        formrc = 0;
+                        Formrc = 0;
                         continue;
                     }
                     if (arg == "-all")
@@ -97,7 +99,7 @@ namespace RimworldConflictChecker
                         incDisabled = true;
                     }
                     modfolder2 = arg;
-                    formrc = 0;
+                    Formrc = 0;
                 }
             }
 
@@ -121,7 +123,7 @@ namespace RimworldConflictChecker
                 modfolder1 = (string)Settings.Default["ModFolder1"];
                 modfolder2 = (string)Settings.Default["ModFolder2"];
                 modsconfigfolder = (string)Settings.Default["ModsConfigFolder"];
-                formrc = OptionsForm.ReturnValue1;
+                Formrc = OptionsForm.ReturnValue1;
                 //Settings.Default.Upgrade();
             }
             //testing throwing exception
@@ -133,7 +135,7 @@ namespace RimworldConflictChecker
             Logger.Instance.WriteToFile();
             if (mainprogram.Rc == 0)
             {
-                runWPF();
+                RunWPF();
             }
 
             //testing throwing exception
@@ -144,7 +146,7 @@ namespace RimworldConflictChecker
 
         // All WPF applications should execute on a single-threaded apartment (STA) thread
         [STAThread]
-        public static void runWPF()
+        public static void RunWPF()
         {
 
             //Windows forms:

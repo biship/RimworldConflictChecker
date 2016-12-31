@@ -91,7 +91,7 @@ namespace RimworldConflictChecker
 
             Logger.Instance.NewSection("Checking GitHub for updates. This will timeout after 10s");
             Console.WriteLine("Checking GitHub for updates. This will timeout after 10s");
-            //Latestver = Version.Parse("0.0.0.7"); //why set this...
+            //Latestver = Version.Parse("0.0.0.6"); //why set this...
             Latestver = Version.Parse("0.0.0.0");
 #if !DEBUG
             Task.Run(async () => { await GetRepoAsync(); }).Wait(10000);
@@ -106,7 +106,7 @@ namespace RimworldConflictChecker
                 Console.WriteLine("There is a newer version on GitHub. You can get it here: https://github.com/biship/RimworldConflictChecker/releases");
             }
 
-            if (Program.formrc != 0)
+            if (Program.Formrc != 0)
             {
                 //esc, X or quit pressed on form. so quit
                 Logger.Instance.Log("");
@@ -123,7 +123,7 @@ namespace RimworldConflictChecker
             //throw new ArgumentException("ha-ha");
 
             Logger.Instance.Log("Command Line Parameters:");
-            Program.allargs.Each((item, n) =>
+            Program.Allargs.Each((item, n) =>
             {
                 if (!String.IsNullOrEmpty(item))
                 {
@@ -219,24 +219,36 @@ namespace RimworldConflictChecker
             //get game version
             Logger.Instance.NewSection("Getting RimWorld game version");
             //var rimWorldVersion = Version.Parse("0.0.0");
-            var RimWorld = new RimWorld(folders[0]);
+            var RimWorld = new RimWorld(folders[0])
+            {
+                Version = Version.Parse("0.0.0")
+            };
+            Logger.Instance.Log("Reading " + folders[0] + "\\Version.txt");
             if (Utils.FileOrDirectoryExists(folders[0] + "\\Version.txt"))
             {
                 string line;
                 var file = new StreamReader(folders[0] + "\\Version.txt");
                 while ((line = file.ReadLine()) != null)
                 {
+                    Logger.Instance.Log("Read Line: " + line);
                     var firstline = line.Split(' ');
                     RimWorld.Version = Version.Parse(firstline[0]);
+                    break;
                 }
                 file.Close();
+                Logger.Instance.Log("RimWorld game version: " + RimWorld.Version);
             }
-            Logger.Instance.Log("RimWorld game version: " + RimWorld.Version);
+            else
+            {
+                Logger.Instance.Log("Not able to find " + folders[0] + "\\Version.txt");
+                Logger.Instance.Log("Not able to determine if mods will or will not load");
+            }
 
             Console.WriteLine("Running checks...");
 
             Logger.Instance.NewSection("Adding subfolders of each Mod folder to the list of folders to search");
-
+            
+            //check if we got here without any folders?
             foreach (var folder in folders.Skip(2))
             {
                 if (folder.Length != 0)
@@ -254,7 +266,7 @@ namespace RimworldConflictChecker
                         else
                         {
                             baddirs.Add(folderx); //TODO: check and display
-                            Logger.Instance.Log("Folder does not contains an 'About' subfolder, NOT added to search list : " + folderx.FullName);
+                            Logger.Instance.Log("Folder does not contains an 'About' subfolder, not a valid Mod folder, NOT added to search list : " + folderx.FullName);
                         }
                     }
                 }
