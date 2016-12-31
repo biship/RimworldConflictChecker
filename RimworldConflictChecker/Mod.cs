@@ -60,6 +60,7 @@ namespace RimworldConflictChecker
             }
 
             var totalConflicts = 0;
+
             foreach (var xmlFile in XmlFiles)
             {
                 foreach (var otherXmlFile in otherMod.XmlFiles)
@@ -85,22 +86,17 @@ namespace RimworldConflictChecker
             }
 
             var totalConflicts = 0;
+
             foreach (var xmlFile in XmlFiles)
             {
                 foreach (var otherXmlFile in otherMod.XmlFiles)
                 {
                     totalConflicts += CheckForFileConflicts(xmlFile, otherXmlFile, mod, otherMod);
-                    //CheckForFileConflicts(xmlFile, otherXmlFile, otherMod);
                 }
             }
 
             otherMod.CoreChecked = true;
             otherMod.CoreOverrights = totalConflicts;
-            //if (totalConflicts != 0)
-            //{
-            //ConflictedMods.Add(otherMod);
-            //otherMod.ConflictedMods.Add(this);
-            //}
             return totalConflicts;
         }
 
@@ -133,7 +129,6 @@ namespace RimworldConflictChecker
                                         if (!element.Value.IsNullOrEmpty())
                                         {
                                             aboutXDoc.ModTargetVersion = Version.Parse(element.Value);
-                                            //aboutXDoc.ModTargetVersion = element.Value;
                                         }
                                         else
                                         {
@@ -164,7 +159,8 @@ namespace RimworldConflictChecker
         {
             var totalConflicts = 0;
 
-            if (((mod.ModEnabled == true) && (otherMod.ModEnabled == true)) && ((xmlFile.XmlDocument != null) && (otherXmlFile.XmlDocument != null) && xmlFile.XmlFileInfo.Name.Contains(".xml") && otherXmlFile.XmlFileInfo.Name.Contains(".xml")))
+            //if (((mod.ModEnabled == true) && (otherMod.ModEnabled == true)) && ((xmlFile.XmlDocument != null) && (otherXmlFile.XmlDocument != null) && xmlFile.XmlFileInfo.Name.Contains(".xml") && otherXmlFile.XmlFileInfo.Name.Contains(".xml")))
+            if (((xmlFile.XmlDocument != null) && (otherXmlFile.XmlDocument != null) && xmlFile.XmlFileInfo.Name.Contains(".xml") && otherXmlFile.XmlFileInfo.Name.Contains(".xml")))
             {
                 if (xmlFile.XmlDocument.Root != null)
                 {
@@ -215,9 +211,9 @@ namespace RimworldConflictChecker
                                         string otherline;
                                         var xmlsize = new FileInfo(xmlFile.XmlFileInfo.FullName).Length;
                                         var otherXmlsize = new FileInfo(otherXmlFile.XmlFileInfo.FullName).Length;
-                                        //var modposition = Array.IndexOf(RimworldXmlLoader.Activemods, DirName) + 1;
+                                        //var modposition = Array.IndexOf(RimworldXmlLoader.modsconfig, DirName) + 1;
                                         var modposition = mod.ModRank;
-                                        //var othermodposition = Array.IndexOf(RimworldXmlLoader.Activemods, otherMod.DirName) + 1;
+                                        //var othermodposition = Array.IndexOf(RimworldXmlLoader.modsconfig, otherMod.DirName) + 1;
                                         var othermodposition = otherMod.ModRank;
                                         if (modposition == 0)
                                         {
@@ -374,7 +370,7 @@ namespace RimworldConflictChecker
 
         public int CheckForDllConflicts(Mod mod, Mod otherMod)
         {
-            if (ReferenceEquals(this, otherMod) || mod.ModEnabled == false || otherMod.ModEnabled == false) // || (DirName == otherMod.DirName) || (otherMod.DirName == DirName))
+            if (ReferenceEquals(this, otherMod)) // || (DirName == otherMod.DirName) || (otherMod.DirName == DirName))
             {
                 return 0;
             }

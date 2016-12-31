@@ -8,14 +8,19 @@ namespace RimworldConflictChecker
     public class Program
     {
         public static int formrc { get; set; }
-
+        public static string[] allargs { get; set; }
+        public static bool incDisabled = false;
         // Satisfies rule: MarkWindowsFormsEntryPointsWithStaThread.
         [STAThread]
         private static int Main(string[] args)
         {
+            allargs = args;
             var rimworldfolder = "";
+            //string[] modfolders = { };
             var modfolder1 = "";
             var modfolder2 = "";
+            var modsconfigfolder = "";
+            //var incDisabled = false;
 
             // Uncomment the following after testing to see that NBug is working as configured
             NBug.Settings.ReleaseMode = true;
@@ -39,7 +44,6 @@ namespace RimworldConflictChecker
             //Application.ThreadException += NBug.Handler.ThreadException;
             //TaskScheduler.UnobservedTaskException += NBug.Handler.UnobservedTaskException;
 
-
             if (args.Length == 1)
             {
                 if (args[0] == "--help" || args[0] == "-help" || args[0] == "-h" || args[0] == "--h" || args[0] == "/?")
@@ -47,57 +51,85 @@ namespace RimworldConflictChecker
                     Console.WriteLine("Rimworld Conflict Checker");
                     Console.WriteLine();
                     Console.WriteLine("Usage:");
-                    Console.WriteLine("\tRCC.exe \"<path.to.RimWorldWin.exe>\" (optional)\"<path.to.steam.mod.folder>\"");
+                    Console.WriteLine("     RCC.exe [-all] [path(s)]");
                     Console.WriteLine();
+                    Console.WriteLine("     -all   : Run as if all mods are enabled (ignoring what is set in ModsConfig.xml)");
+                    Console.WriteLine("     [path] : Path(s) (each within quotes) seperated by spaces");
+                    Console.WriteLine("              Where paths are : (required) Rimworld.exe location ");
+                    Console.WriteLine("                                (optional) Rimworld Game Mod Folder");
+                    Console.WriteLine("                                (optional) Steam Mod Folder");
+                    Console.WriteLine("                                (optional) ModsConfig.xml location");
+                    //Console.WriteLine();
                     Console.WriteLine("Example:");
-                    Console.WriteLine("\tRCC.exe \"D:\\SteamLibrary\\steamapps\\common\\RimWorld\" \"D:\\SteamLibrary\\steamapps\\workshop\\content\\294100\"");
+                    Console.WriteLine("     RCC.exe \"D:\\SteamLibrary\\steamapps\\common\\RimWorld\" \"D:\\SteamLibrary\\steamapps\\workshop\\content\\294100\"");
                     Console.WriteLine();
-                    Console.WriteLine("or just run RCC.exe without parameters to get a folder picker & config saver");
+                    Console.WriteLine("or just run RCC.exe without parameters to get a folder chooser");
                     return 1;
                 }
             }
             Console.WriteLine("Rimworld Conflict Checker Starting");
             formrc = 2;
 
-            switch (args.Length)
+            if (args.Length != 0)
             {
-                case 1:
-                    rimworldfolder = args[0];
-                    modfolder1 = args[0] +"\\Mods";
-                    formrc = 0;
-                    //modfolder1 (no steam folder)
-                    break;
-                case 2:
-                    rimworldfolder = args[0];
-                    modfolder1 = args[0] + "\\Mods";
-                    modfolder2 = args[1];
-                    formrc = 0;
-                    break;
-                default:
-                    if (Settings.Default.UpgradeRequired)
+                foreach (string arg in args)
+                {
+                    if (Utils.FileOrDirectoryExists(arg + "\\RimWorldWin.exe"))
                     {
-                        Settings.Default.Upgrade();
-                        Settings.Default.UpgradeRequired = false;
-                        Settings.Default.Save();
+                        rimworldfolder = arg;
+                        formrc = 0;
+                        continue;
                     }
-                    Application.EnableVisualStyles();
-                    Application.SetCompatibleTextRenderingDefault(false);
-                    using (var optionsForm = new OptionsForm())
+                    if (Utils.FileOrDirectoryExists(arg + "\\Core"))
                     {
-                        Application.Run(optionsForm);
+                        modfolder1 = arg + "\\Mods";
+                        formrc = 0;
+                        continue;
                     }
-                    //set folder locations based on settings
-                    rimworldfolder = (string)Settings.Default["RimWorldFolder"];
-                    modfolder1 = (string)Settings.Default["ModFolder1"];
-                    modfolder2 = (string)Settings.Default["ModFolder2"];
-                    formrc = OptionsForm.ReturnValue1;
-                    //Settings.Default.Upgrade();
-                    break;
+                    if (Utils.FileOrDirectoryExists(arg + "\\ModsConfig.xml"))
+                    {
+                        modsconfigfolder = arg;
+                        formrc = 0;
+                        continue;
+                    }
+                    if (arg == "-all")
+                    {
+                        incDisabled = true;
+                    }
+                    modfolder2 = arg;
+                    formrc = 0;
+                }
+            }
+
+            if (args.Length == 0 || ((incDisabled == true) && (args.Length == 1)))
+           { 
+                //run folder picker
+                if (Settings.Default.UpgradeRequired)
+                {
+                    Settings.Default.Upgrade();
+                    Settings.Default.UpgradeRequired = false;
+                    Settings.Default.Save();
+                }
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                using (var optionsForm = new OptionsForm())
+                {
+                    Application.Run(optionsForm);
+                }
+                //set folder locations based on settings
+                rimworldfolder = (string)Settings.Default["RimWorldFolder"];
+                modfolder1 = (string)Settings.Default["ModFolder1"];
+                modfolder2 = (string)Settings.Default["ModFolder2"];
+                modsconfigfolder = (string)Settings.Default["ModsConfigFolder"];
+                formrc = OptionsForm.ReturnValue1;
+                //Settings.Default.Upgrade();
             }
             //testing throwing exception
             //throw new ArgumentException("ha-ha");
 
-            var mainprogram = new RimworldXmlLoader(rimworldfolder, modfolder1, modfolder2);
+            //this is terrible code. 
+            //TODO: Put all this into the RimWorld object
+            var mainprogram = new RimworldXmlLoader(incDisabled, rimworldfolder, modsconfigfolder, modfolder1, modfolder2);
             Logger.Instance.WriteToFile();
             if (mainprogram.Rc == 0)
             {

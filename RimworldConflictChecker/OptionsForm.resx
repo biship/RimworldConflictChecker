@@ -129,15 +129,11 @@
 3. (optional) Choose RimWorld Mod Folder 2. 
     This is only needed if you run Steam, as Steam saves workshop Mods in a different location.
 
+4. (optional) Choose RimWorld ModsConfig.xml folder.
+    This is only needed if you want to speficy a different mods config xml
+    Useful for when using -savedatafolder
+
 Mod Folders 1 &amp;&amp; 2 are auto-guessed for you when you choose the RimWorld Executable Folder.
-
-
-
-
-
-
-
-
-</value>
+RimWorld ModsConfig.xml folder is automatically determined unless overridden.</value>
   </data>
 </root>

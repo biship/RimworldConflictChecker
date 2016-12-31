@@ -13,6 +13,7 @@ namespace RimworldConflictChecker
         private string last_txtb_RimworldFolder;
         private string last_txtb_ModFolder1;
         private string last_txtb_ModFolder2;
+        private string last_txtb_ModsConfigFolder;
 
         public static int ReturnValue1 { get; set; }
 
@@ -27,10 +28,14 @@ namespace RimworldConflictChecker
             last_txtb_ModFolder1 = Settings.Default.ModFolder1;
             txtb_ModFolder2.Text = Settings.Default.ModFolder2;
             last_txtb_ModFolder2 = Settings.Default.ModFolder2;
+            txtb_ModsConfigFolder.Text = Settings.Default.ModsConfigFolder;
+            last_txtb_ModsConfigFolder = Settings.Default.ModsConfigFolder;
+            checkBox1.Checked = Program.incDisabled;
             ReturnValue1 = 2;
             UpdateFoldersDisplay(txtb_RimworldFolder); //run on every = above
             UpdateFoldersDisplay(txtb_ModFolder1); //run on every = above
             UpdateFoldersDisplay(txtb_ModFolder2); //run on every = above
+            UpdateFoldersDisplay(txtb_ModsConfigFolder); //run on every = above
             //UpdateFoldersDisplay(); //not needed as it runs on every text change above
             //form now displays
         }
@@ -189,6 +194,48 @@ namespace RimworldConflictChecker
             //UpdateFoldersDisplay(); 
         }
 
+        private void btn_ModsConfigFolder_Click(object sender, EventArgs e)
+        {
+            using (var chooseDialog = new OpenFileDialog())
+            {
+                chooseDialog.Filter = "ModsConfig|ModsConfig.xml";
+                chooseDialog.CheckFileExists = true;
+                chooseDialog.CheckPathExists = true;
+                if (Utils.FileOrDirectoryExists(last_txtb_ModsConfigFolder))
+                {
+                    //chooseDialog.InitialDirectory = last_txtb_ModsConfigFolder ?? "C:\\"; //do these cause crashes?
+                    chooseDialog.InitialDirectory = last_txtb_ModsConfigFolder; //do these cause crashes?
+                }
+                else
+                {
+                    if (Utils.FileOrDirectoryExists(txtb_ModsConfigFolder.Text))
+                    {
+                        chooseDialog.InitialDirectory = txtb_ModsConfigFolder.Text; //do these cause crashes?
+                    }
+                }
+
+                //chooseDialog.CustomPlaces.Add(last_txtb_ModsConfigFolder ?? "C:\\"); //adds to the dropdown //do these cause crashes?
+                //chooseDialog.CustomPlaces.Add(txtb_RimworldFolder.Text ?? "C:\\"); //adds to the dropdown //do these cause crashes?
+                chooseDialog.Title = "Please select ModsConfig.xml";
+                var result = chooseDialog.ShowDialog();
+                //OK = Filename = full path & RimWorldWin.exe
+                //Cancel = Filename = RimWorldWin.exe
+
+                if (result == DialogResult.OK)
+                {
+                    //can only get here if they clicked ok & if RimWorldWin.exe was found
+                    //Filename = full path & RimWorldWin.exe
+                    //no need to check if file or folder exists
+                    last_txtb_ModsConfigFolder = GetDirectoryName(chooseDialog.FileName);
+                    //txtb_RimworldFolder_status.Text = "OK";
+                    //txtb_RimworldFolder_status.ForeColor = Color.Green;
+                    //var ModsConfigFolder = GetDirectoryName(chooseDialog.FileName);
+                    //txtb_ModsConfigFolder.Text = ModsConfigFolder;
+                    txtb_ModsConfigFolder.Text = last_txtb_ModsConfigFolder;
+                }
+            }
+        }
+
         private void btn_quit_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
@@ -208,6 +255,7 @@ namespace RimworldConflictChecker
             Settings.Default.RimWorldFolder = txtb_RimworldFolder.Text;
             Settings.Default.ModFolder1 = txtb_ModFolder1.Text;
             Settings.Default.ModFolder2 = txtb_ModFolder2.Text;
+            Settings.Default.ModsConfigFolder = txtb_ModsConfigFolder.Text;
             Settings.Default.Save();
             ReturnValue1 = 0;
             Close();
@@ -282,6 +330,8 @@ namespace RimworldConflictChecker
             last_txtb_ModFolder1 = Settings.Default.ModFolder1;
             txtb_ModFolder2.Text = Settings.Default.ModFolder2;
             last_txtb_ModFolder2 = Settings.Default.ModFolder2;
+            txtb_ModsConfigFolder.Text = Settings.Default.ModsConfigFolder;
+            last_txtb_ModsConfigFolder = Settings.Default.ModsConfigFolder;
             ReturnValue1 = 2;
 
         }
@@ -350,6 +400,25 @@ namespace RimworldConflictChecker
                         txtb_ModFolder2_status.Text = "";
                     }
                     break;
+                case nameof(txtb_ModsConfigFolder):
+                    if (!string.IsNullOrEmpty(sender.Text))
+                    {
+                        if (Utils.FileOrDirectoryExists(sender.Text + "\\ModsConfig.xml")) 
+                        {
+                            txtb_ModFolder2_status.Text = Resources.OK;
+                            txtb_ModFolder2_status.ForeColor = Color.Green;
+                        }
+                        else
+                        {
+                            txtb_ModFolder2_status.Text = Resources.InvalidFolder;
+                            txtb_ModFolder2_status.ForeColor = Color.Red;
+                        }
+                    }
+                    else
+                    {
+                        txtb_ModFolder2_status.Text = "";
+                    }
+                    break;
             }
         }
 
@@ -357,14 +426,25 @@ namespace RimworldConflictChecker
         {
             UpdateFoldersDisplay(sender as TextBox);
         }
+
         private void txtb_ModFolder1_TextChanged(object sender, EventArgs e)
         {
             UpdateFoldersDisplay(sender as TextBox);
         }
 
-        private void txtb_ModFolder2_TextChanged_1(object sender, EventArgs e)
+        private void txtb_ModFolder2_TextChanged(object sender, EventArgs e)
         {
             UpdateFoldersDisplay(sender as TextBox);
+        }
+
+        private void txtb_ModsConfigFolder_TextChanged(object sender, EventArgs e)
+        {
+            UpdateFoldersDisplay(sender as TextBox);
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            Program.incDisabled = !Program.incDisabled;
         }
     }
 }

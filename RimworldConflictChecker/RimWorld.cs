@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RimworldConflictChecker
 {
     class RimWorld
     {
         Version _version;
+
         public List<FileInfo> Files { get; set; } //list of all files under dir
 
         public Version Version 
