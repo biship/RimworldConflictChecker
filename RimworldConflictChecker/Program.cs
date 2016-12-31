@@ -25,6 +25,10 @@ namespace RimworldConflictChecker
             // Uncomment the following after testing to see that NBug is working as configured
             NBug.Settings.ReleaseMode = true;
 
+#if DEBUG
+            NBug.Settings.WriteLogToDisk = true;
+#endif
+
             var list = new List<NBug.Core.Util.Storage.FileMask>
             {
                 "RCC.txt"
