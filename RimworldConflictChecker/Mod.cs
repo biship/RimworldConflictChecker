@@ -109,7 +109,9 @@ namespace RimworldConflictChecker
 
             foreach (var xmlFile in xmlFiles)
             {
-                if (xmlFile.XmlFileInfo.FullName.Contains("\\About\\About.xml"))
+                //if (xmlFile.XmlFileInfo.FullName.ToUpper().Contains("\\ABOUT\\ABOUT.XML"))
+                //New Compare Extension for ignoring case
+                if (xmlFile.XmlFileInfo.FullName.Contains("\\About\\About.xml", StringComparison.OrdinalIgnoreCase))
                 {
                     if (xmlFile.XmlDocument.Root != null)
                     {
@@ -119,12 +121,13 @@ namespace RimworldConflictChecker
                             {
                                 if (element.Value != null)
                                 {
-                                    if (element.Name.ToString().ToUpper() == "NAME")
+                                    //if (element.Name.ToString().ToUpper() == "NAME")
+                                    if (element.Name.ToString().Contains("NAME", StringComparison.OrdinalIgnoreCase))
                                     {
                                         aboutXDoc.ModName = element.Value;
                                         continue;
                                     }
-                                    if (element.Name.ToString().ToUpper() == "TARGETVERSION")
+                                    if (element.Name.ToString().Contains("TARGETVERSION", StringComparison.OrdinalIgnoreCase))
                                     {
                                         if (!element.Value.IsNullOrEmpty())
                                         {
@@ -136,7 +139,7 @@ namespace RimworldConflictChecker
                                         }
                                         continue;
                                     }
-                                    if (element.Name.ToString().ToUpper() == "DESCRIPTION")
+                                    if (element.Name.ToString().Contains( "DESCRIPTION", StringComparison.OrdinalIgnoreCase))
                                     {
                                         aboutXDoc.ModDescription = element.Value;
                                     }
@@ -159,6 +162,9 @@ namespace RimworldConflictChecker
         {
             var totalConflicts = 0;
 
+
+            //RimworldXmlLoader.weapons.Add(weapon);
+            //weapons.Add(weapon);
             //if (((mod.ModEnabled == true) && (otherMod.ModEnabled == true)) && ((xmlFile.XmlDocument != null) && (otherXmlFile.XmlDocument != null) && xmlFile.XmlFileInfo.Name.Contains(".xml") && otherXmlFile.XmlFileInfo.Name.Contains(".xml")))
             if (((xmlFile.XmlDocument != null) && (otherXmlFile.XmlDocument != null) && xmlFile.XmlFileInfo.Name.Contains(".xml") && otherXmlFile.XmlFileInfo.Name.Contains(".xml")))
             {
@@ -167,14 +173,39 @@ namespace RimworldConflictChecker
                     foreach (var element in xmlFile.XmlDocument.Root.Elements())
                     {
                         //string thingDefNameValue = element.Element("ThingDef")?.Value;
-                        var thingDefNameValue = element.Name.ToString();
-                        var defNameValue = element.Element("defName")?.Value;
+                        var thingDefNameValue = element.Name.ToString(); //the element text
+                        var defNameValue = element.Element("defName")?.Value; //the value of the defName element (only works when on this element)
+                        var thisculture = CultureInfo.CurrentCulture;
 
-                        //SimpleLogger.Instance.Log(xmlFile.XmlFileInfo.FullName + " : " + element.Name.ToString());
-                        //if null then no point in doing this element
+                        //element defName is null, then no point in doing this element (likely because we're not on the deName element!)
                         if (string.IsNullOrWhiteSpace(defNameValue))
                         {
                             continue;
+                        }
+
+                        //we're in a ThingDef
+                        if (Program.dps)
+                        {
+                            foreach (var element2 in element.Elements())
+                            {
+                                var weapon = new Weapon();
+                                var thingDefNameValue2 = element2.Name.ToString(); //the element text
+                                if (thisculture.CompareInfo.IndexOf(thingDefNameValue2, "statBases", CompareOptions.IgnoreCase) >= 0)
+                                    {
+                                    foreach (var element3 in element2.Elements())
+                                    {
+                                        var thingDefNameValue3 = element3.Name.ToString(); //the element text
+                                        var defNameValue3 = element3.Value;
+                                        //the value of the defName element (only works when on this element)
+                                        //if (thisculture.CompareInfo.IndexOf(thingDefNameValue3, "RangedWeapon_Cooldown", CompareOptions.IgnoreCase) >= 0)
+                                        //{
+                                        //match
+                                        //weapon.RangedWeapon_Cooldown = float.Parse(element3.Value, CultureInfo.InvariantCulture.NumberFormat);
+                                        //}
+                                        weapon.RangedWeapon_Cooldown = string.IsNullOrWhiteSpace(element3.Element("RangedWeapon_Cooldown")?.Value) ? 0f : float.Parse(element3.Element("RangedWeapon_Cooldown")?.Value, CultureInfo.InvariantCulture.NumberFormat); //crashes if null
+                                    }
+                                }
+                            }
                         }
 
                         if (otherXmlFile.XmlDocument.Root != null)
@@ -197,41 +228,49 @@ namespace RimworldConflictChecker
                                     var otherRootValue = otherXmlFile.XmlDocument.Root.Name.ToString();
                                     //string otherThingDefNameValue = otherElement.Element("ThingDef")?.Value;
                                     var otherThingDefNameValue = otherElement.Name.ToString();
+                                    //var thisculture = CultureInfo.CurrentCulture;
                                     //Console.WriteLine(rootValue);
                                     //Console.WriteLine(otherRootValue);
 
                                     if (string.Equals(thingDefNameValue, otherThingDefNameValue))
                                     {
                                         //entire defnames are replaced by mods further down in the load order, so no need to check params
+                                        long xmlsize = 0;
+                                        long otherXmlsize = 0;
+                                        try
+                                        {
+                                            xmlsize = new FileInfo(xmlFile.XmlFileInfo.FullName).Length;
+                                            otherXmlsize = new FileInfo(otherXmlFile.XmlFileInfo.FullName).Length;
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Logger.Instance.LogError("Unable to read file.", ex);
+                                            //Utils.LogException("XmlReader Error", ex);
+                                        }
                                         var modenabled = "";
                                         var othermodenabled = "";
                                         var linenum = 1;
                                         var otherlinenum = 1;
                                         string line;
                                         string otherline;
-                                        var xmlsize = new FileInfo(xmlFile.XmlFileInfo.FullName).Length;
-                                        var otherXmlsize = new FileInfo(otherXmlFile.XmlFileInfo.FullName).Length;
-                                        //var modposition = Array.IndexOf(RimworldXmlLoader.modsconfig, DirName) + 1;
                                         var modposition = mod.ModRank;
-                                        //var othermodposition = Array.IndexOf(RimworldXmlLoader.modsconfig, otherMod.DirName) + 1;
                                         var othermodposition = otherMod.ModRank;
-                                        if (modposition == 0)
+                                        //if (modposition == 0)
+                                        if (!mod.ModEnabled)
                                         {
                                             modenabled = "(Not Enabled)";
                                         }
-                                        if (othermodposition == 0)
+                                        //if (othermodposition == 0)
+                                        if (!otherMod.ModEnabled)
                                         {
                                             othermodenabled = "(Not Enabled)";
                                         }
                                         using (var file = new StreamReader(xmlFile.XmlFileInfo.FullName))
                                         {
-                                            var thisculture = CultureInfo.CurrentCulture;
                                             while ((line = file.ReadLine()) != null)
                                             {
                                                 if (
-                                                    thisculture.CompareInfo.IndexOf(line,
-                                                        "<defName>" + defNameValue + "</defName>",
-                                                        CompareOptions.IgnoreCase) >= 0)
+                                                    thisculture.CompareInfo.IndexOf(line, "<defName>" + defNameValue + "</defName>", CompareOptions.IgnoreCase) >= 0)
                                                 {
                                                     break;
                                                 }
@@ -242,10 +281,7 @@ namespace RimworldConflictChecker
                                             {
                                                 while ((otherline = otherfile.ReadLine()) != null)
                                                 {
-                                                    if (
-                                                        thisculture.CompareInfo.IndexOf(otherline,
-                                                            "<defName>" + defNameValue + "</defName>", CompareOptions.IgnoreCase) >=
-                                                        0)
+                                                    if (thisculture.CompareInfo.IndexOf(otherline, "<defName>" + defNameValue + "</defName>", CompareOptions.IgnoreCase) >= 0)
                                                     {
                                                         break;
                                                     }
@@ -354,10 +390,9 @@ namespace RimworldConflictChecker
                 {
                     //keep looping through all subfolders, skipping language folders.
                     if (!subDirectory.FullName.Contains("\\Languages\\"))
-                    { 
+                    {
                         files.AddRange(GetXmlFiles(subDirectory));
                     }
-                    
                 }
             }
             catch (Exception ex)
@@ -413,8 +448,10 @@ namespace RimworldConflictChecker
                             var otherXmlsize = new FileInfo(otherXmlFile.XmlFileInfo.FullName).Length;
                             var otherXmldate = new FileInfo(otherXmlFile.XmlFileInfo.FullName).LastWriteTime;
                             // Get the file version for the notepad.
-                            FileVersionInfo xmlversion = FileVersionInfo.GetVersionInfo(xmlFile.XmlFileInfo.FullName);
-                            FileVersionInfo otherXmlversion = FileVersionInfo.GetVersionInfo(otherXmlFile.XmlFileInfo.FullName);
+                            //FileVersionInfo xmlversion = FileVersionInfo.GetVersionInfo(xmlFile.XmlFileInfo.FullName);
+                            var xmlversion = FileVersionInfo.GetVersionInfo(xmlFile.XmlFileInfo.FullName);
+                            //FileVersionInfo otherXmlversion = FileVersionInfo.GetVersionInfo(otherXmlFile.XmlFileInfo.FullName);
+                            var otherXmlversion = FileVersionInfo.GetVersionInfo(otherXmlFile.XmlFileInfo.FullName);
                             if (mod.ModRank > otherMod.ModRank)
                             {
                                 Logger.Instance.LogDLL(otherXmlFile.XmlFileInfo.FullName, otherMod.ModRank, otherXmlsize, xmlversion.FileVersion, otherXmldate);

@@ -9,18 +9,21 @@ namespace RimworldConflictChecker
     {
         public static int Formrc { get; set; }
         public static string[] Allargs { get; set; }
-        public static bool incDisabled = false;
+        //public static bool incdisabled = false;
+        public static bool dps;
+        public static DateTime starttime;
+
         // Satisfies rule: MarkWindowsFormsEntryPointsWithStaThread.
         [STAThread]
         private static int Main(string[] args)
         {
             Allargs = args;
             var rimworldfolder = "";
-            //string[] modfolders = { };
             var modfolder1 = "";
             var modfolder2 = "";
             var modsconfigfolder = "";
-            //var incDisabled = false;
+            var incdisabled = false;
+            starttime = DateTime.Now;
 
             // Uncomment the following after testing to see that NBug is working as configured
             NBug.Settings.ReleaseMode = true;
@@ -29,10 +32,7 @@ namespace RimworldConflictChecker
             NBug.Settings.WriteLogToDisk = true;
 #endif
 
-            var list = new List<NBug.Core.Util.Storage.FileMask>
-            {
-                "RCC.txt"
-            };
+            var list = new List<NBug.Core.Util.Storage.FileMask> {"RCC.txt"};
             NBug.Settings.AdditionalReportFiles = list;
 
             //NBug.Exceptions.Dispatch();
@@ -100,15 +100,21 @@ namespace RimworldConflictChecker
                     }
                     if (arg == "-all")
                     {
-                        incDisabled = true;
+                        incdisabled = true;
+                        Settings.Default.incDisabled = true;
+                    }
+                    if (arg == "-dps")
+                    {
+                        dps = true;
                     }
                     modfolder2 = arg;
                     Formrc = 0;
                 }
             }
 
-            if (args.Length == 0 || ((incDisabled == true) && (args.Length == 1)))
-           { 
+            //if (args.Length == 0 || ((incdisabled) && (args.Length == 1)))
+            if (args.Length == 0)
+            {
                 //run folder picker
                 if (Settings.Default.UpgradeRequired)
                 {
@@ -127,15 +133,16 @@ namespace RimworldConflictChecker
                 modfolder1 = (string)Settings.Default["ModFolder1"];
                 modfolder2 = (string)Settings.Default["ModFolder2"];
                 modsconfigfolder = (string)Settings.Default["ModsConfigFolder"];
+                incdisabled = (bool)Settings.Default["incDisabled"];
                 Formrc = OptionsForm.ReturnValue1;
                 //Settings.Default.Upgrade();
             }
             //testing throwing exception
             //throw new ArgumentException("ha-ha");
 
-            //this is terrible code. 
+            //this is terrible code.
             //TODO: Put all this into the RimWorld object
-            var mainprogram = new RimworldXmlLoader(incDisabled, rimworldfolder, modsconfigfolder, modfolder1, modfolder2);
+            var mainprogram = new RimworldXmlLoader(incdisabled, rimworldfolder, modsconfigfolder, modfolder1, modfolder2);
             Logger.Instance.WriteToFile();
             if (mainprogram.Rc == 0)
             {

@@ -7,3 +7,4 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "CC0037:Remove commented code.", Justification = "<Pending>", Scope = "member", Target = "~M:RimworldConflictChecker.Mod.GetAboutDetails(System.Collections.Generic.List{RimworldConflictChecker.XmlFile})~RimworldConflictChecker.ModDetails")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "CC0037:Remove commented code.", Justification = "<Pending>", Scope = "type", Target = "~T:RimworldConflictChecker.Logger")]
 
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "CC0037:Remove commented code.", Justification = "<Pending>", Scope = "member", Target = "~M:RimworldConflictChecker.Mod.CheckForFileConflicts(RimworldConflictChecker.XmlFile,RimworldConflictChecker.XmlFile,RimworldConflictChecker.Mod,RimworldConflictChecker.Mod)~System.Int32")]

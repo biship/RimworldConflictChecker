@@ -42,11 +42,11 @@ namespace RimworldConflictChecker
                 ".xml"
         };
 
-        public string[] IgnoreFolders = 
+        public string[] IgnoreFolders =
         {
             "Languages",
-            "Source", 
-            ".git", 
+            "Source",
+            ".git",
             ".vs",
             "_mod",
             "obj",

@@ -30,7 +30,8 @@ namespace RimworldConflictChecker
             last_txtb_ModFolder2 = Settings.Default.ModFolder2;
             txtb_ModsConfigFolder.Text = Settings.Default.ModsConfigFolder;
             last_txtb_ModsConfigFolder = Settings.Default.ModsConfigFolder;
-            checkBox1.Checked = Program.incDisabled;
+            //checkBox1.Checked = Program.incdisabled;
+            checkBox1.Checked = Settings.Default.incDisabled;
             ReturnValue1 = 2;
             UpdateFoldersDisplay(txtb_RimworldFolder); //run on every = above
             UpdateFoldersDisplay(txtb_ModFolder1); //run on every = above
@@ -256,6 +257,7 @@ namespace RimworldConflictChecker
             Settings.Default.ModFolder1 = txtb_ModFolder1.Text;
             Settings.Default.ModFolder2 = txtb_ModFolder2.Text;
             Settings.Default.ModsConfigFolder = txtb_ModsConfigFolder.Text;
+            Settings.Default.incDisabled = checkBox1.Checked;
             Settings.Default.Save();
             ReturnValue1 = 0;
             Close();
@@ -285,8 +287,6 @@ namespace RimworldConflictChecker
                 Console.WriteLine("Error writing app settings");
             }
         }
-
-
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
@@ -332,8 +332,8 @@ namespace RimworldConflictChecker
             last_txtb_ModFolder2 = Settings.Default.ModFolder2;
             txtb_ModsConfigFolder.Text = Settings.Default.ModsConfigFolder;
             last_txtb_ModsConfigFolder = Settings.Default.ModsConfigFolder;
+            checkBox1.Checked = Settings.Default.incDisabled;
             ReturnValue1 = 2;
-
         }
 
         private void UpdateFoldersDisplay(TextBox sender)
@@ -441,9 +441,10 @@ namespace RimworldConflictChecker
             UpdateFoldersDisplay(sender as TextBox);
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private static void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            Program.incDisabled = !Program.incDisabled;
+            //Program.incdisabled = !Program.incdisabled;
+            RimworldXmlLoader.incdisabled = !RimworldXmlLoader.incdisabled;
         }
     }
 }

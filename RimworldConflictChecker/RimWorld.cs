@@ -10,7 +10,7 @@ namespace RimworldConflictChecker
 
         public List<FileInfo> Files { get; set; } //list of all files under dir
 
-        public Version Version 
+        public Version Version
         {
             get
             {
@@ -19,8 +19,8 @@ namespace RimworldConflictChecker
             set
             {
                 if (value == null) return;
-                if (value < Version.Parse("0.0.0.0")) return;
-                if (value > Version.Parse("999.999.999.999")) return;
+                if (value < Version.Parse("0.0.0")) return;
+                if (value > Version.Parse("999.999.999")) return;
 
                 _version = value;
             }
