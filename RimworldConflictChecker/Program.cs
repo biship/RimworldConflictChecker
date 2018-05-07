@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -10,9 +11,12 @@ namespace RimworldConflictChecker
         public static int Formrc { get; set; }
         public static string[] Allargs { get; set; }
         //public static bool incdisabled = false;
-        public static bool dps;
-        public static DateTime starttime;
+        public static bool Dps;
+        public static DateTime Starttime;
 
+        //Win10 Insider fix 07/19/17
+        //Tools -> Options -> Debugging -> General ->Uncheck: Enable UI Debugging Tools for XAML
+        
         // Satisfies rule: MarkWindowsFormsEntryPointsWithStaThread.
         [STAThread]
         private static int Main(string[] args)
@@ -23,7 +27,7 @@ namespace RimworldConflictChecker
             var modfolder2 = "";
             var modsconfigfolder = "";
             var incdisabled = false;
-            starttime = DateTime.Now;
+            Starttime = DateTime.Now;
 
             // Uncomment the following after testing to see that NBug is working as configured
             NBug.Settings.ReleaseMode = true;
@@ -105,7 +109,7 @@ namespace RimworldConflictChecker
                     }
                     if (arg == "-dps")
                     {
-                        dps = true;
+                        Dps = true;
                     }
                     modfolder2 = arg;
                     Formrc = 0;
@@ -146,18 +150,20 @@ namespace RimworldConflictChecker
             Logger.Instance.WriteToFile();
             if (mainprogram.Rc == 0)
             {
-                RunWPF();
+                RunWpf();
             }
 
             //testing throwing exception
             //throw new ArgumentException("ha-ha");
-
+#if DEBUG
+            Process.Start(@"RCC.txt");
+#endif                
             return mainprogram.Rc;
         }
 
         // All WPF applications should execute on a single-threaded apartment (STA) thread
         [STAThread]
-        public static void RunWPF()
+        public static void RunWpf()
         {
 
             //Windows forms:
@@ -166,7 +172,7 @@ namespace RimworldConflictChecker
 
             //WPF
             var form = new System.Windows.Application();
-            form.Run(new ResultsWPF());
+            form.Run(new ResultsWpf());
         }
     }
 }

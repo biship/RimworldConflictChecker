@@ -1,29 +1,29 @@
 ﻿<Window
    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  
    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
-   xmlns:local="clr-namespace:RimworldConflictChecker" x:Name="Window1" x:Class="RimworldConflictChecker.ResultsWPF"  
+   xmlns:local="clr-namespace:RimworldConflictChecker" x:Name="Window1" x:Class="RimworldConflictChecker.ResultsWpf"  
    Title="RimWorld Conflict Checker - Results        (In Progress. Not much here yet. After closing this window, check RCC.txt for all the detailed results)" Loaded="Window_Loaded" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Width="{DynamicResource {x:Static SystemParameters.MaximizedPrimaryScreenWidthKey}}" Height="{DynamicResource {x:Static SystemParameters.MaximizedPrimaryScreenHeightKey}}" ShowInTaskbar="False" WindowState="Maximized">
     <TabControl x:Name="tabControl1" Margin="10,10,10,10" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
         <TabItem x:Name="Tab1" Header="Tab1">
             <Grid x:Name="tab1grid1" Background="#FFE5E5E5">
-                <DataGrid x:Name="tab1dataGrid1" Margin="10,10,10,10" AutoGenerateColumns="false" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" IsReadOnly="True" AlternatingRowBackground="Gainsboro" GridLinesVisibility="Vertical" Style="{DynamicResource DGHeaderStyle}" FrozenColumnCount="3" ClipboardCopyMode="IncludeHeader">
+                <DataGrid x:Name="tab1dataGrid1" Margin="10,10,10,10" AutoGenerateColumns="false" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" IsReadOnly="True" AlternatingRowBackground="Gainsboro" GridLinesVisibility="Vertical"  FrozenColumnCount="3" ClipboardCopyMode="IncludeHeader">
                     <DataGrid.ContextMenu>
                         <ContextMenu>
                             <MenuItem Command="Copy" />
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                     <DataGrid.Columns>  
-                        <DataGridTextColumn Binding="{Binding loadposition}" Header="Position" IsReadOnly="True" Width="Auto"/>  
-                        <DataGridCheckBoxColumn Binding="{Binding enabled}" Header="Enabled" IsReadOnly="True" Width="Auto"/>  
-                        <DataGridTextColumn Binding="{Binding version}" Header="Version" IsReadOnly="True" Width="Auto"/>  
-                        <DataGridTextColumn Binding="{Binding modname}" Header="Mod Name" IsReadOnly="True" Width="Auto"/>  
-                        <DataGridTextColumn Binding="{Binding nummodconflicts}" Header="Mod Conflicts" IsReadOnly="True" Width="Auto"/>  
-                        <DataGridTextColumn Binding="{Binding modconflicts}" Header="List of Mod Conflicts" IsReadOnly="True" Width="Auto" Visibility="Hidden"/>  
-                        <DataGridTextColumn Binding="{Binding numdllconflicts}" Header="DLL Conflicts" IsReadOnly="True" Width="Auto"/>  
-                        <DataGridTextColumn Binding="{Binding numcoreconflicts}" Header="Core Conflicts" IsReadOnly="True" Width="Auto"/>  
-                        <DataGridTextColumn Binding="{Binding numxmlfiles}" Header="XML Files" IsReadOnly="True" Width="Auto"/>  
-                        <DataGridTextColumn Binding="{Binding moddir}" Header="Folder" IsReadOnly="True" Width="Auto"/>  
-                        <DataGridTextColumn Binding="{Binding fullmoddir}" Header="Full Path" IsReadOnly="True" Width="Auto"/>   
+                        <DataGridTextColumn Binding="{Binding Loadposition}" Header="Position" IsReadOnly="True" Width="Auto" SortDirection="Ascending"/>  
+                        <DataGridCheckBoxColumn Binding="{Binding Enabled}" Header="Enabled" IsReadOnly="True" Width="Auto"/>  
+                        <DataGridTextColumn Binding="{Binding Version}" Header="Version" IsReadOnly="True" Width="Auto"/>  
+                        <DataGridTextColumn Binding="{Binding Modname}" Header="Mod Name" IsReadOnly="True" Width="Auto"/>  
+                        <DataGridTextColumn Binding="{Binding Nummodconflicts}" Header="Mod Conflicts" IsReadOnly="True" Width="Auto"/>  
+                        <DataGridTextColumn Binding="{Binding Modconflicts}" Header="List of Mod Conflicts" IsReadOnly="True" Width="Auto" Visibility="Hidden"/>  
+                        <DataGridTextColumn Binding="{Binding Numdllconflicts}" Header="DLL Conflicts" IsReadOnly="True" Width="Auto"/>  
+                        <DataGridTextColumn Binding="{Binding Numcoreconflicts}" Header="Core Conflicts" IsReadOnly="True" Width="Auto"/>  
+                        <DataGridTextColumn Binding="{Binding Numxmlfiles}" Header="XML Files" IsReadOnly="True" Width="Auto"/>  
+                        <DataGridTextColumn Binding="{Binding Moddir}" Header="Folder" IsReadOnly="True" Width="Auto"/>  
+                        <DataGridTextColumn Binding="{Binding Fullmoddir}" Header="Full Path" IsReadOnly="True" Width="Auto"/>   
                     </DataGrid.Columns>
                     <DataGrid.RowStyle>
                         <Style TargetType="DataGridRow">
@@ -38,9 +38,18 @@
             </Grid>
         </TabItem>
         <TabItem x:Name="Tab2" Header="Tab2">
-            <Grid x:Name="tab2grid1" Background="#FFE5E5E5">
-                <DataGrid x:Name="tab2dataGrid1" AutoGenerateColumns="true" Margin="10,10,10,10" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" IsReadOnly="True" ItemsSource="{Binding}"/>
-            </Grid>
+          <Grid x:Name="tab2grid1" Background="#FFE5E5E5">
+                <DataGrid x:Name="MyDatagrid" Margin="10,10,10,10" AutoGenerateColumns="True" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" ItemsSource="{Binding Path=viewmodsView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" FrozenColumnCount="4 " AlternatingRowBackground="Gainsboro" CanUserAddRows="False" ClipboardCopyMode="IncludeHeader">
+                    <DataGrid.DataContext>
+                        <local:ResultsForm/>
+                    </DataGrid.DataContext>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Command="Copy" />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                </DataGrid>
+           </Grid>
         </TabItem>
     </TabControl>
     <Window.Resources>  
@@ -62,6 +71,4 @@
         </Style.Triggers>
     </Style>  
 </Window.Resources>
-</Window>  
-    
-    
+</Window>

@@ -13,12 +13,11 @@ namespace RimworldConflictChecker
     /// Interaction logic for ResultsWPF.xaml
     /// </summary>
 
-    public partial class ResultsWPF
+    public partial class ResultsWpf
     {
-        //public List<ModView> modsView { get; set; }
         public List<ModView> ModsView { get; set; }
         private ICommand _saveCommand;
-        public ResultsWPF()
+        public ResultsWpf()
         {
             //runs first
             InitializeComponent();
@@ -40,31 +39,32 @@ namespace RimworldConflictChecker
                 foreach (var mod in RimworldXmlLoader.Mods)
                 {
                     ModsView.Add(new ModView());
-                    ModsView[i].index = i;
-                    ModsView[i].loadposition = mod.ModRank;
-                    ModsView[i].enabled = mod.ModEnabled;
-                    ModsView[i].version = mod.ModXmlDetails.ModTargetVersion;
-                    ModsView[i].modname = mod.ModXmlDetails.ModName;
-                    ModsView[i].nummodconflicts = mod.ConflictedMods.Count;
+                    ModsView[i].Index = i;
+                    ModsView[i].Loadposition = mod.ModRank;
+                    ModsView[i].Enabled = mod.ModEnabled;
+                    ModsView[i].Version = mod.ModXmlDetails.ModTargetVersion;
+                    ModsView[i].Modname = mod.ModXmlDetails.ModName;
+                    ModsView[i].Nummodconflicts = mod.ConflictedMods.Count;
                     mod.ConflictedMods.Each((item, n) =>
                    {
-                       ModsView[i].modconflicts.Add(item.ModXmlDetails.ModName);
+                       ModsView[i].Modconflicts.Add(item.ModXmlDetails.ModName);
                    });
-                    ModsView[i].numdllconflicts = mod.ConflictedDlls.Count;
-                    ModsView[i].numcoreconflicts = mod.CoreOverrights;
-                    ModsView[i].numxmlfiles = mod.XmlFiles.Count;
-                    ModsView[i].moddir = mod.DirName;
-                    ModsView[i].fullmoddir = mod.FullDirName;
+                    ModsView[i].Numdllconflicts = mod.ConflictedDlls.Count;
+                    ModsView[i].Numcoreconflicts = mod.CoreOverrights;
+                    ModsView[i].Numxmlfiles = mod.XmlFiles.Count;
+                    ModsView[i].Moddir = mod.DirName;
+                    ModsView[i].Fullmoddir = mod.FullDirName;
                     i++;
                 }
 
                 //tab1dataGrid1.ItemsSource = modsView;
                 var viewmodsView = CollectionViewSource.GetDefaultView(ModsView);
-                viewmodsView.SortDescriptions.Add(new SortDescription("loadposition", ListSortDirection.Ascending)); //initial sort
+                viewmodsView.SortDescriptions.Add(new SortDescription("Loadposition", ListSortDirection.Ascending)); //initial sort
 
                 //filtering. needs INotifyCollectionChanged to update display...
-
+                BindingErrorTraceListener.SetTrace();
                 tab1dataGrid1.ItemsSource = viewmodsView; //instead of ItemsSource="{Binding viewmodsView}"
+                //from datagrid1 removed Style="{DynamicResource DGHeaderStyle}"
 
                 //modsView.CustomSort = new CustomerSorter();
                 //modsView.SortDescriptions.Add(new SortDescription("loadposition", ListSortDirection.Ascending));
@@ -74,10 +74,15 @@ namespace RimworldConflictChecker
                 //tab2grid1.UpdateLayout();
                 //foreach (DataGridColumn c in tab2dataGrid1.Columns)
                 //c.Width = DataGridLength.Auto;
+
+                MyDatagrid.ItemsSource = viewmodsView;
+
+                //InitializeComponent();
+
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                Logger.Instance.LogError("Crash in populating results form.", Ex);
+                Logger.Instance.LogError("Crash in populating results form.", ex);
                 //throw;
             }
         }
@@ -89,7 +94,7 @@ namespace RimworldConflictChecker
                 if (_saveCommand == null)
                 {
                     _saveCommand = new RelayCommand(
-                        param => this.SaveObject(),
+                        param => SaveObject(),
                         param => CanSave()
                     );
                 }
@@ -115,15 +120,15 @@ namespace RimworldConflictChecker
                 var result = (string)Clipboard.GetData(DataFormats.Text);
                 tab1dataGrid1.UnselectAllCells();
                 var path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                using (var excelFile = new StreamWriter(@"C:\Users\" + Environment.UserName + @"\Desktop\exportedcompanies.xls"))
+                using (var excelFile = new StreamWriter("C:\\Users\\" + Environment.UserName + "\\Desktop\\exportedcompanies.xls"))
                 {
                     excelFile.WriteLine(result.Replace(',', ' '));
                     //excelFile.Close();
                 }
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                Logger.Instance.LogError("Crash in copy all command on results form.", Ex);
+                Logger.Instance.LogError("Crash in copy all command on results form.", ex);
             }
         }
     }

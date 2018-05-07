@@ -1,28 +1,26 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace RimworldConflictChecker
 {
     public class ModView
     {
-        public int index { get; set; }
-        public int loadposition { get; set; }
-        public bool enabled { get; set; }
-        public Version version { get; set; }
-        public string modname { get; set; }
-        public int nummodconflicts { get; set; }
-        public List<string> modconflicts { get; set; }
-        public int numxmlconflicts { get; set; }
-        public int numdllconflicts { get; set; }
-        public int numcoreconflicts { get; set; }
-        public int numxmlfiles { get; set; }
-        public string moddir { get; set; }
-        public string fullmoddir { get; set; }
+        public int Index { get; set; }
+        public int Loadposition { get; set; }
+        public bool Enabled { get; set; }
+        public Version Version { get; set; }
+        public string Modname { get; set; }
+        public int Nummodconflicts { get; set; }
+        public List<string> Modconflicts { get; set; }
+        public int Numxmlconflicts { get; set; }
+        public int Numdllconflicts { get; set; }
+        public int Numcoreconflicts { get; set; }
+        public int Numxmlfiles { get; set; }
+        public string Moddir { get; set; }
+        public string Fullmoddir { get; set; }
         public ModView()
         {
-            modconflicts = new List<string>();
+            Modconflicts = new List<string>();
         }
     }
 }

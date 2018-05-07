@@ -119,9 +119,8 @@ namespace RimworldConflictChecker
                         {
                             foreach (var element in xmlFile.XmlDocument.Root.Elements())
                             {
-                                if (element.Value != null)
+                                if (element != null && !element.Value.IsNullOrEmpty())
                                 {
-                                    //if (element.Name.ToString().ToUpper() == "NAME")
                                     if (element.Name.ToString().Contains("NAME", StringComparison.OrdinalIgnoreCase))
                                     {
                                         aboutXDoc.ModName = element.Value;
@@ -184,7 +183,7 @@ namespace RimworldConflictChecker
                         }
 
                         //we're in a ThingDef
-                        if (Program.dps)
+                        if (Program.Dps)
                         {
                             foreach (var element2 in element.Elements())
                             {
@@ -202,7 +201,7 @@ namespace RimworldConflictChecker
                                         //match
                                         //weapon.RangedWeapon_Cooldown = float.Parse(element3.Value, CultureInfo.InvariantCulture.NumberFormat);
                                         //}
-                                        weapon.RangedWeapon_Cooldown = string.IsNullOrWhiteSpace(element3.Element("RangedWeapon_Cooldown")?.Value) ? 0f : float.Parse(element3.Element("RangedWeapon_Cooldown")?.Value, CultureInfo.InvariantCulture.NumberFormat); //crashes if null
+                                        weapon.RangedWeaponCooldown = string.IsNullOrWhiteSpace(element3.Element("RangedWeapon_Cooldown")?.Value) ? 0f : float.Parse(element3.Element("RangedWeapon_Cooldown")?.Value, CultureInfo.InvariantCulture.NumberFormat); //crashes if null
                                     }
                                 }
                             }
@@ -454,13 +453,13 @@ namespace RimworldConflictChecker
                             var otherXmlversion = FileVersionInfo.GetVersionInfo(otherXmlFile.XmlFileInfo.FullName);
                             if (mod.ModRank > otherMod.ModRank)
                             {
-                                Logger.Instance.LogDLL(otherXmlFile.XmlFileInfo.FullName, otherMod.ModRank, otherXmlsize, xmlversion.FileVersion, otherXmldate);
-                                Logger.Instance.LogDLL(xmlFile.XmlFileInfo.FullName, mod.ModRank, xmlsize, otherXmlversion.FileVersion, xmldate);
+                                Logger.Instance.LogDll(otherXmlFile.XmlFileInfo.FullName, otherMod.ModRank, otherXmlsize, xmlversion.FileVersion, otherXmldate);
+                                Logger.Instance.LogDll(xmlFile.XmlFileInfo.FullName, mod.ModRank, xmlsize, otherXmlversion.FileVersion, xmldate);
                             }
                             else
                             {
-                                Logger.Instance.LogDLL(xmlFile.XmlFileInfo.FullName, mod.ModRank, xmlsize, xmlversion.FileVersion, xmldate);
-                                Logger.Instance.LogDLL(otherXmlFile.XmlFileInfo.FullName, otherMod.ModRank, otherXmlsize, otherXmlversion.FileVersion, otherXmldate);
+                                Logger.Instance.LogDll(xmlFile.XmlFileInfo.FullName, mod.ModRank, xmlsize, xmlversion.FileVersion, xmldate);
+                                Logger.Instance.LogDll(otherXmlFile.XmlFileInfo.FullName, otherMod.ModRank, otherXmlsize, otherXmlversion.FileVersion, otherXmldate);
                             }
                             totalConflicts++;
                             //}

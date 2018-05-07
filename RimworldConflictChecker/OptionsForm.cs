@@ -10,10 +10,10 @@ namespace RimworldConflictChecker
 {
     public partial class OptionsForm : Form
     {
-        private string last_txtb_RimworldFolder;
-        private string last_txtb_ModFolder1;
-        private string last_txtb_ModFolder2;
-        private string last_txtb_ModsConfigFolder;
+        private string _lastTxtbRimworldFolder;
+        private string _lastTxtbModFolder1;
+        private string _lastTxtbModFolder2;
+        private string _lastTxtbModsConfigFolder;
 
         public static int ReturnValue1 { get; set; }
 
@@ -23,13 +23,13 @@ namespace RimworldConflictChecker
             //testing
             //reset_settings();
             txtb_RimworldFolder.Text = Settings.Default.RimWorldFolder;
-            last_txtb_RimworldFolder = Settings.Default.RimWorldFolder;
+            _lastTxtbRimworldFolder = Settings.Default.RimWorldFolder;
             txtb_ModFolder1.Text = Settings.Default.ModFolder1;
-            last_txtb_ModFolder1 = Settings.Default.ModFolder1;
+            _lastTxtbModFolder1 = Settings.Default.ModFolder1;
             txtb_ModFolder2.Text = Settings.Default.ModFolder2;
-            last_txtb_ModFolder2 = Settings.Default.ModFolder2;
+            _lastTxtbModFolder2 = Settings.Default.ModFolder2;
             txtb_ModsConfigFolder.Text = Settings.Default.ModsConfigFolder;
-            last_txtb_ModsConfigFolder = Settings.Default.ModsConfigFolder;
+            _lastTxtbModsConfigFolder = Settings.Default.ModsConfigFolder;
             //checkBox1.Checked = Program.incdisabled;
             checkBox1.Checked = Settings.Default.incDisabled;
             ReturnValue1 = 2;
@@ -64,10 +64,10 @@ namespace RimworldConflictChecker
                 //If RestoreDirectory is set to false, then Environment.CurrentDirectory will be set to whatever directory the OpenFileDialog was last open to. 
                 //they can't store or use relative dirs here, so its safe to ignore.
                 //chooseDialog.InitialDirectory = chooseDialog.FileName.Remove(chooseDialog.FileName.LastIndexOf("\\"));// THIS LINE IS IMPORTANT. Why?
-                if (Utils.FileOrDirectoryExists(last_txtb_RimworldFolder))
+                if (Utils.FileOrDirectoryExists(_lastTxtbRimworldFolder))
                 {
                     //chooseDialog.InitialDirectory = last_txtb_RimworldFolder ?? "C:\\"; //do these cause crashes?
-                    chooseDialog.InitialDirectory = last_txtb_RimworldFolder; //do these cause crashes?
+                    chooseDialog.InitialDirectory = _lastTxtbRimworldFolder; //do these cause crashes?
                 }
                 else
                 {
@@ -89,27 +89,27 @@ namespace RimworldConflictChecker
                     //can only get here if they clicked ok & if RimWorldWin.exe was found
                     //Filename = full path & RimWorldWin.exe
                     //no need to check if file or folder exists
-                    last_txtb_RimworldFolder = GetDirectoryName(chooseDialog.FileName);
+                    _lastTxtbRimworldFolder = GetDirectoryName(chooseDialog.FileName);
                     //txtb_RimworldFolder_status.Text = "OK";
                     //txtb_RimworldFolder_status.ForeColor = Color.Green;
-                    var RimworldExeFolder = GetDirectoryName(chooseDialog.FileName);
-                    txtb_RimworldFolder.Text = RimworldExeFolder;
+                    var rimworldExeFolder = GetDirectoryName(chooseDialog.FileName);
+                    txtb_RimworldFolder.Text = rimworldExeFolder;
                     //if (Utils.FileOrDirectoryExists(RimworldExeFolder + "\\Mods"))
                     //{
                     //auto-set mod folder
                     //txtb_ModFolder1_status.Text = "OK";
                     //txtb_ModFolder1_status.ForeColor = Color.Green;
-                    txtb_ModFolder1.Text = RimworldExeFolder + "\\Mods";
+                    txtb_ModFolder1.Text = rimworldExeFolder + "\\Mods";
                     //}
-                    if (RimworldExeFolder.Contains("steamapps"))
+                    if (rimworldExeFolder.Contains("steamapps"))
                     {
-                        var SteamModFolder = GetDirectoryName(GetDirectoryName(RimworldExeFolder)) + "\\workshop\\content\\294100";
+                        var steamModFolder = GetDirectoryName(GetDirectoryName(rimworldExeFolder)) + "\\workshop\\content\\294100";
                         //if (Utils.FileOrDirectoryExists(SteamModFolder))
                         //{
                         //auto-set steam mod folder
                         //txtb_ModFolder2_status.Text = "OK";
                         //txtb_ModFolder2_status.ForeColor = Color.Green;
-                        txtb_ModFolder2.Text = SteamModFolder;
+                        txtb_ModFolder2.Text = steamModFolder;
                         //}                    
                     }
                 }
@@ -122,10 +122,10 @@ namespace RimworldConflictChecker
             using (var chooseDialog = new FolderBrowserDialog())
             {
                 chooseDialog.RootFolder = Environment.SpecialFolder.MyComputer; //start browsing here
-                if (Utils.FileOrDirectoryExists(last_txtb_ModFolder1))
+                if (Utils.FileOrDirectoryExists(_lastTxtbModFolder1))
                 {
                     //chooseDialog.SelectedPath = last_txtb_RimworldFolder ?? "C:\\"; //do these cause crashes?
-                    chooseDialog.SelectedPath = last_txtb_ModFolder1; //do these cause crashes?
+                    chooseDialog.SelectedPath = _lastTxtbModFolder1; //do these cause crashes?
                 }
                 else
                 {
@@ -138,7 +138,7 @@ namespace RimworldConflictChecker
                 var result = chooseDialog.ShowDialog();
                 if (chooseDialog.SelectedPath != null)
                 {
-                    last_txtb_ModFolder1 = chooseDialog.SelectedPath; //move down?
+                    _lastTxtbModFolder1 = chooseDialog.SelectedPath; //move down?
                 }
 
                 if (result == DialogResult.OK)
@@ -161,10 +161,10 @@ namespace RimworldConflictChecker
             using (var chooseDialog = new FolderBrowserDialog())
             {
                 chooseDialog.RootFolder = Environment.SpecialFolder.MyComputer;
-                if (Utils.FileOrDirectoryExists(last_txtb_ModFolder2))
+                if (Utils.FileOrDirectoryExists(_lastTxtbModFolder2))
                 {
                     //chooseDialog.SelectedPath = last_txtb_RimworldFolder ?? "C:\\"; //do these cause crashes?
-                    chooseDialog.SelectedPath = last_txtb_ModFolder2; //do these cause crashes?
+                    chooseDialog.SelectedPath = _lastTxtbModFolder2; //do these cause crashes?
                 }
                 else
                 {
@@ -177,7 +177,7 @@ namespace RimworldConflictChecker
                 var result = chooseDialog.ShowDialog();
                 if (chooseDialog.SelectedPath != null)
                 {
-                    last_txtb_ModFolder2 = chooseDialog.SelectedPath; //move down?
+                    _lastTxtbModFolder2 = chooseDialog.SelectedPath; //move down?
                 }
 
                 if (result == DialogResult.OK)
@@ -202,10 +202,10 @@ namespace RimworldConflictChecker
                 chooseDialog.Filter = "ModsConfig|ModsConfig.xml";
                 chooseDialog.CheckFileExists = true;
                 chooseDialog.CheckPathExists = true;
-                if (Utils.FileOrDirectoryExists(last_txtb_ModsConfigFolder))
+                if (Utils.FileOrDirectoryExists(_lastTxtbModsConfigFolder))
                 {
                     //chooseDialog.InitialDirectory = last_txtb_ModsConfigFolder ?? "C:\\"; //do these cause crashes?
-                    chooseDialog.InitialDirectory = last_txtb_ModsConfigFolder; //do these cause crashes?
+                    chooseDialog.InitialDirectory = _lastTxtbModsConfigFolder; //do these cause crashes?
                 }
                 else
                 {
@@ -227,12 +227,12 @@ namespace RimworldConflictChecker
                     //can only get here if they clicked ok & if RimWorldWin.exe was found
                     //Filename = full path & RimWorldWin.exe
                     //no need to check if file or folder exists
-                    last_txtb_ModsConfigFolder = GetDirectoryName(chooseDialog.FileName);
+                    _lastTxtbModsConfigFolder = GetDirectoryName(chooseDialog.FileName);
                     //txtb_RimworldFolder_status.Text = "OK";
                     //txtb_RimworldFolder_status.ForeColor = Color.Green;
                     //var ModsConfigFolder = GetDirectoryName(chooseDialog.FileName);
                     //txtb_ModsConfigFolder.Text = ModsConfigFolder;
-                    txtb_ModsConfigFolder.Text = last_txtb_ModsConfigFolder;
+                    txtb_ModsConfigFolder.Text = _lastTxtbModsConfigFolder;
                 }
             }
         }
@@ -299,7 +299,7 @@ namespace RimworldConflictChecker
             if (ReturnValue1 == 2)
             {
                 ReturnValue1 = 1;
-                return;
+                //return; //redundant
             }
 
             // Confirm user wants to close
@@ -325,13 +325,13 @@ namespace RimworldConflictChecker
             Settings.Default.Reset(); //removed all settings from users xml!
             Settings.Default.Save(); //saves empty nothing
             txtb_RimworldFolder.Text = Settings.Default.RimWorldFolder;
-            last_txtb_RimworldFolder = Settings.Default.RimWorldFolder;
+            _lastTxtbRimworldFolder = Settings.Default.RimWorldFolder;
             txtb_ModFolder1.Text = Settings.Default.ModFolder1;
-            last_txtb_ModFolder1 = Settings.Default.ModFolder1;
+            _lastTxtbModFolder1 = Settings.Default.ModFolder1;
             txtb_ModFolder2.Text = Settings.Default.ModFolder2;
-            last_txtb_ModFolder2 = Settings.Default.ModFolder2;
+            _lastTxtbModFolder2 = Settings.Default.ModFolder2;
             txtb_ModsConfigFolder.Text = Settings.Default.ModsConfigFolder;
-            last_txtb_ModsConfigFolder = Settings.Default.ModsConfigFolder;
+            _lastTxtbModsConfigFolder = Settings.Default.ModsConfigFolder;
             checkBox1.Checked = Settings.Default.incDisabled;
             ReturnValue1 = 2;
         }
@@ -444,7 +444,7 @@ namespace RimworldConflictChecker
         private static void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             //Program.incdisabled = !Program.incdisabled;
-            RimworldXmlLoader.incdisabled = !RimworldXmlLoader.incdisabled;
+            RimworldXmlLoader.Incdisabled = !RimworldXmlLoader.Incdisabled;
         }
     }
 }

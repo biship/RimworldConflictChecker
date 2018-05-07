@@ -23,8 +23,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>9</ApplicationRevision>
-    <ApplicationVersion>0.0.0.%2a</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>0.0.1.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -76,8 +76,8 @@
     <Reference Include="NBug">
       <HintPath>..\..\..\Other\NBug-master\NBug\bin\Release\NBug.dll</HintPath>
     </Reference>
-    <Reference Include="Octokit, Version=0.23.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Octokit.0.23.0\lib\net45\Octokit.dll</HintPath>
+    <Reference Include="Octokit, Version=0.24.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octokit.0.24.0\lib\net45\Octokit.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -96,6 +96,9 @@
     <Compile Include="RelayCommand.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="FileFilters.cs" />
+    <Compile Include="ResultsWPF2.xaml.cs">
+      <DependentUpon>ResultsWPF2.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RimWorld.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Weapon.cs" />
@@ -145,7 +148,6 @@
     <None Include="Properties\DataSources\Mod.datasource" />
     <None Include="Properties\DataSources\ModDetails.datasource" />
     <None Include="Properties\DataSources\OptionsForm.datasource" />
-    <None Include="Properties\DataSources\Osio.datasource" />
     <None Include="Properties\DataSources\Program.datasource" />
     <None Include="Properties\DataSources\RimworldConflictChecker.Properties.Resources.datasource" />
     <None Include="Properties\DataSources\RimworldXmlLoader.datasource" />
@@ -189,6 +191,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="ResultsWPF.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ResultsWPF2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

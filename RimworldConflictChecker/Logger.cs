@@ -105,7 +105,7 @@ namespace RimworldConflictChecker
             Log($"{modname,-46} Load Position: {loadPosition,-3} FileSize: {size,-6} Line: {line,-5} RootElement: {tag1,-23} Element: {tag2,-39} defName: {tag3,-36}");
         }
 
-        public void LogDLL(string modname, int loadPosition, long size, string fileversion, DateTime date)
+        public void LogDll(string modname, int loadPosition, long size, string fileversion, DateTime date)
         {
             Log($"{modname,-95} Load Position: {loadPosition,-3} FileSize: {size,-8} Version: {fileversion, -10} Date: {date,-10}");
         }

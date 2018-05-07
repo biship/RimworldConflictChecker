@@ -13,7 +13,7 @@ Usage:
 	RCC.exe [-all] [path(s)]
     
 		-all   : Run as if all mods are enabled (ignoring what is set in ModsConfig.xml)
-        [path] : Path(s) (each within quotes) seperated by spaces
+		[path] : Path(s) (each within quotes) seperated by spaces
                  Where paths are : (required) Rimworld.exe location 
 								   (optional) Rimworld Game Mod Folder
 								   (optional) Steam Mod Folder

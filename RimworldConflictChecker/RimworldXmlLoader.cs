@@ -10,8 +10,8 @@ namespace RimworldConflictChecker
 {
     public class RimworldXmlLoader
     {
-        public static string[] modsconfig;
-        public static bool incdisabled;
+        public static string[] Modsconfig;
+        public static bool Incdisabled;
         public static List<Mod> Mods { get; set; }
         public static List<Weapon> Weapons { get; set; }
         //public static bool incdisabled = false;
@@ -69,7 +69,7 @@ namespace RimworldConflictChecker
             var baddirs = new List<DirectoryInfo>();
             var strCompTime = Properties.Resources.BuildDate;
             //var weapons = new List<Weapon>();
-            RimworldXmlLoader.incdisabled = incDisabled;
+            Incdisabled = incDisabled;
 
             //welcome
             Logger.Instance.NewSection("Rimworld Conflict Checker Started!");
@@ -96,9 +96,9 @@ namespace RimworldConflictChecker
             Console.WriteLine("Checking GitHub for updates. This will timeout after 10s");
             //Latestver = Version.Parse("0.0.0.6"); //why set this...
             Latestver = Version.Parse("0.0.0.0");
-#if !DEBUG
+//#if !DEBUG
             Task.Run(async () => { await GetRepoAsync(); }).Wait(10000);
-#endif
+//#endif
             var thisversion = System.Reflection.Assembly.GetEntryAssembly().GetName().Version;
             Logger.Instance.Log("You are running version : " + thisversion);
             Logger.Instance.Log("Latest version on GitHub: " + Latestver);
@@ -135,7 +135,7 @@ namespace RimworldConflictChecker
             });
 
             Logger.Instance.Log("");
-            Logger.Instance.Log("Consider every installed mods as active: " + incdisabled);
+            Logger.Instance.Log("Consider every installed mods as active: " + Incdisabled);
             Logger.Instance.Log("(switchable on config form, or with -all command line switch)");
 
             Logger.Instance.Log("");
@@ -147,7 +147,7 @@ namespace RimworldConflictChecker
                 {
                     if (!Utils.IsFullPath(item))
                     {
-                        //relative path. Try to fix.
+                        //relative path. convert to full.
                         var tempdir = Path.Combine(Path.GetDirectoryName(Directory.GetCurrentDirectory()), item); //relative to fullpath
                         if (Utils.IsFullPath(tempdir))
                         {
@@ -237,7 +237,7 @@ namespace RimworldConflictChecker
             //get game version
             Logger.Instance.NewSection("Getting RimWorld game version");
             //var rimWorldVersion = Version.Parse("0.0.0");
-            var RimWorld = new RimWorld(folders[0])
+            var rimWorld = new RimWorld(folders[0])
             {
                 Version = Version.Parse("0.0.0")
             };
@@ -250,7 +250,7 @@ namespace RimworldConflictChecker
                 {
                     Logger.Instance.Log("Read Line: " + line);
                     var firstline = line.Split(' ');
-                    RimWorld.Version = Version.Parse(firstline[0]);
+                    rimWorld.Version = Version.Parse(firstline[0]);
                     break;
                 }
                 file.Close();
@@ -261,7 +261,7 @@ namespace RimworldConflictChecker
                 Logger.Instance.Log("Not able to determine if mods will or will not load. Setting RimWorld game version to 0.0.0");
                 //RimWorld.Version = Version.Parse("0.0.0");
             }
-            Logger.Instance.Log("RimWorld game version: " + RimWorld.Version);
+            Logger.Instance.Log("RimWorld game version: " + rimWorld.Version);
 
             Console.WriteLine("Running checks...");
 
@@ -305,8 +305,8 @@ namespace RimworldConflictChecker
             //dirs is now a DirectoryInfo list of all folders
             if (dirs.IsNullOrEmpty())
             {
-                Logger.Instance.Log(@"Unable to find any mods! Please check your paths, or report this on GitHub/Ludeon (see RCC.txt)");
-                Console.WriteLine(@"Unable to find any mods! Please check your paths, or report this on GitHub/Ludeon (see RCC.txt)");
+                Logger.Instance.Log("Unable to find any mods! Please check your paths, or report this on GitHub/Ludeon (see RCC.txt)");
+                Console.WriteLine("Unable to find any mods! Please check your paths, or report this on GitHub/Ludeon (see RCC.txt)");
                 Logger.Instance.Log("Quitting.");
                 Console.WriteLine("Quitting.");
                 Rc = 1;
@@ -342,15 +342,15 @@ namespace RimworldConflictChecker
 
                 if (Mods.IsNullOrEmpty())
                 {
-                    Logger.Instance.Log(@"Unable to find any mods! Please check your paths, or report this on GitHub/Ludeon (see RCC.txt)");
-                    Console.WriteLine(@"Unable to find any mods! Please check your paths, or report this on GitHub/Ludeon (see RCC.txt)");
+                    Logger.Instance.Log("Unable to find any mods! Please check your paths, or report this on GitHub/Ludeon (see RCC.txt)");
+                    Console.WriteLine("Unable to find any mods! Please check your paths, or report this on GitHub/Ludeon (see RCC.txt)");
                     Logger.Instance.Log("Quitting.");
                     Console.WriteLine("Quitting.");
                     Rc = 1;
                     return;
                 }
 
-                modsconfig = LoadModsConfigXml(folders[1]); //contains just dirname
+                Modsconfig = LoadModsConfigXml(folders[1]); //contains just dirname
                 Logger.Instance.NewSection("Mods Found:");
 
                 //set load position
@@ -359,15 +359,15 @@ namespace RimworldConflictChecker
                 foreach (var moddirs in Mods)
                 {
                     //if (!Utils.IsNullOrEmpty(modsconfig))
-                    if (!modsconfig.IsNullOrEmpty())
+                    if (!Modsconfig.IsNullOrEmpty())
                         {
                         //for all mods found in ModsConfig.xml
-                        foreach (var listedmod in modsconfig)
+                        foreach (var listedmod in Modsconfig)
                         {
                             if (moddirs.DirName == listedmod)
                             {
                                 moddirs.ModEnabled = true;
-                                var modposition = moddirs.ModRank = Array.IndexOf(modsconfig, listedmod) + 1;
+                                var modposition = moddirs.ModRank = Array.IndexOf(Modsconfig, listedmod) + 1;
                                 moddirs.ModRank = modposition;
                             }
                         }
@@ -392,13 +392,13 @@ namespace RimworldConflictChecker
                             Logger.Instance.Log("Version missing for mod " + mod.ModXmlDetails.ModName + " is above RimWorld Game version. It will not load.");
                             continue;
                         }
-                        if (mod.ModXmlDetails.ModTargetVersion > RimWorld.Version)
+                        if (mod.ModXmlDetails.ModTargetVersion > rimWorld.Version)
                         {
                             Logger.Instance.Log(string.Format("Mod version {0,-9} of mod " + mod.ModXmlDetails.ModName + " is above RimWorld Game version. It will not load.",
                                 mod.ModXmlDetails.ModTargetVersion));
                             continue;
                         }
-                        if (mod.ModXmlDetails.ModTargetVersion.Minor < RimWorld.Version.Minor)
+                        if (mod.ModXmlDetails.ModTargetVersion.Minor < rimWorld.Version.Minor)
                         {
                             Logger.Instance.Log(string.Format("Mod version {0,-9} of mod " + mod.ModXmlDetails.ModName + " is too far below RimWorld Game version. It will not load.", mod.ModXmlDetails.ModTargetVersion));
                         }
@@ -410,7 +410,7 @@ namespace RimworldConflictChecker
                 sortedModsConfig = Mods.OrderBy(x => x.ModXmlDetails.ModName).ToList();
                 foreach (var mod in sortedModsConfig)
                 {
-                    if (mod.ModEnabled || incdisabled)
+                    if (mod.ModEnabled || Incdisabled)
                     {
                         Logger.Instance.DumpModHeader(mod.ModXmlDetails.ModName, mod.FullDirName);
                         foreach (var modXmlFile in mod.XmlFiles)
@@ -435,7 +435,7 @@ namespace RimworldConflictChecker
                     {
                         foreach (var otherMod in Mods)
                         {
-                            if (otherMod.ModEnabled || incdisabled)
+                            if (otherMod.ModEnabled || Incdisabled)
                             {
                                 totalConflicts += mod.CheckForCoreOverwrites(mod, otherMod);
                             }
@@ -455,7 +455,7 @@ namespace RimworldConflictChecker
 
                     foreach (var mod in sortedMods)
                     {
-                        if (mod.ModEnabled || incdisabled)
+                        if (mod.ModEnabled || Incdisabled)
                         {
                             if (mod.CoreOverrights == 1)
                             {
@@ -483,11 +483,11 @@ namespace RimworldConflictChecker
 
                 foreach (var mod in Mods)
                 {
-                    if (mod.ModEnabled || incdisabled)
+                    if (mod.ModEnabled || Incdisabled)
                     {
                         foreach (var otherMod in Mods)
                         {
-                            if (otherMod.ModEnabled || incdisabled)
+                            if (otherMod.ModEnabled || Incdisabled)
                             {
                                 if (!otherMod.Checked)
                                 {
@@ -534,11 +534,11 @@ namespace RimworldConflictChecker
                 //are DLL's loaded if out of Assemblies - no
                 foreach (var mod in Mods)
                 {
-                    if (mod.ModEnabled || incdisabled)
+                    if (mod.ModEnabled || Incdisabled)
                     {
                         foreach (var otherMod in Mods)
                         {
-                            if (otherMod.ModEnabled || incdisabled)
+                            if (otherMod.ModEnabled || Incdisabled)
                             {
                                 if (!otherMod.DllChecked)
                                 {
@@ -580,7 +580,7 @@ namespace RimworldConflictChecker
 
                 foreach (var mod in Mods)
                 {
-                    if (mod.ModEnabled || incdisabled)
+                    if (mod.ModEnabled || Incdisabled)
                     {
                         totalConflicts += Mod.CheckForMisplacedDlls(mod);
                     }
@@ -594,7 +594,7 @@ namespace RimworldConflictChecker
                 //throw new ArgumentException("ha-ha");
 
                 Logger.Instance.NewSection("Rimworld Conflict Checker Finished");
-                var duration = DateTime.Now - Program.starttime;
+                var duration = DateTime.Now - Program.Starttime;
                 Logger.Instance.Log("Total run time : " + duration.Seconds + " seconds");
                 //Logger.Instance.Log("Results of the checks are written to file RCC.txt in this folder.");
                 Console.WriteLine("Results of the checks are written to file RCC.txt in this folder.");
@@ -624,11 +624,11 @@ namespace RimworldConflictChecker
             if (!Utils.FileOrDirectoryExists(modsconfig))
             {
                 //set to new loc
-                modsconfig = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"Low\Ludeon Studios\RimWorld by Ludeon Studios\Config\ModsConfig.xml";
+                modsconfig = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "Low\\Ludeon Studios\\RimWorld by Ludeon Studios\\Config\\ModsConfig.xml";
                 if (!Utils.FileOrDirectoryExists(modsconfig))
                 {
                     //new is missing, set to old loc
-                    modsconfig = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"Low\Ludeon Studios\RimWorld\Config\ModsConfig.xml";
+                    modsconfig = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "Low\\Ludeon Studios\\RimWorld\\Config\\ModsConfig.xml";
                     if (!Utils.FileOrDirectoryExists(modsconfig))
                     {
                         //can't find it - give up
@@ -647,7 +647,7 @@ namespace RimworldConflictChecker
                 //Logger.Instance.Log("Active Mods:");
                 //string[] activemods = modsconfigxml.Descendants("activeMods").Select(element => element.Value).ToArray();
                 //string[] activemods = modsconfigxml.Descendants("li").Select(x => (string)x).ToArray();
-                RimworldXmlLoader.modsconfig = modsconfigxml.Descendants("li").Select(x => (string)x).ToArray();
+                Modsconfig = modsconfigxml.Descendants("li").Select(x => (string)x).ToArray();
                 //activemods.ToList().ForEach(SimpleLogger.Instance.Log);
                 //foreach (var item in _activemods)
                 //{
@@ -658,9 +658,9 @@ namespace RimworldConflictChecker
             {
                 Logger.Instance.Log("ModsConfig.xml NOT Found");
                 Logger.Instance.Log("Assuming all mods are active.");
-                RimworldXmlLoader.incdisabled = true;
+                Incdisabled = true;
             }
-            return RimworldXmlLoader.modsconfig;
+            return Modsconfig;
         }
 
 

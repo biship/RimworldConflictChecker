@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -55,9 +56,10 @@ namespace RimworldConflictChecker
         public static bool IsFullPath(string path)
         {
             return !String.IsNullOrWhiteSpace(path)
-                && path.IndexOfAny(System.IO.Path.GetInvalidPathChars().ToArray()) == -1
-                && Path.IsPathRooted(path)
-                && !Path.GetPathRoot(path).Equals(Path.DirectorySeparatorChar.ToString(), StringComparison.OrdinalIgnoreCase); //was just ordinal
+                   && path.IndexOfAny(Path.GetInvalidPathChars().ToArray()) == -1
+                   && Path.IsPathRooted(path)
+                   && !Path.GetPathRoot(path).Equals(Path.DirectorySeparatorChar.ToString(),
+                       StringComparison.OrdinalIgnoreCase); //was just ordinal
         }
 
         public static void Each<T>(this IEnumerable<T> ie, Action<T, int> action)
@@ -66,16 +68,19 @@ namespace RimworldConflictChecker
             foreach (var e in ie) action?.Invoke(e, i++);
         }
 
-        public static TResult NullSafe<TObj, TResult>(this TObj obj, Func<TObj, TResult> func, TResult ifNullReturn = default(TResult))
+        public static TResult NullSafe<TObj, TResult>(this TObj obj, Func<TObj, TResult> func,
+            TResult ifNullReturn = default(TResult))
         {
             return obj != null ? func(obj) : ifNullReturn;
         }
 
         public static T Capped<T>(this T @this, T? min = null, T? max = null) where T : struct, IComparable<T>
         {
-            return min.HasValue && @this.CompareTo(min.Value) < 0 ? min.Value
-                : max.HasValue && @this.CompareTo(max.Value) > 0 ? max.Value
-                : @this;
+            return min.HasValue && @this.CompareTo(min.Value) < 0
+                ? min.Value
+                : max.HasValue && @this.CompareTo(max.Value) > 0
+                    ? max.Value
+                    : @this;
         }
 
         public static Exception LogException(string what, Exception ex)
@@ -85,7 +90,8 @@ namespace RimworldConflictChecker
             return ex;
         }
 
-        public static Exception DisplayException(Exception ex, string msg = null, MessageBoxImage img = MessageBoxImage.Error)
+        public static Exception DisplayException(Exception ex, string msg = null,
+            MessageBoxImage img = MessageBoxImage.Error)
         {
             MessageBox.Show(msg ?? ex.Message, "", MessageBoxButton.OK, img);
             return ex;
@@ -106,7 +112,7 @@ namespace RimworldConflictChecker
         {
             if (condition)
             {
-                throw (TException)Activator.CreateInstance(typeof(TException), message);
+                throw (TException) Activator.CreateInstance(typeof(TException), message);
             }
         }
     }
@@ -123,6 +129,41 @@ namespace RimworldConflictChecker
 
             //Capped:
             //var bound = value.Capped(min: 1, max: 10);
+        }
+    }
+
+    public class BindingErrorTraceListener : DefaultTraceListener
+    {
+        private static BindingErrorTraceListener _Listener;
+
+        public static void SetTrace()
+        {
+            SetTrace(SourceLevels.Error, TraceOptions.None);
+        }
+
+        public static void SetTrace(SourceLevels level, TraceOptions options)
+        {
+            if (_Listener == null)
+            {
+                _Listener = new BindingErrorTraceListener();
+                PresentationTraceSources.DataBindingSource.Listeners.Add(_Listener);
+            }
+
+            _Listener.TraceOutputOptions = options;
+            PresentationTraceSources.DataBindingSource.Switch.Level = level;
+        }
+
+        public static void CloseTrace()
+        {
+            if (_Listener == null)
+            {
+                return;
+            }
+
+            _Listener.Flush();
+            _Listener.Close();
+            PresentationTraceSources.DataBindingSource.Listeners.Remove(_Listener);
+            _Listener = null;
         }
     }
 }
