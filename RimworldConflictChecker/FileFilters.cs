@@ -2,7 +2,7 @@
 {
     class Files
     {
-        public string[] IgnoreNames =
+        public readonly string[] IgnoreNames =
             {
             "Changelog.xml",
             "Credits.xml",
@@ -12,12 +12,12 @@
             "README.md"
         };
 
-        public string[] IncludeNames =
+        public readonly string[] IncludeNames =
         {
             "About.xml"
         };
 
-        public string[] IgnoreExtensions =
+        public readonly string[] IgnoreExtensions =
         {
                 ".png",
                 ".jpg",
@@ -30,13 +30,13 @@
                 ".wav"
         };
 
-        public string[] IncludeExtensions =
+        public readonly string[] IncludeExtensions =
         {
                 ".dll",
                 ".xml"
         };
 
-        public string[] IgnoreFolders =
+        public readonly string[] IgnoreFolders =
         {
             "Languages",
             "Source",
@@ -48,7 +48,7 @@
             "libraries"
         };
 
-        public string[] IncludeFolders =
+        public readonly string[] IncludeFolders =
 {
             "About",
             "Assemblies",

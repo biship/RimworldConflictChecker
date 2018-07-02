@@ -68,21 +68,6 @@ namespace RimworldConflictChecker
             foreach (var e in ie) action?.Invoke(e, i++);
         }
 
-        public static TResult NullSafe<TObj, TResult>(this TObj obj, Func<TObj, TResult> func,
-            TResult ifNullReturn = default(TResult))
-        {
-            return obj != null ? func(obj) : ifNullReturn;
-        }
-
-        public static T Capped<T>(this T @this, T? min = null, T? max = null) where T : struct, IComparable<T>
-        {
-            return min.HasValue && @this.CompareTo(min.Value) < 0
-                ? min.Value
-                : max.HasValue && @this.CompareTo(max.Value) > 0
-                    ? max.Value
-                    : @this;
-        }
-
         public static Exception LogException(string what, Exception ex)
         {
             //File.AppendAllText("CaughtExceptions" + DateTime.Now.ToString("yyyy-MM-dd") + ".log", DateTime.Now.ToString("HH:mm:ss") + ": " + ex.Message + "\n" + ex.ToString() + "\n");
@@ -134,7 +119,7 @@ namespace RimworldConflictChecker
 
     public class BindingErrorTraceListener : DefaultTraceListener
     {
-        private static BindingErrorTraceListener _Listener;
+        private static BindingErrorTraceListener _listener;
 
         public static void SetTrace()
         {
@@ -143,27 +128,27 @@ namespace RimworldConflictChecker
 
         public static void SetTrace(SourceLevels level, TraceOptions options)
         {
-            if (_Listener == null)
+            if (_listener == null)
             {
-                _Listener = new BindingErrorTraceListener();
-                PresentationTraceSources.DataBindingSource.Listeners.Add(_Listener);
+                _listener = new BindingErrorTraceListener();
+                PresentationTraceSources.DataBindingSource.Listeners.Add(_listener);
             }
 
-            _Listener.TraceOutputOptions = options;
+            _listener.TraceOutputOptions = options;
             PresentationTraceSources.DataBindingSource.Switch.Level = level;
         }
 
         public static void CloseTrace()
         {
-            if (_Listener == null)
+            if (_listener == null)
             {
                 return;
             }
 
-            _Listener.Flush();
-            _Listener.Close();
-            PresentationTraceSources.DataBindingSource.Listeners.Remove(_Listener);
-            _Listener = null;
+            _listener.Flush();
+            _listener.Close();
+            PresentationTraceSources.DataBindingSource.Listeners.Remove(_listener);
+            _listener = null;
         }
     }
 }

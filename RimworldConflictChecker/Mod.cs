@@ -447,9 +447,9 @@ namespace RimworldConflictChecker
                             var otherXmlsize = new FileInfo(otherXmlFile.XmlFileInfo.FullName).Length;
                             var otherXmldate = new FileInfo(otherXmlFile.XmlFileInfo.FullName).LastWriteTime;
                             // Get the file version for the notepad.
-                            //FileVersionInfo xmlversion = FileVersionInfo.GetVersionInfo(xmlFile.XmlFileInfo.FullName);
+                            // FileVersionInfo xmlversion = FileVersionInfo.GetVersionInfo(xmlFile.XmlFileInfo.FullName);
                             var xmlversion = FileVersionInfo.GetVersionInfo(xmlFile.XmlFileInfo.FullName);
-                            //FileVersionInfo otherXmlversion = FileVersionInfo.GetVersionInfo(otherXmlFile.XmlFileInfo.FullName);
+                            // FileVersionInfo otherXmlversion = FileVersionInfo.GetVersionInfo(otherXmlFile.XmlFileInfo.FullName);
                             var otherXmlversion = FileVersionInfo.GetVersionInfo(otherXmlFile.XmlFileInfo.FullName);
                             if (mod.ModRank > otherMod.ModRank)
                             {

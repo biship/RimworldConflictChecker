@@ -13,13 +13,14 @@ namespace RimworldConflictChecker
     public partial class ResultsWPF2 : UserControl
     {
         public List<ModView> ModsView2 { get; set; }
-        public ResultsWPF2()
-        {
-            InitializeComponent();
-        }
-        
+        //public ResultsWPF2()
+        //{
+        //    InitializeComponent();
+        //}
+
         // Custom constructor to pass expense report data
-        public ResultsWPF2(object data):this()
+        //public ResultsWPF2(object data):this()
+        public ResultsWPF2()
         {
             // Bind to expense report data.
             //this.DataContext = data;
@@ -73,7 +74,7 @@ namespace RimworldConflictChecker
                 //or fix:
                 //MyDatagrid.ItemsSource = viewmodsView;
 
-                //InitializeComponent();
+                InitializeComponent();
 
             }
             catch (Exception ex)

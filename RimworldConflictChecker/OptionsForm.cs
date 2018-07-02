@@ -30,8 +30,8 @@ namespace RimworldConflictChecker
             _lastTxtbModFolder2 = Settings.Default.ModFolder2;
             txtb_ModsConfigFolder.Text = Settings.Default.ModsConfigFolder;
             _lastTxtbModsConfigFolder = Settings.Default.ModsConfigFolder;
-            //checkBox1.Checked = Program.incdisabled;
             checkBox1.Checked = Settings.Default.incDisabled;
+            checkBox2.Checked = Settings.Default.showDetails;
             ReturnValue1 = 2;
             UpdateFoldersDisplay(txtb_RimworldFolder); //run on every = above
             UpdateFoldersDisplay(txtb_ModFolder1); //run on every = above
@@ -42,7 +42,7 @@ namespace RimworldConflictChecker
         }
 
 
-        private void btn_RimworldFolder_Click(object sender, EventArgs e)
+        private void Btn_RimworldFolder_Click(object sender, EventArgs e)
         {
             //old
             //FolderBrowserDialog chooseDialog = new FolderBrowserDialog();
@@ -56,12 +56,12 @@ namespace RimworldConflictChecker
             using (var chooseDialog = new OpenFileDialog())
             {
                 //chooseDialog.FileName = "RimWorldWin.exe";
-                chooseDialog.Filter = "RimWorld|RimWorldWin.exe";
+                chooseDialog.Filter = "RimWorld|RimWorldWin*.exe";
                 chooseDialog.CheckFileExists = true;
                 chooseDialog.CheckPathExists = true;
                 //chooseDialog.AutoUpgradeEnabled = false; //def:true. false = old windowsXP style. lol
-                //chooseDialog.RestoreDirectory = true; //def:false. Makes sure that the value in Environment.CurrentDirectory will be reset before the OpenFileDialog closes. 
-                //If RestoreDirectory is set to false, then Environment.CurrentDirectory will be set to whatever directory the OpenFileDialog was last open to. 
+                //chooseDialog.RestoreDirectory = true; //def:false. Makes sure that the value in Environment.CurrentDirectory will be reset before the OpenFileDialog closes.
+                //If RestoreDirectory is set to false, then Environment.CurrentDirectory will be set to whatever directory the OpenFileDialog was last open to.
                 //they can't store or use relative dirs here, so its safe to ignore.
                 //chooseDialog.InitialDirectory = chooseDialog.FileName.Remove(chooseDialog.FileName.LastIndexOf("\\"));// THIS LINE IS IMPORTANT. Why?
                 if (Utils.FileOrDirectoryExists(_lastTxtbRimworldFolder))
@@ -79,7 +79,7 @@ namespace RimworldConflictChecker
 
                 //chooseDialog.CustomPlaces.Add(last_txtb_RimworldFolder ?? "C:\\"); //adds to the dropdown //do these cause crashes?
                 //chooseDialog.CustomPlaces.Add(txtb_RimworldFolder.Text ?? "C:\\"); //adds to the dropdown //do these cause crashes?
-                chooseDialog.Title = "Please select RimWorldWin.exe";
+                chooseDialog.Title = "Please select RimWorldWin Executable";
                 var result = chooseDialog.ShowDialog();
                 //OK = Filename = full path & RimWorldWin.exe
                 //Cancel = Filename = RimWorldWin.exe
@@ -110,14 +110,14 @@ namespace RimworldConflictChecker
                         //txtb_ModFolder2_status.Text = "OK";
                         //txtb_ModFolder2_status.ForeColor = Color.Green;
                         txtb_ModFolder2.Text = steamModFolder;
-                        //}                    
+                        //}
                     }
                 }
             }
             //UpdateFoldersDisplay();
         }
 
-        private void btn_ModFolder1_Click(object sender, EventArgs e)
+        private void Btn_ModFolder1_Click(object sender, EventArgs e)
         {
             using (var chooseDialog = new FolderBrowserDialog())
             {
@@ -156,7 +156,7 @@ namespace RimworldConflictChecker
             //UpdateFoldersDisplay();
         }
 
-        private void btn_ModFolder2_Click(object sender, EventArgs e)
+        private void Btn_ModFolder2_Click(object sender, EventArgs e)
         {
             using (var chooseDialog = new FolderBrowserDialog())
             {
@@ -192,10 +192,10 @@ namespace RimworldConflictChecker
                     //}
                 }
             }
-            //UpdateFoldersDisplay(); 
+            //UpdateFoldersDisplay();
         }
 
-        private void btn_ModsConfigFolder_Click(object sender, EventArgs e)
+        private void Btn_ModsConfigFolder_Click(object sender, EventArgs e)
         {
             using (var chooseDialog = new OpenFileDialog())
             {
@@ -237,27 +237,28 @@ namespace RimworldConflictChecker
             }
         }
 
-        private void btn_quit_Click(object sender, EventArgs e)
+        private void Btn_quit_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             ReturnValue1 = 1;
             Close();
-            //Application.Exit();  //closes WFM 
+            //Application.Exit();  //closes WFM
             //Environment.Exit(1); //closes console app
         }
 
-        private void btn_Ok_Click(object sender, EventArgs e)
+        private void Btn_Ok_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
             //var rimworldfolder = (string)Settings.Default["RimWorldFolder"];
             //Properties.Settings.Default["SomeProperty"] = "Some Value";
 
-            //set settings & save them (to xml ion localappdata)
+            //set settings & save them (to xml in localappdata)
             Settings.Default.RimWorldFolder = txtb_RimworldFolder.Text;
             Settings.Default.ModFolder1 = txtb_ModFolder1.Text;
             Settings.Default.ModFolder2 = txtb_ModFolder2.Text;
             Settings.Default.ModsConfigFolder = txtb_ModsConfigFolder.Text;
             Settings.Default.incDisabled = checkBox1.Checked;
+            Settings.Default.showDetails = checkBox2.Checked;
             Settings.Default.Save();
             ReturnValue1 = 0;
             Close();
@@ -315,12 +316,12 @@ namespace RimworldConflictChecker
             //}
         }
 
-        private void btn_reset_Click(object sender, EventArgs e)
+        private void Btn_reset_Click(object sender, EventArgs e)
         {
-            reset_settings();
+            Reset_settings();
         }
 
-        private void reset_settings()
+        private void Reset_settings()
         {
             Settings.Default.Reset(); //removed all settings from users xml!
             Settings.Default.Save(); //saves empty nothing
@@ -333,6 +334,7 @@ namespace RimworldConflictChecker
             txtb_ModsConfigFolder.Text = Settings.Default.ModsConfigFolder;
             _lastTxtbModsConfigFolder = Settings.Default.ModsConfigFolder;
             checkBox1.Checked = Settings.Default.incDisabled;
+            checkBox2.Checked = Settings.Default.showDetails;
             ReturnValue1 = 2;
         }
 
@@ -402,7 +404,7 @@ namespace RimworldConflictChecker
                 case nameof(txtb_ModsConfigFolder):
                     if (!string.IsNullOrEmpty(sender.Text))
                     {
-                        if (Utils.FileOrDirectoryExists(sender.Text + "\\ModsConfig.xml")) 
+                        if (Utils.FileOrDirectoryExists(sender.Text + "\\ModsConfig.xml"))
                         {
                             txtb_ModsConfigFolder_status.Text = Resources.OK;
                             txtb_ModsConfigFolder_status.ForeColor = Color.Green;
@@ -418,33 +420,41 @@ namespace RimworldConflictChecker
                         txtb_ModsConfigFolder_status.Text = "";
                     }
                     break;
+                default:
+                    break;
             }
         }
 
-        private void txtb_RimworldFolder_TextChanged(object sender, EventArgs e)
+        private void Txtb_RimworldFolder_TextChanged(object sender, EventArgs e)
         {
             UpdateFoldersDisplay(sender as TextBox);
         }
 
-        private void txtb_ModFolder1_TextChanged(object sender, EventArgs e)
+        private void Txtb_ModFolder1_TextChanged(object sender, EventArgs e)
         {
             UpdateFoldersDisplay(sender as TextBox);
         }
 
-        private void txtb_ModFolder2_TextChanged(object sender, EventArgs e)
+        private void Txtb_ModFolder2_TextChanged(object sender, EventArgs e)
         {
             UpdateFoldersDisplay(sender as TextBox);
         }
 
-        private void txtb_ModsConfigFolder_TextChanged(object sender, EventArgs e)
+        private void Txtb_ModsConfigFolder_TextChanged(object sender, EventArgs e)
         {
             UpdateFoldersDisplay(sender as TextBox);
         }
 
-        private static void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            //Program.incdisabled = !Program.incdisabled;
-            RimworldXmlLoader.Incdisabled = !RimworldXmlLoader.Incdisabled;
+            //does this exist yet??
+            //RimworldXmlLoader.Incdisabled = !RimworldXmlLoader.Incdisabled;
         }
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            //does this exist yet??
+            //RimworldXmlLoader.Showdetails = !RimworldXmlLoader.Showdetails;
+        }
+
     }
 }

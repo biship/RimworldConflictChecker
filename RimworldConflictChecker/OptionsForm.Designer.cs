@@ -56,6 +56,7 @@
             this.btn_ModsConfigFolder = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -78,26 +79,27 @@
             tableLayoutPanel1.Controls.Add(this.btn_ModFolder1, 1, 5);
             tableLayoutPanel1.Controls.Add(this.label4, 0, 8);
             tableLayoutPanel1.Controls.Add(this.label3, 0, 7);
-            tableLayoutPanel1.Controls.Add(this.btn_quit, 0, 20);
-            tableLayoutPanel1.Controls.Add(this.btn_Ok, 1, 20);
+            tableLayoutPanel1.Controls.Add(this.btn_quit, 0, 21);
+            tableLayoutPanel1.Controls.Add(this.btn_Ok, 1, 21);
             tableLayoutPanel1.Controls.Add(this.txtb_ModFolder2, 0, 9);
             tableLayoutPanel1.Controls.Add(this.btn_ModFolder2, 1, 9);
-            tableLayoutPanel1.Controls.Add(this.label5, 0, 18);
-            tableLayoutPanel1.Controls.Add(this.label6, 0, 19);
+            tableLayoutPanel1.Controls.Add(this.label5, 0, 19);
+            tableLayoutPanel1.Controls.Add(this.label6, 0, 20);
             tableLayoutPanel1.Controls.Add(this.txtb_RimworldFolder_status, 0, 2);
             tableLayoutPanel1.Controls.Add(this.txtb_ModFolder1_status, 0, 6);
             tableLayoutPanel1.Controls.Add(this.txtb_ModFolder2_status, 0, 10);
             tableLayoutPanel1.Controls.Add(this.txtb_ModsConfigFolder_status, 0, 14);
-            tableLayoutPanel1.Controls.Add(this.btn_reset, 1, 19);
+            tableLayoutPanel1.Controls.Add(this.btn_reset, 1, 20);
             tableLayoutPanel1.Controls.Add(this.label7, 0, 11);
             tableLayoutPanel1.Controls.Add(this.label8, 0, 12);
             tableLayoutPanel1.Controls.Add(this.txtb_ModsConfigFolder, 0, 13);
             tableLayoutPanel1.Controls.Add(this.btn_ModsConfigFolder, 1, 13);
             tableLayoutPanel1.Controls.Add(this.label9, 0, 15);
             tableLayoutPanel1.Controls.Add(this.checkBox1, 0, 16);
+            tableLayoutPanel1.Controls.Add(this.checkBox2, 0, 17);
             tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
-            tableLayoutPanel1.RowCount = 21;
+            tableLayoutPanel1.RowCount = 22;
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 15F));
@@ -113,13 +115,14 @@
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 15F));
-            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 15F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 242F));
             tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
-            tableLayoutPanel1.Size = new System.Drawing.Size(556, 680);
+            tableLayoutPanel1.Size = new System.Drawing.Size(556, 709);
             tableLayoutPanel1.TabIndex = 2;
             // 
             // txtb_RimworldFolder
@@ -130,7 +133,7 @@
             this.txtb_RimworldFolder.Size = new System.Drawing.Size(465, 20);
             this.txtb_RimworldFolder.TabIndex = 0;
             this.txtb_RimworldFolder.TabStop = false;
-            this.txtb_RimworldFolder.TextChanged += new System.EventHandler(this.txtb_RimworldFolder_TextChanged);
+            this.txtb_RimworldFolder.TextChanged += new System.EventHandler(this.Txtb_RimworldFolder_TextChanged);
             // 
             // lbl_RimWorldExeFolder
             // 
@@ -152,7 +155,7 @@
             this.btn_RimworldFolder.TabIndex = 1;
             this.btn_RimworldFolder.Text = "...";
             this.btn_RimworldFolder.UseVisualStyleBackColor = true;
-            this.btn_RimworldFolder.Click += new System.EventHandler(this.btn_RimworldFolder_Click);
+            this.btn_RimworldFolder.Click += new System.EventHandler(this.Btn_RimworldFolder_Click);
             // 
             // label1
             // 
@@ -173,7 +176,7 @@
             this.txtb_ModFolder1.Size = new System.Drawing.Size(465, 20);
             this.txtb_ModFolder1.TabIndex = 2;
             this.txtb_ModFolder1.TabStop = false;
-            this.txtb_ModFolder1.TextChanged += new System.EventHandler(this.txtb_ModFolder1_TextChanged);
+            this.txtb_ModFolder1.TextChanged += new System.EventHandler(this.Txtb_ModFolder1_TextChanged);
             // 
             // label2
             // 
@@ -194,7 +197,7 @@
             this.btn_ModFolder1.TabIndex = 3;
             this.btn_ModFolder1.Text = "...";
             this.btn_ModFolder1.UseVisualStyleBackColor = true;
-            this.btn_ModFolder1.Click += new System.EventHandler(this.btn_ModFolder1_Click);
+            this.btn_ModFolder1.Click += new System.EventHandler(this.Btn_ModFolder1_Click);
             // 
             // label4
             // 
@@ -223,25 +226,25 @@
             this.btn_quit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btn_quit.AutoSize = true;
             this.btn_quit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btn_quit.Location = new System.Drawing.Point(3, 651);
+            this.btn_quit.Location = new System.Drawing.Point(3, 679);
             this.btn_quit.Name = "btn_quit";
             this.btn_quit.Size = new System.Drawing.Size(75, 23);
             this.btn_quit.TabIndex = 10;
             this.btn_quit.Text = "Quit";
             this.btn_quit.UseVisualStyleBackColor = true;
-            this.btn_quit.Click += new System.EventHandler(this.btn_quit_Click);
+            this.btn_quit.Click += new System.EventHandler(this.Btn_quit_Click);
             // 
             // btn_Ok
             // 
             this.btn_Ok.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.btn_Ok.AutoSize = true;
-            this.btn_Ok.Location = new System.Drawing.Point(478, 651);
+            this.btn_Ok.Location = new System.Drawing.Point(478, 679);
             this.btn_Ok.Name = "btn_Ok";
             this.btn_Ok.Size = new System.Drawing.Size(75, 23);
             this.btn_Ok.TabIndex = 11;
             this.btn_Ok.Text = "Ok";
             this.btn_Ok.UseVisualStyleBackColor = true;
-            this.btn_Ok.Click += new System.EventHandler(this.btn_Ok_Click);
+            this.btn_Ok.Click += new System.EventHandler(this.Btn_Ok_Click);
             // 
             // txtb_ModFolder2
             // 
@@ -251,7 +254,7 @@
             this.txtb_ModFolder2.Size = new System.Drawing.Size(465, 20);
             this.txtb_ModFolder2.TabIndex = 4;
             this.txtb_ModFolder2.TabStop = false;
-            this.txtb_ModFolder2.TextChanged += new System.EventHandler(this.txtb_ModFolder2_TextChanged);
+            this.txtb_ModFolder2.TextChanged += new System.EventHandler(this.Txtb_ModFolder2_TextChanged);
             // 
             // btn_ModFolder2
             // 
@@ -261,14 +264,14 @@
             this.btn_ModFolder2.TabIndex = 5;
             this.btn_ModFolder2.Text = "...";
             this.btn_ModFolder2.UseVisualStyleBackColor = true;
-            this.btn_ModFolder2.Click += new System.EventHandler(this.btn_ModFolder2_Click);
+            this.btn_ModFolder2.Click += new System.EventHandler(this.Btn_ModFolder2_Click);
             // 
             // label5
             // 
             this.label5.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(3, 381);
+            this.label5.Location = new System.Drawing.Point(3, 408);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(96, 18);
             this.label5.TabIndex = 12;
@@ -277,7 +280,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(3, 406);
+            this.label6.Location = new System.Drawing.Point(3, 433);
             this.label6.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(457, 182);
@@ -322,13 +325,13 @@
             // 
             // btn_reset
             // 
-            this.btn_reset.Location = new System.Drawing.Point(477, 406);
+            this.btn_reset.Location = new System.Drawing.Point(477, 433);
             this.btn_reset.Name = "btn_reset";
             this.btn_reset.Size = new System.Drawing.Size(75, 23);
             this.btn_reset.TabIndex = 9;
             this.btn_reset.Text = "Reset";
             this.btn_reset.UseVisualStyleBackColor = true;
-            this.btn_reset.Click += new System.EventHandler(this.btn_reset_Click);
+            this.btn_reset.Click += new System.EventHandler(this.Btn_reset_Click);
             // 
             // label7
             // 
@@ -360,7 +363,7 @@
             this.txtb_ModsConfigFolder.Size = new System.Drawing.Size(465, 20);
             this.txtb_ModsConfigFolder.TabIndex = 6;
             this.txtb_ModsConfigFolder.TabStop = false;
-            this.txtb_ModsConfigFolder.TextChanged += new System.EventHandler(this.txtb_ModFolder2_TextChanged);
+            this.txtb_ModsConfigFolder.TextChanged += new System.EventHandler(this.Txtb_ModFolder2_TextChanged);
             // 
             // btn_ModsConfigFolder
             // 
@@ -370,14 +373,14 @@
             this.btn_ModsConfigFolder.TabIndex = 7;
             this.btn_ModsConfigFolder.Text = "...";
             this.btn_ModsConfigFolder.UseVisualStyleBackColor = true;
-            this.btn_ModsConfigFolder.Click += new System.EventHandler(this.btn_ModsConfigFolder_Click);
+            this.btn_ModsConfigFolder.Click += new System.EventHandler(this.Btn_ModsConfigFolder_Click);
             // 
             // label9
             // 
             this.label9.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(3, 324);
+            this.label9.Location = new System.Drawing.Point(3, 326);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(50, 13);
             this.label9.TabIndex = 7;
@@ -386,13 +389,27 @@
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(10, 344);
+            this.checkBox1.Location = new System.Drawing.Point(10, 347);
             this.checkBox1.Margin = new System.Windows.Forms.Padding(10, 3, 3, 3);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(200, 16);
+            this.checkBox1.Size = new System.Drawing.Size(200, 17);
             this.checkBox1.TabIndex = 8;
             this.checkBox1.Text = "Include non-enabled mods in checks";
             this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.Click += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(10, 370);
+            this.checkBox2.Margin = new System.Windows.Forms.Padding(10, 3, 3, 3);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(100, 17);
+            this.checkBox2.TabIndex = 19;
+            this.checkBox2.Text = "Detailed Output";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.EnabledChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            this.checkBox2.Click += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
             // OptionsForm
             // 
@@ -400,7 +417,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btn_quit;
-            this.ClientSize = new System.Drawing.Size(556, 681);
+            this.ClientSize = new System.Drawing.Size(556, 710);
             this.Controls.Add(tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Location = new System.Drawing.Point(200, 200);
@@ -429,8 +446,6 @@
         private System.Windows.Forms.TextBox txtb_ModFolder2;
         private System.Windows.Forms.Button btn_ModFolder2;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Button btn_quit;
-        private System.Windows.Forms.Button btn_Ok;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label txtb_RimworldFolder_status;
         private System.Windows.Forms.Label txtb_ModFolder1_status;
@@ -443,5 +458,8 @@
         private System.Windows.Forms.Button btn_ModsConfigFolder;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button btn_quit;
+        private System.Windows.Forms.Button btn_Ok;
+        private System.Windows.Forms.CheckBox checkBox2;
     }
 }

@@ -14,10 +14,10 @@ Usage:
     
 		-all   : Run as if all mods are enabled (ignoring what is set in ModsConfig.xml)
 		[path] : Path(s) (each within quotes) seperated by spaces
-			Where paths are : (required) Rimworld.exe location 
-							  (optional) Rimworld Game Mod Folder
-							  (optional) Steam Mod Folder
-						      (optional) ModsConfig.xml location
+			 Where paths are : (required) Rimworld.exe location 
+				  (optional) Rimworld Game Mod Folder
+				  (optional) Steam Mod Folder
+				      (optional) ModsConfig.xml location
 Example:
 
 	RCC.exe "D:\SteamLibrary\steamapps\common\RimWorld" "D:\SteamLibrary\steamapps\workshop\content\294100"
@@ -26,7 +26,7 @@ Alternatively, just run RCC.exe to get a folder picker & config saver.
 	
 Results of the checks are written to file RCC.txt in the executable folder.
 
-RCC uses NBug, an Open ssource library, to submit crashes to a Mantis tracker so I can fix any issues.
+RCC uses NBug, an Open Source library used to submit crashes to a Mantis tracker.
 
 	https://github.com/soygul/NBug
 	Feel free to block it if you do not want the reports sent.

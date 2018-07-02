@@ -12,6 +12,7 @@ namespace RimworldConflictChecker
     {
         public static string[] Modsconfig;
         public static bool Incdisabled;
+        public static bool Showdetails;
         public static List<Mod> Mods { get; set; }
         public static List<Weapon> Weapons { get; set; }
         //public static bool incdisabled = false;
@@ -22,7 +23,7 @@ namespace RimworldConflictChecker
 
         public static Version Latestver { get; set; }
 
-        public RimworldXmlLoader(bool incDisabled, params string[] folders)
+        public RimworldXmlLoader(bool showDetails, bool incDisabled, params string[] folders)
         //public RimworldXmlLoader(string rimworldfolder, string modsconfigfolder, string[] modfolders)
         //public RimworldXmlLoader(string rimworldfolder, string modsconfigfolder, string modfolder1, string modfolder2)
         {
@@ -48,7 +49,7 @@ namespace RimworldConflictChecker
             {
                 "\tThe same nameDef defined in 2 or more mods",
                 "\tThe same DLL in 2 or more mods",
-                "\tCore nameDefs overwriten by a mod",
+                "\tCore nameDefs over writen by a mod",
                 "\tDLL's not in the Assemblies folder",
                 "\tChecks versions of mod against RimWorld version",
                 "\tIdentifies possibly corrupt mods (partially implemented)"
@@ -56,7 +57,7 @@ namespace RimworldConflictChecker
             string[] futurechecks =
             {
                 "\tCheck XML inheritance: http://ludeon.com/forums/index.php?topic=19499.0",
-                "\tCheck if CCL is compat with RimWorld.",
+                "\tCheck if CCL is compatible with RimWorld.",
                 "\tCheck if root, tag, defname are valid (by parsing core)",
                 "\tCheck if a mod is valid - needs about.xml, at least one XML or dll.",
                 "\tCheck if mod exists twice. a) based on folder name & b) based on About.xml name.",
@@ -70,6 +71,7 @@ namespace RimworldConflictChecker
             var strCompTime = Properties.Resources.BuildDate;
             //var weapons = new List<Weapon>();
             Incdisabled = incDisabled;
+            Showdetails = showDetails;
 
             //welcome
             Logger.Instance.NewSection("Rimworld Conflict Checker Started!");
@@ -92,8 +94,8 @@ namespace RimworldConflictChecker
             //futurechecks.ToList().ForEach(j => Logger.Instance.Log(j));
             futurechecks.ToList().ForEach(Logger.Instance.Log);
 
-            Logger.Instance.NewSection("Checking GitHub for updates. This will timeout after 10s");
-            Console.WriteLine("Checking GitHub for updates. This will timeout after 10s");
+            Logger.Instance.NewSection("Checking GitHub for updates. This will timeout after 10s...");
+            Console.WriteLine("Checking GitHub for updates. This will timeout after 10s...");
             //Latestver = Version.Parse("0.0.0.6"); //why set this...
             Latestver = Version.Parse("0.0.0.0");
 //#if !DEBUG
@@ -135,8 +137,9 @@ namespace RimworldConflictChecker
             });
 
             Logger.Instance.Log("");
+            Logger.Instance.Log("Show detailed log: " + Showdetails);
             Logger.Instance.Log("Consider every installed mods as active: " + Incdisabled);
-            Logger.Instance.Log("(switchable on config form, or with -all command line switch)");
+            //Logger.Instance.Log("(switchable on config form, or with -all command line switch:)");
 
             Logger.Instance.Log("");
             Logger.Instance.Log("Folders:");
@@ -161,14 +164,14 @@ namespace RimworldConflictChecker
             Logger.Instance.Log("");
 
             //Folder[0] RimWorld exe folder (and loc of Version.txt)
-            if (Utils.FileOrDirectoryExists(folders[0] + "\\RimWorldWin.exe"))
+            if (Utils.FileOrDirectoryExists(folders[0] + "\\RimWorldWin.exe") || Utils.FileOrDirectoryExists(folders[0] + "\\RimWorldWin64.exe"))
             {
-                Logger.Instance.Log("Folder 1 : Found RimWorldWin.exe in : " + folders[0]);
+                Logger.Instance.Log("Folder 1 : Found RimWorldWin in : " + folders[0]);
             }
             else
             {
-                Logger.Instance.Log("Folder 1 : Not able to find RimWorldWin.exe in : " + folders[0]);
-                Console.WriteLine("Not able to find RimWorldWin.exe in : " + folders[0]);
+                Logger.Instance.Log("Folder 1 : Not able to find RimWorldWin in : " + folders[0]);
+                Console.WriteLine("Not able to find RimWorldWin in : " + folders[0]);
                 Logger.Instance.Log("Quitting.");
                 Console.WriteLine("Quitting.");
                 Rc = 1;
@@ -265,7 +268,7 @@ namespace RimworldConflictChecker
 
             Console.WriteLine("Running checks...");
 
-            Logger.Instance.NewSection("Adding subfolders of each Mod folder to the list of folders to search");
+            Logger.Instance.NewSection("Adding sub folders of each Mod folder to the list of folders to search");
 
             //check if we got here without any folders?
             foreach (var folder in folders.Skip(2))
@@ -381,7 +384,7 @@ namespace RimworldConflictChecker
                 }
                 Logger.Instance.Log($"{dirs.Count} mods found (including RimWorlds Core folder)");
 
-                Logger.Instance.NewSection("Checking Mod versions against RimWorld Game Version.");
+                Logger.Instance.NewSection("Checking Mod versions against RimWorld Game Version...");
                 foreach (var mod in sortedModsConfig)
                 {
                     if ((mod.ModXmlDetails.ModTargetVersion != null) && (mod.DirName != "Core"))
@@ -406,24 +409,27 @@ namespace RimworldConflictChecker
                 }
                 //TODO: set core ver
 
-                Logger.Instance.NewSection("Listing mods and their DLL's & XML's...");
-                sortedModsConfig = Mods.OrderBy(x => x.ModXmlDetails.ModName).ToList();
-                foreach (var mod in sortedModsConfig)
-                {
-                    if (mod.ModEnabled || Incdisabled)
+                if (Showdetails)
+                { 
+                    Logger.Instance.NewSection("Listing mods and their DLL's & XML's...");
+                    sortedModsConfig = Mods.OrderBy(x => x.ModXmlDetails.ModName).ToList();
+                    foreach (var mod in sortedModsConfig)
                     {
-                        Logger.Instance.DumpModHeader(mod.ModXmlDetails.ModName, mod.FullDirName);
-                        foreach (var modXmlFile in mod.XmlFiles)
+                        if (mod.ModEnabled || Incdisabled)
                         {
-                            //if ((modXmlFile.XmlFileInfo.Name.Contains(".xml") || (modXmlFile.XmlFileInfo.Name.Contains(".dll"))))
-                            //{
-                            Logger.Instance.DumpModFiles(modXmlFile.XmlFileInfo.Name);
-                            //}
+                            Logger.Instance.DumpModHeader(mod.ModXmlDetails.ModName, mod.FullDirName);
+                            foreach (var modXmlFile in mod.XmlFiles)
+                            {
+                                //if ((modXmlFile.XmlFileInfo.Name.Contains(".xml") || (modXmlFile.XmlFileInfo.Name.Contains(".dll"))))
+                                //{
+                                Logger.Instance.DumpModFiles(modXmlFile.XmlFileInfo.Name);
+                                //}
+                            }
                         }
                     }
                 }
 
-                Logger.Instance.NewSection("Checking for every mod's XML that overwrites Core (game default) XML");
+                Logger.Instance.NewSection("Checking for every mods XML that overwrites 'Core' (game default) XML");
                 Logger.Instance.Log("These are not conflicts, or typically a problem. It just means the following mods change (overwrite) the standard default game provided object definitions.");
                 Logger.Instance.Log("");
 
@@ -475,8 +481,8 @@ namespace RimworldConflictChecker
 
                 Logger.Instance.NewSection("Checking for XML Conflicts");
                 Logger.Instance.Log("Mods listed here will conflict with each other as they change the same object (defName).");
-                Logger.Instance.Log("Larger numbered mods are lower down in your Mod list, and will take precidence over lower numbered mods.");
-                Logger.Instance.Log("For example, Load Position 10 will overwrite & take precidence over Load Position 5");
+                Logger.Instance.Log("Larger numbered mods are lower down in your Mod list, and will take precedence over lower numbered mods.");
+                Logger.Instance.Log("For example, Load Position 10 will overwrite & take precedence over Load Position 5");
                 Logger.Instance.Log("");
 
                 totalConflicts = 0;
@@ -523,10 +529,10 @@ namespace RimworldConflictChecker
 
                 Logger.Instance.NewSection("Checking for duplicate DLL's...");
                 Logger.Instance.Log("DLL's listed here exist in more than one mod.");
-                Logger.Instance.Log("The largest Load Position DLL will load last and take presidence over lower numbered Load Position");
+                Logger.Instance.Log("The highest 'Load Position' DLL will load last and take precedence over lower numbered 'Load Position'");
                 Logger.Instance.Log("Many mods now use common library DLL's such as 0Harmony.dll & $HugsLibChecker.dll");
-                Logger.Instance.Log("It's ok if these common libraries are in multiple Mod folders");
-                Logger.Instance.Log("It's not good if they are different versions.");
+                Logger.Instance.Log("It's OK if these common libraries are in multiple Mod folders");
+                Logger.Instance.Log("It's not good if these common libraries are different versions.");
 
                 totalConflicts = 0;
 
@@ -668,8 +674,8 @@ namespace RimworldConflictChecker
         {
             try
             {
-                //string clientId = "4cd857fbb4403f81c83b";
-                //string clientSecret = "1114a5310ca5e4932ea949d3adab8b3317b49b6a";
+                //string clientId = "sdfgfdg";
+                //string clientSecret = "sdfg435gg54";
                 var client = new GitHubClient(new ProductHeaderValue(nameof(RimworldConflictChecker)));
 
                 // NOTE: this is not required, but highly recommended!
@@ -698,27 +704,19 @@ namespace RimworldConflictChecker
 
                 var repo = await client.Repository.Release.GetAll("biship", nameof(RimworldConflictChecker));
                 //if (repo.Count > 0)
-                if (repo.Any())
-                {
-                    Logger.Instance.Log("Successfully got version data from GitHub");
-                }
-                else
-                {
-                    Logger.Instance.Log("Not able to get version data from GitHub");
-                }
+                Logger.Instance.Log(repo.Any()
+                    ? "Successfully got version data from GitHub"
+                    : "Not able to get version data from GitHub");
                 //var highestver = new Latestver();
                 //int index = -1; //the release that has the highest version
                 foreach (var release in repo)
                 {
                     //Console.WriteLine("Found {0} : {1}", release.TagName, release.Name);
                     var thisNum = Version.Parse(release.TagName); //ver is in tagname of release
-                    if (thisNum != null)
+                    if (thisNum > Latestver)
                     {
-                        if (thisNum > Latestver)
-                        {
-                            Latestver = thisNum;
-                            //index++;
-                        }
+                        Latestver = thisNum;
+                        //index++;
                     }
                 }
                 //Console.WriteLine("{0} in {1}", highestrelease, index);

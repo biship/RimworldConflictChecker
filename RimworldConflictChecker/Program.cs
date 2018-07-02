@@ -15,7 +15,7 @@ namespace RimworldConflictChecker
 
         //Win10 Insider fix 07/19/17
         //Tools -> Options -> Debugging -> General ->Uncheck: Enable UI Debugging Tools for XAML
-        
+
         // Satisfies rule: MarkWindowsFormsEntryPointsWithStaThread.
         [STAThread]
         private static int Main(string[] args)
@@ -26,8 +26,10 @@ namespace RimworldConflictChecker
             var modfolder2 = "";
             var modsconfigfolder = "";
             var incdisabled = false;
+            var showdetails = false;
             Starttime = DateTime.Now;
 
+            // Replace NBUG with https://github.com/google/breakpad one day?
             // Uncomment the following after testing to see that NBug is working as configured
             NBug.Settings.ReleaseMode = true;
 
@@ -83,7 +85,7 @@ namespace RimworldConflictChecker
             {
                 foreach (string arg in args)
                 {
-                    if (Utils.FileOrDirectoryExists(arg + "\\RimWorldWin.exe"))
+                    if (Utils.FileOrDirectoryExists(arg + "\\RimWorldWin.exe") || Utils.FileOrDirectoryExists(arg + "\\RimWorldWin64.exe"))
                     {
                         rimworldfolder = arg;
                         Formrc = 0;
@@ -106,10 +108,12 @@ namespace RimworldConflictChecker
                         incdisabled = true;
                         Settings.Default.incDisabled = true;
                     }
-                    if (arg == "-dps")
+                    if (arg == "-details")
                     {
-                        Dps = true;
+                        showdetails = true;
+                        Settings.Default.showDetails = true;
                     }
+                    Dps |= arg == "-dps";
                     modfolder2 = arg;
                     Formrc = 0;
                 }
@@ -137,6 +141,7 @@ namespace RimworldConflictChecker
                 modfolder2 = (string)Settings.Default["ModFolder2"];
                 modsconfigfolder = (string)Settings.Default["ModsConfigFolder"];
                 incdisabled = (bool)Settings.Default["incDisabled"];
+                showdetails = (bool)Settings.Default["showDetails"];
                 Formrc = OptionsForm.ReturnValue1;
                 //Settings.Default.Upgrade();
             }
@@ -145,7 +150,7 @@ namespace RimworldConflictChecker
 
             //this is terrible code.
             //TODO: Put all this into the RimWorld object
-            var mainprogram = new RimworldXmlLoader(incdisabled, rimworldfolder, modsconfigfolder, modfolder1, modfolder2);
+            var mainprogram = new RimworldXmlLoader(showdetails, incdisabled, rimworldfolder, modsconfigfolder, modfolder1, modfolder2);
             Logger.Instance.WriteToFile();
             if (mainprogram.Rc == 0)
             {
@@ -155,8 +160,8 @@ namespace RimworldConflictChecker
             //testing throwing exception
             //throw new ArgumentException("ha-ha");
 #if DEBUG
-            Process.Start(@"RCC.txt");
-#endif                
+            //Process.Start(@"RCC.txt");
+#endif
             return mainprogram.Rc;
         }
 
