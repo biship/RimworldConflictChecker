@@ -124,7 +124,7 @@
     <value>1. Choose the RimWorld Executable Folder
 
 2. Choose RimWorld Mod Folder 1. 
-    This defaults to the Mods subfolder of RimWorldWin.exe folder, but can be changed.
+    This defaults to the Mods subfolder of RimWorldWin64.exe folder, but can be changed.
 
 3. (optional) Choose RimWorld Mod Folder 2. 
     This is only needed if you run Steam, as Steam saves workshop Mods in a different location.

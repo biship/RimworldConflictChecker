@@ -144,7 +144,7 @@
             this.lbl_RimWorldExeFolder.Name = "lbl_RimWorldExeFolder";
             this.lbl_RimWorldExeFolder.Size = new System.Drawing.Size(283, 13);
             this.lbl_RimWorldExeFolder.TabIndex = 2;
-            this.lbl_RimWorldExeFolder.Text = "RimWorld Executable Folder (RimWorldWin.exe):";
+            this.lbl_RimWorldExeFolder.Text = "RimWorld Executable Folder (RimWorldWin64.exe):";
             // 
             // btn_RimworldFolder
             // 
@@ -187,7 +187,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(272, 13);
             this.label2.TabIndex = 3;
-            this.label2.Text = "The Mods subfolder off where RimWorldWin.exe resides";
+            this.label2.Text = "The Mods subfolder off where RimWorldWin64.exe resides";
             // 
             // btn_ModFolder1
             // 

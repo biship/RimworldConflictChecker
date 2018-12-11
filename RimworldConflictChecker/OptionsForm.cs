@@ -345,7 +345,7 @@ namespace RimworldConflictChecker
                 case nameof(txtb_RimworldFolder):
                     if (!string.IsNullOrEmpty(sender.Text))
                     {
-                        if ((Utils.FileOrDirectoryExists(sender.Text)) && (File.Exists(sender.Text + "\\RimWorldWin.exe")))
+                        if ((Utils.FileOrDirectoryExists(sender.Text)) && ((File.Exists(sender.Text + "\\RimWorldWin.exe")) || (File.Exists(sender.Text + "\\RimWorldWin64.exe"))))
                         {
                             txtb_RimworldFolder_status.Text = Resources.OK;
                             txtb_RimworldFolder_status.ForeColor = Color.Green;

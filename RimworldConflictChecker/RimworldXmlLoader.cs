@@ -103,7 +103,9 @@ namespace RimworldConflictChecker
 //#endif
             var thisversion = System.Reflection.Assembly.GetEntryAssembly().GetName().Version;
             Logger.Instance.Log("You are running version : " + thisversion);
+            Console.WriteLine("You are running version : " + thisversion);
             Logger.Instance.Log("Latest version on GitHub: " + Latestver);
+            Console.WriteLine("Latest version on GitHub: " + Latestver);
 
             if (Latestver > thisversion)
             {
