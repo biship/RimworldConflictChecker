@@ -56,7 +56,7 @@ namespace RimworldConflictChecker
             using (var chooseDialog = new OpenFileDialog())
             {
                 //chooseDialog.FileName = "RimWorldWin.exe";
-                chooseDialog.Filter = "RimWorld|RimWorldWin*.exe";
+                chooseDialog.Filter = "RimWorld|RimWorld*.exe";
                 chooseDialog.CheckFileExists = true;
                 chooseDialog.CheckPathExists = true;
                 //chooseDialog.AutoUpgradeEnabled = false; //def:true. false = old windowsXP style. lol
@@ -79,7 +79,7 @@ namespace RimworldConflictChecker
 
                 //chooseDialog.CustomPlaces.Add(last_txtb_RimworldFolder ?? "C:\\"); //adds to the dropdown //do these cause crashes?
                 //chooseDialog.CustomPlaces.Add(txtb_RimworldFolder.Text ?? "C:\\"); //adds to the dropdown //do these cause crashes?
-                chooseDialog.Title = "Please select RimWorldWin Executable";
+                chooseDialog.Title = "Please Select RimWorld Executable";
                 var result = chooseDialog.ShowDialog();
                 //OK = Filename = full path & RimWorldWin.exe
                 //Cancel = Filename = RimWorldWin.exe
@@ -345,7 +345,7 @@ namespace RimworldConflictChecker
                 case nameof(txtb_RimworldFolder):
                     if (!string.IsNullOrEmpty(sender.Text))
                     {
-                        if ((Utils.FileOrDirectoryExists(sender.Text)) && ((File.Exists(sender.Text + "\\RimWorldWin.exe")) || (File.Exists(sender.Text + "\\RimWorldWin64.exe"))))
+                        if ((Utils.FileOrDirectoryExists(sender.Text)) && ((File.Exists(sender.Text + "\\RimWorldWin.exe")) || (File.Exists(sender.Text + "\\RimWorldWin64.exe")) || (File.Exists(sender.Text + "\\RimWorld2150win64.exe"))))
                         {
                             txtb_RimworldFolder_status.Text = Resources.OK;
                             txtb_RimworldFolder_status.ForeColor = Color.Green;
@@ -440,17 +440,17 @@ namespace RimworldConflictChecker
             UpdateFoldersDisplay(sender as TextBox);
         }
 
-        private void Txtb_ModsConfigFolder_TextChanged(object sender, EventArgs e)
-        {
-            UpdateFoldersDisplay(sender as TextBox);
-        }
+        //private void Txtb_ModsConfigFolder_TextChanged(object sender, EventArgs e)
+        //{
+            //UpdateFoldersDisplay(sender as TextBox);
+        //}
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox1_CheckedChanged(object sender, EventArgs e)
         {
             //does this exist yet??
             //RimworldXmlLoader.Incdisabled = !RimworldXmlLoader.Incdisabled;
         }
-        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox2_CheckedChanged(object sender, EventArgs e)
         {
             //does this exist yet??
             //RimworldXmlLoader.Showdetails = !RimworldXmlLoader.Showdetails;

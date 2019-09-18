@@ -102,21 +102,6 @@ namespace RimworldConflictChecker
         }
     }
 
-    public static class ExampleCode
-    {
-        [Obsolete]
-        private static void MethodName()
-        {
-            //NullSafe
-            //foo.NullSafe(f => f.GetBar())
-            //   .NullSafe(b => b.Baz)
-            //   .NullSafe(b => b.SomeMethod(), ifNullReturn: "whatever you would return in the null case");
-
-            //Capped:
-            //var bound = value.Capped(min: 1, max: 10);
-        }
-    }
-
     public class BindingErrorTraceListener : DefaultTraceListener
     {
         private static BindingErrorTraceListener _listener;

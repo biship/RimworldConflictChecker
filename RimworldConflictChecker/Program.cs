@@ -85,7 +85,7 @@ namespace RimworldConflictChecker
             {
                 foreach (string arg in args)
                 {
-                    if (Utils.FileOrDirectoryExists(arg + "\\RimWorldWin.exe") || Utils.FileOrDirectoryExists(arg + "\\RimWorldWin64.exe"))
+                    if (Utils.FileOrDirectoryExists(arg + "\\RimWorldWin.exe") || Utils.FileOrDirectoryExists(arg + "\\RimWorldWin64.exe") || Utils.FileOrDirectoryExists(arg + "\\RimWorld2150win64.exe"))
                     {
                         rimworldfolder = arg;
                         Formrc = 0;

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Root Type="DevExpress.CodeRush.Foundation.Markers.Options.MarkersOptions">
+  <Options Language="Neutral">
+    <DropMarkerInTextField>False</DropMarkerInTextField>
+  </Options>
+</Root>

@@ -45,10 +45,10 @@ namespace RimworldConflictChecker
         public List<XmlFile> XmlFiles { get; set; } //list of all files under dir
         public List<Mod> ConflictedMods { get; set; } //list of other conflicting XML's
         public List<Mod> ConflictedDlls { get; set; } //list of other conflicting DLLs's
-        public bool Checked { get; set; } //set once its XML's have been completly compared
+        public bool Checked { get; set; } //set once its XML's have been completely compared
         public bool CoreChecked { get; set; } //nameDefs checked vs Core?
         public int CoreOverrights { get; set; }
-        public bool DllChecked { get; set; } //set once its DLL's have been completly compared
+        public bool DllChecked { get; set; } //set once its DLL's have been completely compared
         public bool ModEnabled { get; set; } //is the mod in ModsConfig.xml
         public int ModRank { get; set; } //mods position in MosdConfig.xml
 
@@ -341,7 +341,7 @@ namespace RimworldConflictChecker
                 {
                     currentFile = xmlFile;
                     //if (!xmlFile.Name.Contains("About") && !xmlFile.Name.Contains("Changelog") && !xmlFile.Name.Contains("Credits") && !xmlFile.FullName.Contains("Languages"))
-                    //using lisst: http://stackoverflow.com/questions/4874371/how-to-check-if-any-word-in-my-liststring-contains-in-text
+                    //using list: http://stackoverflow.com/questions/4874371/how-to-check-if-any-word-in-my-liststring-contains-in-text
                     //if (!xmlFile.Name.Contains("Changelog") && !xmlFile.Name.Contains("Credits") && !xmlFile.FullName.Contains("\\Languages\\"))
                     //if ((ignorefiles.Names.Any(w => xmlFile.Name.Contains(w))) || (ignorefiles.Extensions.Any(w => xmlFile.Extension.Equals(w))) || (ignorefiles.Folders.Any(w => xmlFile.FullName.Contains(w))))
                     //{

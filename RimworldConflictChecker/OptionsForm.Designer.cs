@@ -142,7 +142,7 @@
             this.lbl_RimWorldExeFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_RimWorldExeFolder.Location = new System.Drawing.Point(3, 5);
             this.lbl_RimWorldExeFolder.Name = "lbl_RimWorldExeFolder";
-            this.lbl_RimWorldExeFolder.Size = new System.Drawing.Size(283, 13);
+            this.lbl_RimWorldExeFolder.Size = new System.Drawing.Size(297, 13);
             this.lbl_RimWorldExeFolder.TabIndex = 2;
             this.lbl_RimWorldExeFolder.Text = "RimWorld Executable Folder (RimWorldWin64.exe):";
             // 
@@ -185,7 +185,7 @@
             this.label2.Location = new System.Drawing.Point(13, 91);
             this.label2.Margin = new System.Windows.Forms.Padding(13, 0, 3, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(272, 13);
+            this.label2.Size = new System.Drawing.Size(284, 13);
             this.label2.TabIndex = 3;
             this.label2.Text = "The Mods subfolder off where RimWorldWin64.exe resides";
             // 
@@ -396,7 +396,7 @@
             this.checkBox1.TabIndex = 8;
             this.checkBox1.Text = "Include non-enabled mods in checks";
             this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.Click += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.checkBox1.Click += new System.EventHandler(this.CheckBox1_CheckedChanged);
             // 
             // checkBox2
             // 
@@ -408,8 +408,8 @@
             this.checkBox2.TabIndex = 19;
             this.checkBox2.Text = "Detailed Output";
             this.checkBox2.UseVisualStyleBackColor = true;
-            this.checkBox2.EnabledChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
-            this.checkBox2.Click += new System.EventHandler(this.checkBox2_CheckedChanged);
+            this.checkBox2.EnabledChanged += new System.EventHandler(this.CheckBox2_CheckedChanged);
+            this.checkBox2.Click += new System.EventHandler(this.CheckBox2_CheckedChanged);
             // 
             // OptionsForm
             // 

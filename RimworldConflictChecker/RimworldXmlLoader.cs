@@ -166,7 +166,7 @@ namespace RimworldConflictChecker
             Logger.Instance.Log("");
 
             //Folder[0] RimWorld exe folder (and loc of Version.txt)
-            if (Utils.FileOrDirectoryExists(folders[0] + "\\RimWorldWin.exe") || Utils.FileOrDirectoryExists(folders[0] + "\\RimWorldWin64.exe"))
+            if (Utils.FileOrDirectoryExists(folders[0] + "\\RimWorldWin.exe") || Utils.FileOrDirectoryExists(folders[0] + "\\RimWorldWin64.exe") || Utils.FileOrDirectoryExists(folders[0] + "\\RimWorld2150win64.exe"))
             {
                 Logger.Instance.Log("Folder 1 : Found RimWorldWin in : " + folders[0]);
             }
