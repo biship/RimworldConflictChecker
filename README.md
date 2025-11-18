@@ -26,16 +26,6 @@ Alternatively, just run RCC.exe to get a folder picker & config saver.
 	
 Results of the checks are written to file RCC.txt in the executable folder.
 
-RCC uses NBug, an Open Source library used to submit crashes to a Mantis tracker.
-
-	https://github.com/soygul/NBug
-	Feel free to block it if you do not want the reports sent.
-
-RCC will connect to GitHub to check for the latest version.
-
-	https://github.com/biship/RimworldConflictChecker/releases
-	Feel free to block that if you do not want to know about updates.
-
 RimWorld Conflict Checker is an expanded and updated version of: https://ludeon.com/forums/index.php?topic=20211
 
 	Licensed under MIT

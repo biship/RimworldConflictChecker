@@ -9,14 +9,9 @@ namespace RimworldConflictChecker
     {
         public static int Formrc { get; set; }
         public static string[] Allargs { get; set; }
-        //public static bool incdisabled = false;
         public static bool Dps;
         public static DateTime Starttime;
 
-        //Win10 Insider fix 07/19/17
-        //Tools -> Options -> Debugging -> General ->Uncheck: Enable UI Debugging Tools for XAML
-
-        // Satisfies rule: MarkWindowsFormsEntryPointsWithStaThread.
         [STAThread]
         private static int Main(string[] args)
         {
@@ -44,7 +39,7 @@ namespace RimworldConflictChecker
                     Console.WriteLine("                                (optional) Rimworld Game Mod Folder");
                     Console.WriteLine("                                (optional) Steam Mod Folder");
                     Console.WriteLine("                                (optional) ModsConfig.xml location");
-                    //Console.WriteLine();
+                    Console.WriteLine();
                     Console.WriteLine("Example:");
                     Console.WriteLine("     RCC.exe \"D:\\SteamLibrary\\steamapps\\common\\RimWorld\" \"D:\\SteamLibrary\\steamapps\\workshop\\content\\294100\"");
                     Console.WriteLine();
@@ -119,10 +114,7 @@ namespace RimworldConflictChecker
                 Formrc = OptionsForm.ReturnValue1;
                 //Settings.Default.Upgrade();
             }
-            //testing throwing exception
-            //throw new ArgumentException("ha-ha");
 
-            //this is terrible code.
             //TODO: Put all this into the RimWorld object
             var mainprogram = new RimworldXmlLoader(showdetails, incdisabled, rimworldfolder, modsconfigfolder, modfolder1, modfolder2);
             Logger.Instance.WriteToFile();
@@ -131,11 +123,6 @@ namespace RimworldConflictChecker
                 RunWpf();
             }
 
-            //testing throwing exception
-            //throw new ArgumentException("ha-ha");
-#if DEBUG
-            //Process.Start(@"RCC.txt");
-#endif
             return mainprogram.Rc;
         }
 
