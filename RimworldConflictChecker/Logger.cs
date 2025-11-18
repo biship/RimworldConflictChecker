@@ -86,7 +86,7 @@ namespace RimworldConflictChecker
                 _buffer.Flush();
             }
             var now = $"{DateTime.Now:MM-dd-yyyy HH:mm:ss} ";
-            Log("===============================================================================================================================" + "\n" + now + "\n" + message + "\n");
+            Log("===============================================================================================================================\n" + now + "\n" + message + "\n");
         }
 
         public void DumpModHeader(string modname, string folder)
@@ -120,14 +120,18 @@ namespace RimworldConflictChecker
             Log($"{isenabled,-12} Load Position: {loadPosition,-4} Version: {version,-10} Directory: {dirname,-48}  Name: {modname,-48}");
         }
 
-        public void LogError(string what, Exception e)
+        public void LogError(string what, Exception ex)
         {
+            if (ex == null)
+            {
+                throw new ArgumentNullException("Exception is Null");
+            }
             Log("***************** ERROR START ***************");
-            Log("Occurred during: " + e.Source);
+            Log("Occurred during: " + ex.Source);
             Log("Comments: " + what);
-            Log("Error: " + e.GetType().Name);
-            Log("Error Message: " + e.Message);
-            Log("Stacktrace: " + e.StackTrace);
+            Log("Error: " + ex.GetType().Name);
+            Log("Error Message: " + ex.Message);
+            Log("Stacktrace: " + ex.StackTrace);
             Log("***************** ERROR FIN *****************");
         }
 

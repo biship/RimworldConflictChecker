@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace RimworldConflictChecker
 {
-    public class Program
+    public static class Program
     {
         public static int Formrc { get; set; }
         public static string[] Allargs { get; set; }
@@ -28,32 +28,6 @@ namespace RimworldConflictChecker
             var incdisabled = false;
             var showdetails = false;
             Starttime = DateTime.Now;
-
-            // Replace NBUG with https://github.com/google/breakpad one day?
-            // Uncomment the following after testing to see that NBug is working as configured
-            NBug.Settings.ReleaseMode = true;
-
-#if DEBUG
-            NBug.Settings.WriteLogToDisk = true;
-#endif
-
-            var list = new List<NBug.Core.Util.Storage.FileMask> {"RCC.txt"};
-            NBug.Settings.AdditionalReportFiles = list;
-
-            //NBug.Exceptions.Dispatch();
-
-            // Sample NBug configuration for console applications
-            AppDomain.CurrentDomain.UnhandledException += NBug.Handler.UnhandledException;
-            TaskScheduler.UnobservedTaskException += NBug.Handler.UnobservedTaskException;
-
-            // Add the event handler for handling UI thread exceptions to the event.
-            Application.ThreadException += NBug.Handler.ThreadException;
-
-            // Sample NBug configuration for WinForms applications
-            // all set above
-            //AppDomain.CurrentDomain.UnhandledException += NBug.Handler.UnhandledException;
-            //Application.ThreadException += NBug.Handler.ThreadException;
-            //TaskScheduler.UnobservedTaskException += NBug.Handler.UnobservedTaskException;
 
             if (args.Length == 1)
             {

@@ -65,7 +65,7 @@ namespace RimworldConflictChecker
         public static void Each<T>(this IEnumerable<T> ie, Action<T, int> action)
         {
             var i = 0;
-            foreach (var e in ie) action?.Invoke(e, i++);
+            foreach (T e in ie) action?.Invoke(e, i++);
         }
 
         public static Exception LogException(string what, Exception ex)
@@ -88,17 +88,6 @@ namespace RimworldConflictChecker
         public static bool Contains(this string source, string toCheck, StringComparison comp)
         {
             return source.IndexOf(toCheck, comp) >= 0;
-        }
-    }
-
-    public static class Throw<TException> where TException : Exception
-    {
-        public static void If(bool condition, string message)
-        {
-            if (condition)
-            {
-                throw (TException) Activator.CreateInstance(typeof(TException), message);
-            }
         }
     }
 

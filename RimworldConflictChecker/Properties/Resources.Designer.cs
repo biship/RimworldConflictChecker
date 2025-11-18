@@ -19,7 +19,7 @@ namespace RimworldConflictChecker.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -61,7 +61,7 @@ namespace RimworldConflictChecker.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fri 09/09/2016  9:50:53.82 
+        ///   Looks up a localized string similar to Sun 10/06/2019 11:06:10.05 
         ///.
         /// </summary>
         public static string BuildDate {

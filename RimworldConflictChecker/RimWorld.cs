@@ -52,10 +52,10 @@ namespace RimworldConflictChecker
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 //Logger.Instance.Log(file == null ? "" : file.Name + " " + e.Message);
-                Logger.Instance.Log(e.Message);
+                Logger.Instance.Log(ex.Message);
             }
 
             return files;

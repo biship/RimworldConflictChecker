@@ -267,7 +267,7 @@ namespace RimworldConflictChecker
 
         public static void AddOrUpdateAppSettings(string key, string value)
         {
-            //may use this one day
+            //not used. may use this one day
             try
             {
                 var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);

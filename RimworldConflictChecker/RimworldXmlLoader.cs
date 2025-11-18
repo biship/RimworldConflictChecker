@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using System.Threading.Tasks;
-using Octokit;
 
 namespace RimworldConflictChecker
 {
@@ -88,30 +87,13 @@ namespace RimworldConflictChecker
             Logger.Instance.Log("Results of the checks are written to file RCC.txt in this folder.");
             Logger.Instance.Log("");
             Logger.Instance.Log("Currently implemented checks:");
-            //checksimplemented.ToList().ForEach(j => Logger.Instance.Log(j));
             checksimplemented.ToList().ForEach(Logger.Instance.Log);
             Logger.Instance.Log("Checks to be possibly added in the future:");
-            //futurechecks.ToList().ForEach(j => Logger.Instance.Log(j));
             futurechecks.ToList().ForEach(Logger.Instance.Log);
 
-            Logger.Instance.NewSection("Checking GitHub for updates. This will timeout after 10s...");
-            Console.WriteLine("Checking GitHub for updates. This will timeout after 10s...");
-            //Latestver = Version.Parse("0.0.0.6"); //why set this...
-            Latestver = Version.Parse("0.0.0.0");
-//#if !DEBUG
-            Task.Run(async () => { await GetRepoAsync(); }).Wait(10000);
-//#endif
             var thisversion = System.Reflection.Assembly.GetEntryAssembly().GetName().Version;
             Logger.Instance.Log("You are running version : " + thisversion);
             Console.WriteLine("You are running version : " + thisversion);
-            Logger.Instance.Log("Latest version on GitHub: " + Latestver);
-            Console.WriteLine("Latest version on GitHub: " + Latestver);
-
-            if (Latestver > thisversion)
-            {
-                Logger.Instance.Log("There is a newer version on GitHub. You can get it here: https://github.com/biship/RimworldConflictChecker/releases");
-                Console.WriteLine("There is a newer version on GitHub. You can get it here: https://github.com/biship/RimworldConflictChecker/releases");
-            }
 
             if (Program.Formrc != 0)
             {
@@ -365,7 +347,7 @@ namespace RimworldConflictChecker
                 {
                     //if (!Utils.IsNullOrEmpty(modsconfig))
                     if (!Modsconfig.IsNullOrEmpty())
-                        {
+                    {
                         //for all mods found in ModsConfig.xml
                         foreach (var listedmod in Modsconfig)
                         {
@@ -399,8 +381,7 @@ namespace RimworldConflictChecker
                         }
                         if (mod.ModXmlDetails.ModTargetVersion > rimWorld.Version)
                         {
-                            Logger.Instance.Log(string.Format("Mod version {0,-9} of mod " + mod.ModXmlDetails.ModName + " is above RimWorld Game version. It will not load.",
-                                mod.ModXmlDetails.ModTargetVersion));
+                            Logger.Instance.Log(string.Format("Mod version {0,-9} of mod " + mod.ModXmlDetails.ModName + " is above RimWorld Game version. It will not load.", mod.ModXmlDetails.ModTargetVersion));
                             continue;
                         }
                         if (mod.ModXmlDetails.ModTargetVersion.Minor < rimWorld.Version.Minor)
@@ -669,65 +650,6 @@ namespace RimworldConflictChecker
                 Incdisabled = true;
             }
             return Modsconfig;
-        }
-
-
-        static async Task GetRepoAsync()
-        {
-            try
-            {
-                //string clientId = "sdfgfdg";
-                //string clientSecret = "sdfg435gg54";
-                var client = new GitHubClient(new ProductHeaderValue(nameof(RimworldConflictChecker)));
-
-                // NOTE: this is not required, but highly recommended!
-                // ask the ASP.NET Membership provider to generate a random value
-                // and store it in the current user's session
-                //string csrf = new System.Web.Security.Membership.GeneratePassword(24, 3);
-                //var csrf = System.Web.Security.Membership.GeneratePassword(24, 3);
-
-                //Session["CSRF:State"] = csrf;
-
-                //var request = new OauthLoginRequest(clientId)
-                //{
-                //Scopes = { "user", "notifications" },
-                //State = csrf
-                //};
-
-                // NOTE: user must be navigated to this URL
-                //var oauthLoginUrl = client.Oauth.GetGitHubLoginUrl(request);
-
-                //var tokenAuth = new Credentials("token"); // NOTE: not real token
-                //client.Credentials = tokenAuth;
-
-                //var user = await client.User.Get("biship");
-                //var repo = await client.Repository.Get("biship", "RimworldConflictChecker");
-                //var repo2 = await client.Repository.Release.GetLatest("biship", "RimworldConflictChecker"); //fails...
-
-                var repo = await client.Repository.Release.GetAll("biship", nameof(RimworldConflictChecker));
-                //if (repo.Count > 0)
-                Logger.Instance.Log(repo.Any()
-                    ? "Successfully got version data from GitHub"
-                    : "Not able to get version data from GitHub");
-                //var highestver = new Latestver();
-                //int index = -1; //the release that has the highest version
-                foreach (var release in repo)
-                {
-                    //Console.WriteLine("Found {0} : {1}", release.TagName, release.Name);
-                    var thisNum = Version.Parse(release.TagName); //ver is in tagname of release
-                    if (thisNum > Latestver)
-                    {
-                        Latestver = thisNum;
-                        //index++;
-                    }
-                }
-                //Console.WriteLine("{0} in {1}", highestrelease, index);
-            }
-
-            catch (Exception ex)
-            {
-                Logger.Instance.LogError("Failed to get repo info from GitHub", ex);
-            }
         }
     }
 }
